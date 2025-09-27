@@ -1,10 +1,19 @@
+import { useState, useEffect } from "react";
 import { Link, useNavigate } from "react-router-dom";
 
 const Home = () => {
   const navigate = useNavigate();
+  const [isLoggedIn, setIsLoggedIn] = useState(false);
+
+  useEffect(() => {
+    // Check if user is logged in by checking for token
+    const token = localStorage.getItem("token");
+    setIsLoggedIn(!!token);
+  }, []);
 
   const handleLogout = () => {
     localStorage.removeItem("token");
+    setIsLoggedIn(false);
     navigate("/login");
   };
 
@@ -20,12 +29,21 @@ const Home = () => {
               </h1>
             </div>
             <div className="flex items-center space-x-4">
-              <button
-                onClick={handleLogout}
-                className="bg-indigo-600 hover:bg-indigo-700 text-white px-4 py-2 rounded-md text-sm font-medium transition duration-150 ease-in-out"
-              >
-                Logout
-              </button>
+              {isLoggedIn ? (
+                <button
+                  onClick={handleLogout}
+                  className="bg-red-600 hover:bg-red-700 text-white px-4 py-2 rounded-md text-sm font-medium transition duration-150 ease-in-out"
+                >
+                  Logout
+                </button>
+              ) : (
+                <Link
+                  to="/register"
+                  className="bg-indigo-600 hover:bg-indigo-700 text-white px-4 py-2 rounded-md text-sm font-medium transition duration-150 ease-in-out"
+                >
+                  Sign Up
+                </Link>
+              )}
             </div>
           </div>
         </div>
@@ -163,27 +181,6 @@ const Home = () => {
                   Contact Support
                 </button>
               </div>
-            </div>
-          </div>
-
-          {/* Authentication Links for Testing */}
-          <div className="mt-12 text-center">
-            <p className="text-sm text-gray-500 mb-4">
-              Authentication Pages (for testing):
-            </p>
-            <div className="space-x-4">
-              <Link
-                to="/login"
-                className="text-indigo-600 hover:text-indigo-500 font-medium"
-              >
-                Login Page
-              </Link>
-              <Link
-                to="/register"
-                className="text-indigo-600 hover:text-indigo-500 font-medium"
-              >
-                Register Page
-              </Link>
             </div>
           </div>
         </div>

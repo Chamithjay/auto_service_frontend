@@ -4,6 +4,7 @@ import companyLogo from "../assets/company_logo.png";
 const Navbar = () => {
   const location = useLocation();
   const isLoginPage = location.pathname === "/login";
+  const isRegisterPage = location.pathname === "/register";
 
   return (
     <nav className="bg-[#14274E]/95 backdrop-blur-md shadow-lg fixed w-full top-0 z-50 border-b border-[#394867]/20">
@@ -15,7 +16,7 @@ const Navbar = () => {
               <img
                 src={companyLogo}
                 alt="AutoService Logo"
-                className="h-65 w-auto object-contain"
+                className="h-23 w-auto object-contain"
               />
             </div>
           </Link>
@@ -37,12 +38,21 @@ const Navbar = () => {
                 Login
               </Link>
             )}
-            <Link
-              to="/register"
-              className="w-28 px-6 py-2.5 bg-[#394867] hover:bg-[#9BA4B4] text-white rounded-lg font-semibold transition-all duration-200 shadow-lg text-center"
-            >
-              Sign Up
-            </Link>
+            {isRegisterPage ? (
+              <button
+                disabled
+                className="w-28 px-6 py-2.5 text-white/50 bg-[#394867]/50 rounded-lg font-semibold cursor-not-allowed shadow-lg"
+              >
+                Sign Up
+              </button>
+            ) : (
+              <Link
+                to="/register"
+                className="w-28 px-6 py-2.5 bg-[#394867] hover:bg-[#9BA4B4] text-white rounded-lg font-semibold transition-all duration-200 shadow-lg text-center"
+              >
+                Sign Up
+              </Link>
+            )}
           </div>
         </div>
       </div>

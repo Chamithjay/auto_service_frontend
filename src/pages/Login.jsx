@@ -56,15 +56,33 @@ const Login = () => {
     }
 
     setIsLoading(true);
+    setErrors({});  // Clear previous errors
 
     try {
       const response = await API.post("/auth/login", formData);
       // Store token or user data as needed
       localStorage.setItem("token", response.data.token);
+      //navigate("/home");
+      // Store full response data
+    localStorage.setItem("username", response.data.username);
+    localStorage.setItem("email", response.data.email);
+    localStorage.setItem("role", response.data.role);  // New: Store role
+
+    // Role-based redirect
+    if (response.data.role === "ADMIN") {
+      navigate("/admin");
+    } else {
       navigate("/home");
+    }
     } catch (error) {
       if (error.response && error.response.data) {
+        //setErrors({ general: error.response.data.message || "Login failed" });
+        // Handle specific errors (e.g., from BadCredentialsException)
+      if (error.response.status === 401) {
+        setErrors({ general: error.response.data.message || "Invalid username or password" });
+      } else {
         setErrors({ general: error.response.data.message || "Login failed" });
+      }
       } else {
         setErrors({ general: "Network error. Please try again." });
       }

@@ -59,9 +59,23 @@ const Login = () => {
 
     try {
       const response = await API.post("/auth/login", formData);
-      // Store token or user data as needed
+      // Store token and user data
       localStorage.setItem("token", response.data.token);
-      navigate("/home");
+      localStorage.setItem("user", JSON.stringify(response.data.user));
+
+      // Navigate based on role
+      const userRole = response.data.user?.role || response.data.role;
+
+      if (userRole === "ADMIN") {
+        navigate("/admin/dashboard");
+      } else if (userRole === "EMPLOYEE") {
+        navigate("/employee/dashboard");
+      } else if (userRole === "CUSTOMER") {
+        navigate("/home");
+      } else {
+        // Default to home if role is not recognized
+        navigate("/home");
+      }
     } catch (error) {
       if (error.response && error.response.data) {
         setErrors({ general: error.response.data.message || "Login failed" });
@@ -230,6 +244,16 @@ const Login = () => {
               </p>
             )}
           </div>
+        </div>
+
+        {/* Forgot Password Link */}
+        <div className="text-right">
+          <Link
+            to="/forgot-password"
+            className="text-sm font-semibold text-[#394867] hover:text-[#14274E] transition-colors duration-300"
+          >
+            Forgot password?
+          </Link>
         </div>
 
         {/* General Error Message */}

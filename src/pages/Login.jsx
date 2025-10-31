@@ -1,11 +1,12 @@
 import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
-import API from "../api/Api";
+import { useAuth } from "../context/AuthContext";
 import loginSideImage from "../assets/login_side.png";
 import AuthLayout from "../components/AuthLayout";
 
 const Login = () => {
   const navigate = useNavigate();
+  const { login } = useAuth();
   const [formData, setFormData] = useState({
     username: "",
     password: "",
@@ -58,30 +59,16 @@ const Login = () => {
     setIsLoading(true);
 
     try {
-      const response = await API.post("/auth/login", formData);
-      // Store token and user data
-      localStorage.setItem("token", response.data.token);
-      localStorage.setItem("user", JSON.stringify(response.data.user));
-
-      // Navigate based on role
-      const userRole = response.data.user?.role || response.data.role;
-
-      if (userRole === "ADMIN") {
-        navigate("/admin/dashboard");
-      } else if (userRole === "EMPLOYEE") {
-        navigate("/employee/dashboard");
-      } else if (userRole === "CUSTOMER") {
-        navigate("/home");
+      const result = await login(formData.username, formData.password);
+      
+      if (result.success) {
+        // Navigation handled by AuthContext
+        navigate("/dashboard");
       } else {
-        // Default to home if role is not recognized
-        navigate("/home");
+        setErrors({ general: result.message || "Login failed" });
       }
     } catch (error) {
-      if (error.response && error.response.data) {
-        setErrors({ general: error.response.data.message || "Login failed" });
-      } else {
-        setErrors({ general: "Network error. Please try again." });
-      }
+      setErrors({ general: "Network error. Please try again." });
     } finally {
       setIsLoading(false);
     }

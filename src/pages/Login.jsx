@@ -61,10 +61,13 @@ const Login = () => {
       const response = await API.post("/auth/login", formData);
       // Store token and user data
       localStorage.setItem("token", response.data.token);
-      localStorage.setItem("user", JSON.stringify(response.data.user));
+      //localStorage.setItem("user", JSON.stringify(response.data.user));
+      localStorage.setItem("user", JSON.stringify(response.data));  // CHANGED: response.data, not .user
 
       // Navigate based on role
-      const userRole = response.data.user?.role || response.data.role;
+      //const userRole = response.data.user?.role || response.data.role;
+      // CHANGED : Direct role access for navigation (post-backend fix, role is always string)
+        const userRole = response.data.role;
 
       if (userRole === "ADMIN") {
         navigate("/admin/dashboard");

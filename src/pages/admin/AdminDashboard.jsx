@@ -1,13 +1,133 @@
+import { useState, useEffect } from "react";
 import AdminLayout from "../../components/admin/AdminLayout";
+import API from "../../api/Api";
 
 const AdminDashboard = () => {
+    const [stats, setStats] = useState(null);
+    const [recentActivities, setRecentActivities] = useState([]);
+    const [monthlyRevenue, setMonthlyRevenue] = useState([]);
+    const [vehicleDistribution, setVehicleDistribution] = useState([]);
+    const [loading, setLoading] = useState(true);
+
+    useEffect(() => {
+        fetchDashboardData();
+    }, []);
+
+    const fetchDashboardData = async () => {
+        try {
+            setLoading(true);
+            const [statsRes, activitiesRes, revenueRes, vehiclesRes] = await Promise.all([
+                API.get("/admin/dashboard/stats"),
+                API.get("/admin/dashboard/recent-activities"),
+                API.get("/admin/dashboard/monthly-revenue"),
+                API.get("/admin/dashboard/vehicle-distribution"),
+            ]);
+
+            setStats(statsRes.data);
+            setRecentActivities(activitiesRes.data);
+            setMonthlyRevenue(revenueRes.data);
+            setVehicleDistribution(vehiclesRes.data);
+        } catch (error) {
+            console.error("Error fetching dashboard data:", error);
+        } finally {
+            setLoading(false);
+        }
+    };
+
+    const formatCurrency = (amount) => {
+        return new Intl.NumberFormat("en-US", {
+            style: "currency",
+            currency: "USD",
+        }).format(amount || 0);
+    };
+
+    const formatTimeAgo = (timestamp) => {
+        const now = new Date();
+        const past = new Date(timestamp);
+        const diffInSeconds = Math.floor((now - past) / 1000);
+
+        if (diffInSeconds < 60) return `${diffInSeconds} seconds ago`;
+        if (diffInSeconds < 3600) return `${Math.floor(diffInSeconds / 60)} minutes ago`;
+        if (diffInSeconds < 86400) return `${Math.floor(diffInSeconds / 3600)} hours ago`;
+        return `${Math.floor(diffInSeconds / 86400)} days ago`;
+    };
+
+    const getActivityBadgeColor = (status) => {
+        const colors = {
+            NEW: "bg-blue-500",
+            ONGOING: "bg-yellow-500",
+            COMPLETED: "bg-green-500",
+            PENDING: "bg-orange-500",
+            CUSTOMER: "bg-purple-500",
+            EMPLOYEE: "bg-indigo-500",
+            ADMIN: "bg-red-500",
+        };
+        return colors[status] || "bg-gray-500";
+    };
+
+    const getActivityIcon = (type) => {
+        switch (type) {
+            case "APPOINTMENT":
+                return (
+                    <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
+                    </svg>
+                );
+            case "LEAVE":
+                return (
+                    <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+                    </svg>
+                );
+            case "REGISTRATION":
+                return (
+                    <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M18 9v3m0 0v3m0-3h3m-3 0h-3m-2-5a4 4 0 11-8 0 4 4 0 018 0zM3 20a6 6 0 0112 0v1H3v-1z" />
+                    </svg>
+                );
+            case "VEHICLE":
+                return (
+                    <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 17a2 2 0 11-4 0 2 2 0 014 0zM19 17a2 2 0 11-4 0 2 2 0 014 0z" />
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M13 16V6a1 1 0 00-1-1H4a1 1 0 00-1 1v10a1 1 0 001 1h1m8-1a1 1 0 01-1 1H9m4-1V8a1 1 0 011-1h2.586a1 1 0 01.707.293l3.414 3.414a1 1 0 01.293.707V16a1 1 0 01-1 1h-1m-6-1a1 1 0 001 1h1M5 17a2 2 0 104 0m-4 0a2 2 0 114 0m6 0a2 2 0 104 0m-4 0a2 2 0 114 0" />
+                    </svg>
+                );
+            default:
+                return null;
+        }
+    };
+
+    const getMaxRevenue = () => {
+        if (monthlyRevenue.length === 0) return 0;
+        return Math.max(...monthlyRevenue.map(item => parseFloat(item.revenue)));
+    };
+
+    const getVehicleColor = (type) => {
+        const colors = {
+            CAR: "#14274E",
+            VAN: "#394867",
+            BUS: "#9BA4B4",
+        };
+        return colors[type] || "#14274E";
+    };
+
+    if (loading) {
+        return (
+            <AdminLayout>
+                <div className="flex items-center justify-center min-h-[400px]">
+                    <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-[#14274E]"></div>
+                </div>
+            </AdminLayout>
+        );
+    }
+
     return (
         <AdminLayout>
             <div>
                 <h1 className="text-3xl font-bold text-[#14274E] mb-8">Dashboard</h1>
 
                 {/* Stats Grid */}
-                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
+                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-6 mb-8">
                     {/* Total Users */}
                     <div className="bg-white rounded-2xl p-6 shadow-lg hover:shadow-xl transition-all duration-300 border border-[#9BA4B4]/20">
                         <div className="flex items-center justify-between">
@@ -16,7 +136,7 @@ const AdminDashboard = () => {
                                     Total Users
                                 </p>
                                 <h3 className="text-3xl font-bold text-[#14274E] mt-2">
-                                    1,234
+                                    {stats?.totalUsers || 0}
                                 </h3>
                             </div>
                             <div className="bg-[#14274E]/10 p-3 rounded-xl">
@@ -37,14 +157,16 @@ const AdminDashboard = () => {
                         </div>
                     </div>
 
-                    {/* Total Bookings */}
+                    {/* Total Appointments */}
                     <div className="bg-white rounded-2xl p-6 shadow-lg hover:shadow-xl transition-all duration-300 border border-[#9BA4B4]/20">
                         <div className="flex items-center justify-between">
                             <div>
                                 <p className="text-[#9BA4B4] text-sm font-semibold uppercase">
-                                    Total Bookings
+                                    Appointments
                                 </p>
-                                <h3 className="text-3xl font-bold text-[#14274E] mt-2">567</h3>
+                                <h3 className="text-3xl font-bold text-[#14274E] mt-2">
+                                    {stats?.totalAppointments || 0}
+                                </h3>
                             </div>
                             <div className="bg-[#394867]/10 p-3 rounded-xl">
                                 <svg
@@ -71,7 +193,9 @@ const AdminDashboard = () => {
                                 <p className="text-[#9BA4B4] text-sm font-semibold uppercase">
                                     Employees
                                 </p>
-                                <h3 className="text-3xl font-bold text-[#14274E] mt-2">42</h3>
+                                <h3 className="text-3xl font-bold text-[#14274E] mt-2">
+                                    {stats?.totalEmployees || 0}
+                                </h3>
                             </div>
                             <div className="bg-[#14274E]/10 p-3 rounded-xl">
                                 <svg
@@ -91,6 +215,41 @@ const AdminDashboard = () => {
                         </div>
                     </div>
 
+                    {/* Total Vehicles */}
+                    <div className="bg-white rounded-2xl p-6 shadow-lg hover:shadow-xl transition-all duration-300 border border-[#9BA4B4]/20">
+                        <div className="flex items-center justify-between">
+                            <div>
+                                <p className="text-[#9BA4B4] text-sm font-semibold uppercase">
+                                    Vehicles
+                                </p>
+                                <h3 className="text-3xl font-bold text-[#14274E] mt-2">
+                                    {stats?.totalVehicles || 0}
+                                </h3>
+                            </div>
+                            <div className="bg-[#394867]/10 p-3 rounded-xl">
+                                <svg
+                                    className="w-8 h-8 text-[#394867]"
+                                    fill="none"
+                                    stroke="currentColor"
+                                    viewBox="0 0 24 24"
+                                >
+                                    <path
+                                        strokeLinecap="round"
+                                        strokeLinejoin="round"
+                                        strokeWidth="2"
+                                        d="M9 17a2 2 0 11-4 0 2 2 0 014 0zM19 17a2 2 0 11-4 0 2 2 0 014 0z"
+                                    />
+                                    <path
+                                        strokeLinecap="round"
+                                        strokeLinejoin="round"
+                                        strokeWidth="2"
+                                        d="M13 16V6a1 1 0 00-1-1H4a1 1 0 00-1 1v10a1 1 0 001 1h1m8-1a1 1 0 01-1 1H9m4-1V8a1 1 0 011-1h2.586a1 1 0 01.707.293l3.414 3.414a1 1 0 01.293.707V16a1 1 0 01-1 1h-1m-6-1a1 1 0 001 1h1M5 17a2 2 0 104 0m-4 0a2 2 0 114 0m6 0a2 2 0 104 0m-4 0a2 2 0 114 0"
+                                    />
+                                </svg>
+                            </div>
+                        </div>
+                    </div>
+
                     {/* Revenue */}
                     <div className="bg-white rounded-2xl p-6 shadow-lg hover:shadow-xl transition-all duration-300 border border-[#9BA4B4]/20">
                         <div className="flex items-center justify-between">
@@ -98,13 +257,13 @@ const AdminDashboard = () => {
                                 <p className="text-[#9BA4B4] text-sm font-semibold uppercase">
                                     Revenue
                                 </p>
-                                <h3 className="text-3xl font-bold text-[#14274E] mt-2">
-                                    $45.2K
+                                <h3 className="text-2xl font-bold text-[#14274E] mt-2">
+                                    {formatCurrency(stats?.totalRevenue)}
                                 </h3>
                             </div>
-                            <div className="bg-[#394867]/10 p-3 rounded-xl">
+                            <div className="bg-[#14274E]/10 p-3 rounded-xl">
                                 <svg
-                                    className="w-8 h-8 text-[#394867]"
+                                    className="w-8 h-8 text-[#14274E]"
                                     fill="none"
                                     stroke="currentColor"
                                     viewBox="0 0 24 24"
@@ -121,105 +280,98 @@ const AdminDashboard = () => {
                     </div>
                 </div>
 
-                {/* Quick Actions */}
-                <div className="bg-white rounded-2xl shadow-lg p-6 mb-8">
-                    <h2 className="text-xl font-bold text-[#14274E] mb-4">
-                        Quick Actions
-                    </h2>
-                    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
-                        <button className="p-4 border-2 border-[#9BA4B4]/30 rounded-xl hover:border-[#394867] hover:bg-[#F1F6F9] transition-all duration-200 text-left group">
-                            <div className="flex items-center space-x-3">
-                                <div className="bg-[#14274E]/10 p-2 rounded-lg group-hover:bg-[#14274E]/20 transition-colors">
-                                    <svg
-                                        className="w-6 h-6 text-[#14274E]"
-                                        fill="none"
-                                        stroke="currentColor"
-                                        viewBox="0 0 24 24"
-                                    >
-                                        <path
-                                            strokeLinecap="round"
-                                            strokeLinejoin="round"
-                                            strokeWidth="2"
-                                            d="M18 9v3m0 0v3m0-3h3m-3 0h-3m-2-5a4 4 0 11-8 0 4 4 0 018 0zM3 20a6 6 0 0112 0v1H3v-1z"
-                                        />
-                                    </svg>
-                                </div>
-                                <span className="font-semibold text-[#14274E]">Add User</span>
-                            </div>
-                        </button>
+                {/* Charts Section */}
+                <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-8">
+                    {/* Monthly Revenue Chart */}
+                    <div className="bg-white rounded-2xl shadow-lg p-6">
+                        <h2 className="text-xl font-bold text-[#14274E] mb-6">
+                            Monthly Revenue (Current Year)
+                        </h2>
+                        <div className="space-y-3">
+                            {monthlyRevenue.map((item, index) => {
+                                const maxRevenue = getMaxRevenue();
+                                const percentage = maxRevenue > 0 ? (parseFloat(item.revenue) / maxRevenue) * 100 : 0;
 
-                        <button className="p-4 border-2 border-[#9BA4B4]/30 rounded-xl hover:border-[#394867] hover:bg-[#F1F6F9] transition-all duration-200 text-left group">
-                            <div className="flex items-center space-x-3">
-                                <div className="bg-[#394867]/10 p-2 rounded-lg group-hover:bg-[#394867]/20 transition-colors">
-                                    <svg
-                                        className="w-6 h-6 text-[#394867]"
-                                        fill="none"
-                                        stroke="currentColor"
-                                        viewBox="0 0 24 24"
-                                    >
-                                        <path
-                                            strokeLinecap="round"
-                                            strokeLinejoin="round"
-                                            strokeWidth="2"
-                                            d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"
-                                        />
-                                    </svg>
-                                </div>
-                                <span className="font-semibold text-[#14274E]">
-                  View Reports
-                </span>
-                            </div>
-                        </button>
+                                return (
+                                    <div key={index} className="flex items-center space-x-4">
+                    <span className="text-sm font-semibold text-[#394867] w-12">
+                      {item.month}
+                    </span>
+                                        <div className="flex-1">
+                                            <div className="bg-[#F1F6F9] rounded-full h-8 overflow-hidden">
+                                                <div
+                                                    className="bg-gradient-to-r from-[#14274E] to-[#394867] h-full rounded-full flex items-center justify-end pr-3 transition-all duration-500"
+                                                    style={{ width: `${percentage}%` }}
+                                                >
+                                                    {percentage > 15 && (
+                                                        <span className="text-xs font-bold text-white">
+                              {formatCurrency(item.revenue)}
+                            </span>
+                                                    )}
+                                                </div>
+                                            </div>
+                                        </div>
+                                        {percentage <= 15 && (
+                                            <span className="text-sm font-semibold text-[#394867] w-24 text-right">
+                        {formatCurrency(item.revenue)}
+                      </span>
+                                        )}
+                                    </div>
+                                );
+                            })}
+                        </div>
+                    </div>
 
-                        <button className="p-4 border-2 border-[#9BA4B4]/30 rounded-xl hover:border-[#394867] hover:bg-[#F1F6F9] transition-all duration-200 text-left group">
-                            <div className="flex items-center space-x-3">
-                                <div className="bg-[#14274E]/10 p-2 rounded-lg group-hover:bg-[#14274E]/20 transition-colors">
-                                    <svg
-                                        className="w-6 h-6 text-[#14274E]"
-                                        fill="none"
-                                        stroke="currentColor"
-                                        viewBox="0 0 24 24"
-                                    >
-                                        <path
-                                            strokeLinecap="round"
-                                            strokeLinejoin="round"
-                                            strokeWidth="2"
-                                            d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z"
-                                        />
-                                        <path
-                                            strokeLinecap="round"
-                                            strokeLinejoin="round"
-                                            strokeWidth="2"
-                                            d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"
-                                        />
-                                    </svg>
-                                </div>
-                                <span className="font-semibold text-[#14274E]">Settings</span>
-                            </div>
-                        </button>
+                    {/* Vehicle Type Distribution */}
+                    <div className="bg-white rounded-2xl shadow-lg p-6">
+                        <h2 className="text-xl font-bold text-[#14274E] mb-6">
+                            Vehicle Type Distribution
+                        </h2>
+                        <div className="space-y-4">
+                            {vehicleDistribution.map((item, index) => {
+                                const total = vehicleDistribution.reduce((sum, v) => sum + v.count, 0);
+                                const percentage = total > 0 ? (item.count / total) * 100 : 0;
 
-                        <button className="p-4 border-2 border-[#9BA4B4]/30 rounded-xl hover:border-[#394867] hover:bg-[#F1F6F9] transition-all duration-200 text-left group">
-                            <div className="flex items-center space-x-3">
-                                <div className="bg-[#394867]/10 p-2 rounded-lg group-hover:bg-[#394867]/20 transition-colors">
-                                    <svg
-                                        className="w-6 h-6 text-[#394867]"
-                                        fill="none"
-                                        stroke="currentColor"
-                                        viewBox="0 0 24 24"
-                                    >
-                                        <path
-                                            strokeLinecap="round"
-                                            strokeLinejoin="round"
-                                            strokeWidth="2"
-                                            d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"
-                                        />
-                                    </svg>
+                                return (
+                                    <div key={index} className="space-y-2">
+                                        <div className="flex justify-between items-center">
+                                            <div className="flex items-center space-x-3">
+                                                <div
+                                                    className="w-4 h-4 rounded-full"
+                                                    style={{ backgroundColor: getVehicleColor(item.vehicleType) }}
+                                                ></div>
+                                                <span className="text-sm font-semibold text-[#394867]">
+                          {item.vehicleType}
+                        </span>
+                                            </div>
+                                            <div className="flex items-center space-x-3">
+                        <span className="text-sm text-[#9BA4B4]">
+                          {percentage.toFixed(1)}%
+                        </span>
+                                                <span className="text-lg font-bold text-[#14274E]">
+                          {item.count}
+                        </span>
+                                            </div>
+                                        </div>
+                                        <div className="bg-[#F1F6F9] rounded-full h-3 overflow-hidden">
+                                            <div
+                                                className="h-full rounded-full transition-all duration-500"
+                                                style={{
+                                                    width: `${percentage}%`,
+                                                    backgroundColor: getVehicleColor(item.vehicleType),
+                                                }}
+                                            ></div>
+                                        </div>
+                                    </div>
+                                );
+                            })}
+
+                            {vehicleDistribution.length === 0 && (
+                                <div className="text-center py-8 text-[#9BA4B4]">
+                                    No vehicle data available
                                 </div>
-                                <span className="font-semibold text-[#14274E]">
-                  Manage Schedule
-                </span>
-                            </div>
-                        </button>
+                            )}
+                        </div>
                     </div>
                 </div>
 
@@ -229,62 +381,37 @@ const AdminDashboard = () => {
                         Recent Activity
                     </h2>
                     <div className="space-y-4">
-                        <div className="flex items-center justify-between p-4 bg-[#F1F6F9] rounded-xl">
-                            <div className="flex items-center space-x-4">
-                                <div className="bg-[#14274E] text-white w-10 h-10 rounded-full flex items-center justify-center font-bold">
-                                    JD
+                        {recentActivities.length > 0 ? (
+                            recentActivities.map((activity, index) => (
+                                <div
+                                    key={index}
+                                    className="flex items-center justify-between p-4 bg-[#F1F6F9] rounded-xl hover:bg-[#E8EDF1] transition-colors duration-200"
+                                >
+                                    <div className="flex items-center space-x-4">
+                                        <div className={`${getActivityBadgeColor(activity.status)} text-white w-10 h-10 rounded-full flex items-center justify-center`}>
+                                            {getActivityIcon(activity.activityType)}
+                                        </div>
+                                        <div>
+                                            <p className="font-semibold text-[#14274E]">
+                                                {activity.description}
+                                            </p>
+                                            <p className="text-sm text-[#9BA4B4]">
+                                                {activity.userName} - {formatTimeAgo(activity.timestamp)}
+                                            </p>
+                                        </div>
+                                    </div>
+                                    <span
+                                        className={`text-xs ${getActivityBadgeColor(activity.status)} text-white px-3 py-1 rounded-full font-semibold`}
+                                    >
+                    {activity.status}
+                  </span>
                                 </div>
-                                <div>
-                                    <p className="font-semibold text-[#14274E]">
-                                        New booking created
-                                    </p>
-                                    <p className="text-sm text-[#9BA4B4]">
-                                        John Doe - 2 hours ago
-                                    </p>
-                                </div>
+                            ))
+                        ) : (
+                            <div className="text-center py-8 text-[#9BA4B4]">
+                                No recent activity
                             </div>
-                            <span className="text-xs bg-[#394867] text-white px-3 py-1 rounded-full">
-                New
-              </span>
-                        </div>
-
-                        <div className="flex items-center justify-between p-4 bg-[#F1F6F9] rounded-xl">
-                            <div className="flex items-center space-x-4">
-                                <div className="bg-[#394867] text-white w-10 h-10 rounded-full flex items-center justify-center font-bold">
-                                    MS
-                                </div>
-                                <div>
-                                    <p className="font-semibold text-[#14274E]">
-                                        Service completed
-                                    </p>
-                                    <p className="text-sm text-[#9BA4B4]">
-                                        Mike Smith - 4 hours ago
-                                    </p>
-                                </div>
-                            </div>
-                            <span className="text-xs bg-green-500 text-white px-3 py-1 rounded-full">
-                Completed
-              </span>
-                        </div>
-
-                        <div className="flex items-center justify-between p-4 bg-[#F1F6F9] rounded-xl">
-                            <div className="flex items-center space-x-4">
-                                <div className="bg-[#9BA4B4] text-white w-10 h-10 rounded-full flex items-center justify-center font-bold">
-                                    EJ
-                                </div>
-                                <div>
-                                    <p className="font-semibold text-[#14274E]">
-                                        New employee registered
-                                    </p>
-                                    <p className="text-sm text-[#9BA4B4]">
-                                        Emma Johnson - 1 day ago
-                                    </p>
-                                </div>
-                            </div>
-                            <span className="text-xs bg-blue-500 text-white px-3 py-1 rounded-full">
-                Staff
-              </span>
-                        </div>
+                        )}
                     </div>
                 </div>
             </div>

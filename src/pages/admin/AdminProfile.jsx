@@ -1,9 +1,11 @@
 import { useState, useEffect } from "react";
+import { useNavigate } from "react-router-dom";
 import AdminLayout from "../../components/admin/AdminLayout";
 import API from "../../api/Api";
 
 const AdminProfile = () => {
     const [user, setUser] = useState(null);
+    const navigate = useNavigate();
     const [isEditing, setIsEditing] = useState(false);
     const [isChangingPassword, setIsChangingPassword] = useState(false);
     const [loading, setLoading] = useState(false);
@@ -128,6 +130,10 @@ const AdminProfile = () => {
 
         try {
             const response = await API.put("/profile", formData);
+
+            // Check if username was changed
+            const usernameChanged = user.username !== response.data.username;
+
             setUser(response.data);
 
             // Update localStorage with new user data
@@ -140,15 +146,32 @@ const AdminProfile = () => {
             localStorage.setItem("user", JSON.stringify(updatedUser));
 
             setIsEditing(false);
-            setMessage({
-                type: "success",
-                text: "Profile updated successfully!",
-            });
 
-            // Clear message after 3 seconds
-            setTimeout(() => {
-                setMessage({ type: "", text: "" });
-            }, 3000);
+            if (usernameChanged) {
+                // If username changed, force re-login
+                setMessage({
+                    type: "success",
+                    text: "Profile updated successfully! Please login again with your new username.",
+                });
+
+                // Wait 2 seconds then logout
+                setTimeout(() => {
+                    localStorage.removeItem("token");
+                    localStorage.removeItem("user");
+                    navigate("/login");
+                }, 2000);
+            } else {
+                // Only email changed, no need to logout
+                setMessage({
+                    type: "success",
+                    text: "Profile updated successfully!",
+                });
+
+                // Clear message after 3 seconds
+                setTimeout(() => {
+                    setMessage({ type: "", text: "" });
+                }, 3000);
+            }
         } catch (error) {
             if (error.response && error.response.data) {
                 setMessage({

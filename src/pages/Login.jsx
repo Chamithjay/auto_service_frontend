@@ -65,16 +65,14 @@ const Login = () => {
       localStorage.setItem("user", JSON.stringify(response.data));  // CHANGED: response.data, not .user
 
       // Navigate based on role
-      //const userRole = response.data.user?.role || response.data.role;
-      // CHANGED : Direct role access for navigation (post-backend fix, role is always string)
-        const userRole = response.data.role;
+      const userRole = response.data.role;
 
       if (userRole === "ADMIN") {
         navigate("/admin/dashboard");
       } else if (userRole === "EMPLOYEE") {
         navigate("/employee/dashboard");
       } else if (userRole === "CUSTOMER") {
-        navigate("/home");
+        navigate("/customer/dashboard");
       } else {
         // Default to home if role is not recognized
         navigate("/home");

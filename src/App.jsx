@@ -7,6 +7,8 @@ import {
 import Register from "./pages/Register";
 import Login from "./pages/Login";
 import Home from "./pages/Home";
+import AppointmentJobDetailsPage from "./pages/Employee/AppointmentJobDetails";
+import RequestLeave from "./pages/Employee/RequestLeave";
 
 function App() {
   return (
@@ -17,6 +19,9 @@ function App() {
           <Route path="/home" element={<Home />} />
           <Route path="/register" element={<Register />} />
           <Route path="/login" element={<Login />} />
+          <Route path="/appointment-jobs/1" element={<AppointmentJobDetailsPage />} />
+          <Route path="/request-leave"  element={<RequestLeave />} />
+
         </Routes>
       </div>
     </Router>

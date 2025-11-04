@@ -1,7 +1,12 @@
 import axios from "axios";
 
+// Use localhost for local development, relative URL for production (K8s)
+const API_BASE_URL = import.meta.env.MODE === 'development' 
+  ? 'http://localhost:8080/api' 
+  : '/api';
+
 const API = axios.create({
-  baseURL: "http://localhost:8080/api",
+  baseURL: API_BASE_URL,
   headers: {
     "Content-Type": "application/json",
   },

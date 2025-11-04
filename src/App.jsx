@@ -7,6 +7,8 @@ import {
 import Register from "./pages/Register";
 import Login from "./pages/Login";
 import Home from "./pages/Home";
+import AppointmentJobDetailsPage from "./pages/Employee/AppointmentJobDetails";
+import RequestLeave from "./pages/Employee/RequestLeave";
 import ForgotPassword from "./pages/ForgotPassword";
 
 // Admin Pages
@@ -31,6 +33,10 @@ function App() {
                     <Route path="/register" element={<Register />} />
                     <Route path="/login" element={<Login />} />
                     <Route path="/forgot-password" element={<ForgotPassword />} />
+                      
+                    
+                    <Route path="/appointment-jobs/1" element={<AppointmentJobDetailsPage />} />
+                    <Route path="/request-leave"  element={<RequestLeave />} />
 
                     {/* Admin Routes */}
                     <Route path="/admin/dashboard" element={<AdminDashboard />} />

@@ -107,6 +107,11 @@ const CustomerProfile = () => {
       const userData = JSON.parse(localStorage.getItem("user"));
       userData.username = response.data.username;
       localStorage.setItem("user", JSON.stringify(userData));
+      
+      // Update token if a new one was provided (username was changed)
+      if (response.data.token) {
+        localStorage.setItem("token", response.data.token);
+      }
 
       // Clear success message after 3 seconds
       setTimeout(() => setSuccessMessage(""), 3000);

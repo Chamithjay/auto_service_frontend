@@ -15,18 +15,26 @@ const AdminDashboard = () => {
       return;
     }
 
-    const parsedUser = JSON.parse(userData);
-    if (parsedUser.role !== "ADMIN") {
-      // Redirect to appropriate dashboard based on role
-      if (parsedUser.role === "EMPLOYEE") {
-        navigate("/employee/dashboard");
-      } else {
-        navigate("/home");
+    try {
+      const parsedUser = JSON.parse(userData);
+      if (parsedUser.role !== "ADMIN") {
+        // Redirect to appropriate dashboard based on role
+        if (parsedUser.role === "EMPLOYEE") {
+          navigate("/employee/dashboard");
+        } else {
+          navigate("/home");
+        }
+        return;
       }
-      return;
-    }
 
-    setUser(parsedUser);
+      setUser(parsedUser);
+    } catch (error) {
+      console.error("Error parsing user data:", error);
+      // Clear invalid data and redirect to login
+      localStorage.removeItem("token");
+      localStorage.removeItem("user");
+      navigate("/login");
+    }
   }, [navigate]);
 
   const handleLogout = () => {

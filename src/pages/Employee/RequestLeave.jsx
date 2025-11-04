@@ -1,17 +1,17 @@
 import { useState } from "react";
-import { Calendar, Clock, FileText, CheckCircle, AlertCircle } from "lucide-react";
+import { Calendar, Clock, FileText, CheckCircle, AlertCircle, Loader2 } from "lucide-react";
 import API from "../../api/Api";
 
 const RequestLeave = () => {
   const [formData, setFormData] = useState({
     leaveDate: "",
-    startTime: "",
-    endTime: "",
+    leaveType: "",
     reason: "",
   });
 
   const [showSuccess, setShowSuccess] = useState(false);
   const [error, setError] = useState(null);
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
   // Calculate minimum leave request date (3 days from today)
   const minDate = new Date();
@@ -32,21 +32,8 @@ const RequestLeave = () => {
       return false;
     }
 
-    if (!formData.startTime) {
-      setError("Please select a start time");
-      return false;
-    }
-
-    if (!formData.endTime) {
-      setError("Please select an end time");
-      return false;
-    }
-
-    // Check if end time is after start time
-    const startTime = new Date(`2000-01-01T${formData.startTime}`);
-    const endTime = new Date(`2000-01-01T${formData.endTime}`);
-    if (endTime <= startTime) {
-      setError("End time must be after start time");
+    if (!formData.leaveType) {
+      setError("Please select a leave type");
       return false;
     }
 
@@ -71,12 +58,13 @@ const RequestLeave = () => {
       return;
     }
 
+    setIsSubmitting(true);
+
     try {
         const payload = {
             employeeId:3,
             leaveDate: formData.leaveDate,
-            leaveStartTime: formData.startTime,
-            leaveEndTime: formData.endTime,
+            leaveType: formData.leaveType,
             leaveReason: formData.reason
 
         }
@@ -87,8 +75,7 @@ const RequestLeave = () => {
         setShowSuccess(true);
         setFormData({
           leaveDate: "",
-          startTime: "",
-          endTime: "",
+          leaveType: "",
           reason: "",
         });
         setTimeout(() => setShowSuccess(false), 3000);
@@ -98,6 +85,8 @@ const RequestLeave = () => {
     } catch (error) {
       console.error("Error submitting leave request:", error);
       setError(error.message || "Failed to submit leave request. Please try again.");
+    } finally {
+      setIsSubmitting(false);
     }
   };
 
@@ -121,7 +110,7 @@ const RequestLeave = () => {
             </div>
           )}
 
-          <form onSubmit={handleSubmit} className="space-y-6">
+          <form onSubmit={handleSubmit} className={`space-y-6 ${isSubmitting ? 'opacity-75 pointer-events-none' : ''}`}>
             {/* Leave Date */}
             <div>
               <label className="block text-[#394867] font-medium mb-2 flex items-center gap-2">
@@ -140,38 +129,25 @@ const RequestLeave = () => {
               />
             </div>
 
-            {/* Time Range */}
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-              <div>
-                <label className="block text-[#394867] font-medium mb-2 flex items-center gap-2">
-                  <Clock size={18} />
-                  Start Time
-                  <span className="text-red-500">*</span>
-                </label>
-                <input
-                  type="time"
-                  name="startTime"
-                  value={formData.startTime}
-                  onChange={handleInputChange}
-                  className="w-full px-4 py-2 border border-[#9BA4B4] rounded-lg focus:outline-none focus:ring-2 focus:ring-[#14274E]"
-                  required
-                />
-              </div>
-              <div>
-                <label className="block text-[#394867] font-medium mb-2 flex items-center gap-2">
-                  <Clock size={18} />
-                  End Time
-                  <span className="text-red-500">*</span>
-                </label>
-                <input
-                  type="time"
-                  name="endTime"
-                  value={formData.endTime}
-                  onChange={handleInputChange}
-                  className="w-full px-4 py-2 border border-[#9BA4B4] rounded-lg focus:outline-none focus:ring-2 focus:ring-[#14274E]"
-                  required
-                />
-              </div>
+            {/* Leave Type */}
+            <div>
+              <label className="block text-[#394867] font-medium mb-2 flex items-center gap-2">
+                <Clock size={18} />
+                Leave Type
+                <span className="text-red-500">*</span>
+              </label>
+              <select
+                name="leaveType"
+                value={formData.leaveType}
+                onChange={handleInputChange}
+                className="w-full px-4 py-2 border border-[#9BA4B4] rounded-lg focus:outline-none focus:ring-2 focus:ring-[#14274E]"
+                required
+              >
+                <option value="">Select leave type</option>
+                <option value="HALFDAY_MORNING">Halfday - Morning</option>
+                <option value="HALFDAY_EVENING">Halfday - Evening</option>
+                <option value="FULLDAY">Fullday</option>
+              </select>
             </div>
 
             {/* Reason */}
@@ -198,9 +174,21 @@ const RequestLeave = () => {
             {/* Submit Button */}
             <button
               type="submit"
-              className="w-full px-6 py-3 bg-[#14274E] text-white rounded-lg hover:bg-[#394867] transition-colors font-semibold flex items-center justify-center gap-2"
+              disabled={isSubmitting}
+              className={`w-full px-6 py-3 rounded-lg font-semibold flex items-center justify-center gap-2 transition-colors ${
+                isSubmitting 
+                  ? 'bg-gray-400 cursor-not-allowed' 
+                  : 'bg-[#14274E] hover:bg-[#394867]'
+              } text-white`}
             >
-              Submit Leave Request
+              {isSubmitting ? (
+                <>
+                  <Loader2 size={20} className="animate-spin" />
+                  Submitting...
+                </>
+              ) : (
+                'Submit Leave Request'
+              )}
             </button>
           </form>
         </div>

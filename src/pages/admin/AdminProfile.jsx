@@ -144,23 +144,34 @@ const AdminProfile = () => {
                 email: response.data.email,
             };
             localStorage.setItem("user", JSON.stringify(updatedUser));
-            
-            // Update token if a new one was provided (username was changed)
-            if (response.data.token) {
-                localStorage.setItem("token", response.data.token);
-            }
 
             setIsEditing(false);
 
-            setMessage({
-                type: "success",
-                text: "Profile updated successfully!",
-            });
+            if (usernameChanged) {
+                // If username changed, force re-login
+                setMessage({
+                    type: "success",
+                    text: "Profile updated successfully! Please login again with your new username.",
+                });
 
-            // Clear message after 3 seconds
-            setTimeout(() => {
-                setMessage({ type: "", text: "" });
-            }, 3000);
+                // Wait 2 seconds then logout
+                setTimeout(() => {
+                    localStorage.removeItem("token");
+                    localStorage.removeItem("user");
+                    navigate("/login");
+                }, 2000);
+            } else {
+                // Only email changed, no need to logout
+                setMessage({
+                    type: "success",
+                    text: "Profile updated successfully!",
+                });
+
+                // Clear message after 3 seconds
+                setTimeout(() => {
+                    setMessage({ type: "", text: "" });
+                }, 3000);
+            }
         } catch (error) {
             if (error.response && error.response.data) {
                 setMessage({

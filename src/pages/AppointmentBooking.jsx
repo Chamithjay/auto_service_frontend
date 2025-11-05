@@ -25,7 +25,7 @@ const AppointmentBooking = () => {
 
     // Appointment details state
     const [appointmentDate, setAppointmentDate] = useState('');
-    const [startTime, setStartTime] = useState('');
+    const [sessionType, setSessionType] = useState(''); // MORNING or EVENING
 
     // Calculation result state
     const [calculationResult, setCalculationResult] = useState(null);
@@ -40,17 +40,8 @@ const AppointmentBooking = () => {
         try {
             setLoading(true);
             setError('');
-
-            // Get userId from localStorage or your auth context
-            // const userId = localStorage.getItem('userId'); // Adjust according to your auth implementation
-
-            // if (!userId) {
-            //     setError('User not authenticated. Please login.');
-            //     return;
-            // }
-
-            // TEMPORARY: Using hardcoded userId for testing without login
-            const userId = '1'; // TODO: Replace with localStorage.getItem('userId') when login is implemented
+            // Get userId from localStorage or fallback to '1' for temporary testing
+            const userId = localStorage.getItem('userId') || '1'; // temporary fallback
 
             const response = await API.get(`/appointments/vehicles?userId=${userId}`);
             setVehicles(response.data);
@@ -59,7 +50,8 @@ const AppointmentBooking = () => {
                 setError('You have no registered vehicles. Please register a vehicle first.');
             }
         } catch (err) {
-            setError(err.response?.data?.message || 'Failed to fetch vehicles');
+            const serverMsg = err.response?.data?.message;
+            setError(sanitizeServerMessage(serverMsg) || 'Failed to fetch vehicles');
             console.error('Error fetching vehicles:', err);
         } finally {
             setLoading(false);
@@ -80,7 +72,8 @@ const AppointmentBooking = () => {
             setServicesAndModifications(response.data);
             setCurrentStep(2);
         } catch (err) {
-            setError(err.response?.data?.message || 'Failed to fetch services and modifications');
+            const serverMsg = err.response?.data?.message;
+            setError(sanitizeServerMessage(serverMsg) || 'Failed to fetch services and modifications');
             console.error('Error fetching services:', err);
         } finally {
             setLoading(false);
@@ -100,8 +93,8 @@ const AppointmentBooking = () => {
     };
 
     const handleCalculate = async () => {
-        if (!appointmentDate || !startTime) {
-            setError('Please select both date and time');
+        if (!appointmentDate || !sessionType) {
+            setError('Please select both date and session');
             return;
         }
 
@@ -118,13 +111,14 @@ const AppointmentBooking = () => {
                 vehicleId: selectedVehicle.vehicleId,
                 selectedServiceItemIds: selectedServiceIds,
                 appointmentDate: appointmentDate,
-                startTime: startTime
+                sessionType: sessionType
             };
 
             const response = await API.post('/appointments/calculate', calculationRequest);
             setCalculationResult(response.data);
         } catch (err) {
-            setError(err.response?.data?.message || 'Failed to calculate appointment details');
+            const serverMsg = err.response?.data?.message;
+            setError(sanitizeServerMessage(serverMsg) || 'Failed to calculate appointment details');
             console.error('Error calculating:', err);
         } finally {
             setIsCalculating(false);
@@ -146,22 +140,50 @@ const AppointmentBooking = () => {
                 vehicleId: selectedVehicle.vehicleId,
                 selectedServiceItemIds: selectedServiceIds,
                 appointmentDate: appointmentDate,
-                startTime: startTime
+                sessionType: sessionType
             };
-
-            const response = await API.post('/appointments/create', createRequest);
-            setSuccess('Appointment created successfully!');
+            // Include userId as query param per temporary backend change
+            const userId = localStorage.getItem('userId') || '1';
+            const response = await API.post(`/appointments/create?userId=${userId}`, createRequest);
+            setSuccess(response.data.message || 'Appointment created successfully!');
 
             // Show success message for 2 seconds then redirect
             setTimeout(() => {
                 navigate('/appointments'); // Adjust route as needed
             }, 2000);
         } catch (err) {
-            setError(err.response?.data?.message || 'Failed to create appointment');
+            const serverMsg = err.response?.data?.message;
+            setError(sanitizeServerMessage(serverMsg) || 'Failed to create appointment');
             console.error('Error creating appointment:', err);
         } finally {
             setLoading(false);
         }
+    };
+
+    // Sanitize server messages before showing to users.
+    // Replace verbose/internal messages with a single friendly message when appropriate.
+    const sanitizeServerMessage = (msg) => {
+        if (!msg) return '';
+
+        const lower = msg.toLowerCase();
+
+        // Map backend internal staffing/unavailability messages to a single user-facing message.
+        const patterns = [
+            'no available employees',
+            'no available staff',
+            'cannot take the service item',
+            'cannot take the service',
+            'no available employee',
+        ];
+
+        for (const p of patterns) {
+            if (lower.includes(p)) {
+                return 'This session is not available for the selected services.';
+            }
+        }
+
+        // Default: return the original message unchanged
+        return msg;
     };
 
     const handleBack = () => {
@@ -170,7 +192,7 @@ const AppointmentBooking = () => {
         setServicesAndModifications({ services: [], modifications: [] });
         setSelectedServiceIds([]);
         setAppointmentDate('');
-        setStartTime('');
+        setSessionType('');
         setCalculationResult(null);
         setError('');
     };
@@ -180,6 +202,13 @@ const AppointmentBooking = () => {
         const today = new Date();
         return today.toISOString().split('T')[0];
     };
+
+    const calcMessage = calculationResult && calculationResult.message ? sanitizeServerMessage(calculationResult.message) : '';
+    const calcIsPositive = (() => {
+        if (!calcMessage) return false;
+        const lower = calcMessage.toLowerCase();
+        return lower.includes('available') && !lower.includes('not available');
+    })();
 
     return (
         <div className="min-h-screen bg-[#F1F6F9]">
@@ -320,9 +349,9 @@ const AppointmentBooking = () => {
                                 </div>
                             )}
 
-                            {/* Date and Time Selection */}
+                            {/* Date and Session Selection */}
                             <div className="bg-white rounded-lg shadow-md p-6">
-                                <h2 className="text-2xl font-bold text-[#14274E] mb-4">Select Date & Time</h2>
+                                <h2 className="text-2xl font-bold text-[#14274E] mb-4">Select Date & Session</h2>
                                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                                     <div>
                                         <label className="block text-sm font-semibold text-[#394867] mb-2">
@@ -341,26 +370,29 @@ const AppointmentBooking = () => {
                                     </div>
                                     <div>
                                         <label className="block text-sm font-semibold text-[#394867] mb-2">
-                                            Start Time
+                                            Session
                                         </label>
-                                        <input
-                                            type="time"
-                                            value={startTime}
+                                        <select
+                                            value={sessionType}
                                             onChange={(e) => {
-                                                setStartTime(e.target.value);
+                                                setSessionType(e.target.value);
                                                 setCalculationResult(null);
                                             }}
-                                            className="w-full px-4 py-3 border-2 border-[#9BA4B4] rounded-lg focus:border-[#14274E] focus:outline-none text-[#14274E]"
-                                        />
+                                            className="w-full px-4 py-3 border-2 border-[#9BA4B4] rounded-lg focus:border-[#14274E] focus:outline-none text-[#14274E] bg-white"
+                                        >
+                                            <option value="">Select Session</option>
+                                            <option value="MORNING">Morning</option>
+                                            <option value="EVENING">Evening</option>
+                                        </select>
                                     </div>
                                 </div>
 
                                 <button
                                     onClick={handleCalculate}
-                                    disabled={isCalculating || selectedServiceIds.length === 0 || !appointmentDate || !startTime}
+                                    disabled={isCalculating || selectedServiceIds.length === 0 || !appointmentDate || !sessionType}
                                     className="mt-4 w-full bg-[#394867] text-white py-3 rounded-lg font-semibold hover:bg-[#14274E] transition-colors disabled:bg-[#9BA4B4] disabled:cursor-not-allowed"
                                 >
-                                    {isCalculating ? 'Calculating...' : 'Calculate Cost & Duration'}
+                                    {isCalculating ? 'Calculating...' : 'Calculate Cost'}
                                 </button>
                             </div>
 
@@ -372,15 +404,17 @@ const AppointmentBooking = () => {
                                         <div className="flex justify-between items-center p-4 bg-[#F1F6F9] rounded-lg">
                                             <span className="text-[#394867] font-semibold">Total Cost</span>
                                             <span className="text-2xl font-bold text-[#14274E]">
-                                                ${calculationResult.totalCost.toFixed(2)}
+                                                ${calculationResult.totalCost?.toFixed(2) || '0.00'}
                                             </span>
                                         </div>
-                                        <div className="flex justify-between items-center p-4 bg-[#F1F6F9] rounded-lg">
-                                            <span className="text-[#394867] font-semibold">Estimated End Time</span>
-                                            <span className="text-xl font-bold text-[#14274E]">
-                                                {calculationResult.estimatedEndTime}
-                                            </span>
-                                        </div>
+                                        {calcMessage && (
+                                            <div className={`p-4 border-2 rounded-lg ${calcIsPositive ? 'bg-green-50 border-green-400' : 'bg-red-50 border-red-400'}`}>
+                                                <p className={`font-semibold ${calcIsPositive ? 'text-green-700' : 'text-red-700'}`}>
+                                                    {calcIsPositive ? '✓ ' : '⚠️ '}
+                                                    {calcMessage}
+                                                </p>
+                                            </div>
+                                        )}
                                         <div className="flex justify-between items-center p-4 bg-[#F1F6F9] rounded-lg">
                                             <span className="text-[#394867] font-semibold">Selected Items</span>
                                             <span className="text-lg font-bold text-[#14274E]">

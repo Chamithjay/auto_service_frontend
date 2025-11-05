@@ -21,10 +21,15 @@ export const appointmentAPI = {
     API.post('/appointments/calculate', calculationRequest),
 
   // Create appointment
-  createAppointment: (createRequest) =>
-    API.post('/appointments/create', createRequest),
+  // createAppointment now requires userId as a query param (temporary backend change)
+  createAppointment: (createRequest, userId) =>
+    API.post(`/appointments/create?userId=${userId}`, createRequest),
 
-  // Get user appointments (optional, for future use)
+  // Get customer appointments (by userId query param)
+  getCustomerAppointments: (userId) =>
+    API.get(`/appointments/my-appointments?userId=${userId}`),
+
+  // Get user appointments (optional, alternate endpoint)
   getUserAppointments: (userId) =>
     API.get(`/appointments/user/${userId}`),
 };

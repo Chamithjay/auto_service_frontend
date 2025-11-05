@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
-import { getAllUsers, deleteUser } from "../../api/Api";
+import API from "../../api/Api";
 import ConfirmModal from "../../components/ConfirmModal";
 import Toast from "../../components/Toast";
 
@@ -14,7 +14,7 @@ const AdminManageUsers = () => {
 
   const fetchUsers = async () => {
     try {
-      const response = await getAllUsers();
+      const response = await API.get("/admin/employees");
       setUsers(response.data);
     } catch (err) {
       setError("Failed to fetch users. Please try again.");
@@ -31,7 +31,7 @@ const AdminManageUsers = () => {
   const confirmDelete = async () => {
     const id = confirmState.id;
     try {
-      await deleteUser(id);
+      await API.delete(`/admin/employees/${id}`);
       setConfirmState({ isOpen: false, id: null });
       fetchUsers(); // Refresh the list
       // show success toast

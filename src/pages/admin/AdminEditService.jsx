@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import { useParams, useNavigate, Link } from "react-router-dom";
-import { getServiceById, updateService } from "../../api/Api";
+import API from "../../api/Api";
 import FormInput from "../../components/FormInput";
 import FormButton from "../../components/FormButton";
 import FormSelect from "../../components/FormSelect";
@@ -24,7 +24,7 @@ const AdminEditService = () => {
     // Fetch the service data when the page loads
     const fetchService = async () => {
       try {
-        const response = await getServiceById(id);
+        const response = await API.get(`/admin/services/${id}`);
         setFormData(response.data);
         setLoading(false);
       } catch (error) {
@@ -44,7 +44,7 @@ const AdminEditService = () => {
     e.preventDefault();
     setMessage("");
     try {
-      await updateService(id, formData);
+      await API.put(`/admin/services/${id}`, formData);
       setMessage("Success! Service updated.");
       setToast({ isOpen: true, message: "Service updated", type: "success" });
       setTimeout(() => navigate("/admin/services"), 700);

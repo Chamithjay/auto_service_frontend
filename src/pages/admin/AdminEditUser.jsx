@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import { useParams, useNavigate, Link } from "react-router-dom";
-import { getUserById, updateUser } from "../../api/Api";
+import API from "../../api/Api";
 import FormInput from "../../components/FormInput";
 import FormButton from "../../components/FormButton";
 import FormSelect from "../../components/FormSelect";
@@ -20,7 +20,7 @@ const AdminEditUser = () => {
   useEffect(() => {
     const fetchUser = async () => {
       try {
-        const response = await getUserById(id);
+        const response = await API.get(`/admin/employees/${id}`);
         setFormData(response.data);
         setLoading(false);
       } catch (error) {
@@ -41,7 +41,7 @@ const AdminEditUser = () => {
     setMessage("");
     try {
       // Note: This API call should *not* send a password
-      await updateUser(id, formData);
+      await API.put(`/admin/employees/${id}`, formData);
       setMessage("Success! User updated.");
       setToast({ isOpen: true, message: "User updated", type: "success" });
       // give a brief moment for the toast to be noticed before navigating

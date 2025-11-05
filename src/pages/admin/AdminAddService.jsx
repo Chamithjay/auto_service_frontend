@@ -1,6 +1,6 @@
 import { useState } from "react";
-// Import from your team's Api.jsx file
-import { createServiceItem } from "../../api/Api";
+// Use shared API axios instance
+import API from "../../api/Api";
 import { Link } from "react-router-dom";
 import FormInput from "../../components/FormInput";
 import FormButton from "../../components/FormButton";
@@ -70,7 +70,7 @@ const AdminAddService = () => {
     }
 
     try {
-      const response = await createServiceItem(formData);
+      const response = await API.post("/admin/services", formData);
       setMessage(
         `Success! Service "${response.data.serviceItemName}" created.`
       );

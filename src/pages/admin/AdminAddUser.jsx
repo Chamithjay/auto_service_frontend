@@ -1,6 +1,6 @@
 import { useState } from "react";
-// Import from your team's Api.jsx file
-import { createUser } from "../../api/Api";
+// Use shared API axios instance
+import API from "../../api/Api";
 import { Link } from "react-router-dom";
 import FormInput from "../../components/FormInput";
 import FormButton from "../../components/FormButton";
@@ -59,7 +59,7 @@ const AdminAddUser = () => {
     }
 
     try {
-      const response = await createUser(formData);
+      const response = await API.post("/admin/employees", formData);
       setMessage(`Success! User "${response.data.username}" created.`);
       setToast({
         isOpen: true,

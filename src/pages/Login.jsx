@@ -69,6 +69,16 @@ const Login = () => {
       localStorage.setItem("token", token);
       localStorage.setItem("user", JSON.stringify(userData));
 
+      const requiresPasswordChange = !!(
+        userData && userData.requiresPasswordChange
+      );
+
+      if (requiresPasswordChange) {
+        // Force the user to reset the initial password
+        navigate("/reset-initial-password");
+        return;
+      }
+
       // Navigate based on role
       const userRole = userData.role;
 

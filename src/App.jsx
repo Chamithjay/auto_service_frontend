@@ -10,6 +10,8 @@ import Register from "./pages/Register";
 import Login from "./pages/Login";
 import Home from "./pages/Home";
 import ForgotPassword from "./pages/ForgotPassword";
+import ResetInitialPassword from "./pages/ResetInitialPassword";
+import PasswordChanged from "./pages/PasswordChanged";
 
 // --- Employee Pages (From File 1) ---
 // Note: I'm assuming the paths based on File 1's structure
@@ -48,6 +50,11 @@ function App() {
           <Route path="/register" element={<Register />} />
           <Route path="/login" element={<Login />} />
           <Route path="/forgot-password" element={<ForgotPassword />} />
+          <Route
+            path="/reset-initial-password"
+            element={<ResetInitialPassword />}
+          />
+          <Route path="/password-changed" element={<PasswordChanged />} />
 
           {/* === Employee Routes === */}
           {/* These are from File 1. They remain separate for now. */}

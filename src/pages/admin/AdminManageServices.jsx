@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
-import { getAllServices, deleteService } from "../../api/Api";
+import API from "../../api/Api";
 import ConfirmModal from "../../components/ConfirmModal";
 import Toast from "../../components/Toast";
 
@@ -14,7 +14,7 @@ const AdminManageServices = () => {
 
   const fetchServices = async () => {
     try {
-      const response = await getAllServices();
+      const response = await API.get("/admin/services");
       setServices(response.data);
     } catch (err) {
       setError("Failed to fetch services. Please try again.");
@@ -30,7 +30,7 @@ const AdminManageServices = () => {
   const confirmDelete = async () => {
     const id = confirmState.id;
     try {
-      await deleteService(id);
+      await API.delete(`/admin/services/${id}`);
       setConfirmState({ isOpen: false, id: null });
       fetchServices(); // Refresh the list
       setToast({

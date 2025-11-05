@@ -1,9 +1,9 @@
 import { useState } from "react";
 // Import from your team's Api.jsx file
-import { createUser } from "../api/Api";
-import FormInput from "../components/FormInput";
-import FormButton from "../components/FormButton";
-import FormSelect from "../components/FormSelect";
+import { createUser } from "../../api/Api";
+import FormInput from "../../components/FormInput";
+import FormButton from "../../components/FormButton";
+import FormSelect from "../../components/FormSelect";
 
 const AdminAddUser = () => {
   const [formData, setFormData] = useState({
@@ -36,7 +36,7 @@ const AdminAddUser = () => {
   };
 
   return (
-    // This container mimics the Login/Register card style
+    /* This container mimics the Login/Register card style */
     <div className="max-w-2xl mx-auto bg-white p-8 md:p-12 rounded-2xl shadow-lg">
       <h1 className="text-3xl font-bold text-[#14274E] mb-6">
         Create New User

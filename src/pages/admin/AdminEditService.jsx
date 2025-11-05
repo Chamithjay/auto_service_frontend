@@ -1,11 +1,13 @@
-import { useState } from "react";
-// Import from your team's Api.jsx file
-import { createServiceItem } from "../api/Api";
-import FormInput from "../components/FormInput";
-import FormButton from "../components/FormButton";
-import FormSelect from "../components/FormSelect";
+import { useState, useEffect } from "react";
+import { useParams, useNavigate } from "react-router-dom";
+import { getServiceById, updateService } from "../../api/Api";
+import FormInput from "../../components/FormInput";
+import FormButton from "../../components/FormButton";
+import FormSelect from "../../components/FormSelect";
 
-const AdminAddService = () => {
+const AdminEditService = () => {
+  const { id } = useParams(); // Gets the ':id' from the URL
+  const navigate = useNavigate();
   const [formData, setFormData] = useState({
     serviceItemName: "",
     vehicleType: "CAR",
@@ -15,6 +17,22 @@ const AdminAddService = () => {
     estimatedDuration: "",
   });
   const [message, setMessage] = useState("");
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    // Fetch the service data when the page loads
+    const fetchService = async () => {
+      try {
+        const response = await getServiceById(id);
+        setFormData(response.data);
+        setLoading(false);
+      } catch (error) {
+        setMessage(`Error: Failed to fetch service data.`);
+        setLoading(false);
+      }
+    };
+    fetchService();
+  }, [id]);
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -24,34 +42,26 @@ const AdminAddService = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     setMessage("");
-
     try {
-      const response = await createServiceItem(formData);
-      setMessage(
-        `Success! Service "${response.data.serviceItemName}" created.`
-      );
-      setFormData({
-        serviceItemName: "",
-        vehicleType: "CAR",
-        requiredEmployeeCount: 1,
-        serviceItemCost: "",
-        serviceItemType: "SERVICE",
-        estimatedDuration: "",
-      });
+      await updateService(id, formData);
+      setMessage("Success! Service updated.");
+      navigate("/admin/services"); // Go back to the list
     } catch (error) {
       setMessage(
-        `Error: ${error.response?.data?.message || "Failed to create service"}`
+        `Error: ${error.response?.data?.message || "Failed to update"}`
       );
     }
   };
 
+  if (loading) {
+    return <div className="text-center p-12">Loading...</div>;
+  }
+
   return (
     <div className="max-w-2xl mx-auto bg-white p-8 md:p-12 rounded-2xl shadow-lg">
-      <h1 className="text-3xl font-bold text-[#14274E] mb-6">
-        Create New Service
-      </h1>
-      <p className="text-[#9BA4B4] mb-8">
-        Add a new service or modification to the list of available options.
+      <h1 className="text-3xl font-bold text-[#14274E] mb-6">Edit Service</h1>
+      <p className="text-primary-light mb-8">
+        Update the details for "{formData.serviceItemName}".
       </p>
 
       <form onSubmit={handleSubmit} className="space-y-6">
@@ -61,7 +71,6 @@ const AdminAddService = () => {
           name="serviceItemName"
           value={formData.serviceItemName}
           onChange={handleChange}
-          placeholder="e.g., Premium Oil Change"
           required
         />
 
@@ -99,7 +108,6 @@ const AdminAddService = () => {
             step="0.01"
             value={formData.serviceItemCost}
             onChange={handleChange}
-            placeholder="e.g., 5000.00"
             required
           />
           <FormInput
@@ -109,7 +117,6 @@ const AdminAddService = () => {
             type="number"
             value={formData.estimatedDuration}
             onChange={handleChange}
-            placeholder="e.g., 45"
             required
           />
           <FormInput
@@ -119,13 +126,12 @@ const AdminAddService = () => {
             type="number"
             value={formData.requiredEmployeeCount}
             onChange={handleChange}
-            placeholder="e.g., 1"
             required
           />
         </div>
 
         <div className="pt-4">
-          <FormButton type="submit">Create Service</FormButton>
+          <FormButton type="submit">Save Changes</FormButton>
         </div>
       </form>
 
@@ -138,4 +144,4 @@ const AdminAddService = () => {
   );
 };
 
-export default AdminAddService;
+export default AdminEditService;

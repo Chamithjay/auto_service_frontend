@@ -1,9 +1,9 @@
 import { useState, useEffect } from "react";
 import { useParams, useNavigate } from "react-router-dom";
-import { getUserById, updateUser } from "../api/Api";
-import FormInput from "../components/FormInput";
-import FormButton from "../components/FormButton";
-import FormSelect from "../components/FormSelect";
+import { getUserById, updateUser } from "../../api/Api";
+import FormInput from "../../components/FormInput";
+import FormButton from "../../components/FormButton";
+import FormSelect from "../../components/FormSelect";
 
 const AdminEditUser = () => {
   const { id } = useParams();
@@ -42,7 +42,7 @@ const AdminEditUser = () => {
       // Note: This API call should *not* send a password
       await updateUser(id, formData);
       setMessage("Success! User updated.");
-      navigate("/admin/users"); // Go back to the list
+      navigate("/admin/employees"); // Go back to the list
     } catch (error) {
       setMessage(
         `Error: ${error.response?.data?.message || "Failed to update"}`

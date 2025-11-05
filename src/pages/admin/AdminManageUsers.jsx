@@ -1,6 +1,8 @@
 import { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
 import { getAllUsers, deleteUser } from "../../api/Api";
+import ConfirmModal from "../../components/ConfirmModal";
+import Toast from "../../components/Toast";
 
 const AdminManageUsers = () => {
   const [users, setUsers] = useState([]);
@@ -20,15 +22,35 @@ const AdminManageUsers = () => {
   };
 
   const handleDelete = async (id) => {
-    if (window.confirm("Are you sure you want to delete this user?")) {
-      try {
-        await deleteUser(id);
-        fetchUsers(); // Refresh the list
-      } catch (err) {
-        setError("Failed to delete user.");
-      }
+    // show confirm modal instead
+    setConfirmState({ isOpen: true, id });
+  };
+
+  const [confirmState, setConfirmState] = useState({ isOpen: false, id: null });
+
+  const confirmDelete = async () => {
+    const id = confirmState.id;
+    try {
+      await deleteUser(id);
+      setConfirmState({ isOpen: false, id: null });
+      fetchUsers(); // Refresh the list
+      // show success toast
+      setToast({
+        isOpen: true,
+        message: "User deleted successfully",
+        type: "success",
+      });
+    } catch (err) {
+      setError("Failed to delete user.");
+      setConfirmState({ isOpen: false, id: null });
     }
   };
+
+  const [toast, setToast] = useState({
+    isOpen: false,
+    message: "",
+    type: "success",
+  });
 
   return (
     <div>
@@ -127,6 +149,21 @@ const AdminManageUsers = () => {
           </table>
         </div>
       </div>
+      <ConfirmModal
+        isOpen={confirmState.isOpen}
+        title="Delete user"
+        message="Are you sure you want to delete this user? This action cannot be undone."
+        onConfirm={confirmDelete}
+        onCancel={() => setConfirmState({ isOpen: false, id: null })}
+      />
+      <Toast
+        isOpen={toast.isOpen}
+        message={toast.message}
+        type={toast.type}
+        onClose={() =>
+          setToast({ isOpen: false, message: "", type: "success" })
+        }
+      />
     </div>
   );
 };

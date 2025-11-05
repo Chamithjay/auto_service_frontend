@@ -42,25 +42,25 @@ export const deleteService = (id) => {
 // --- User (Employee/Admin) CRUD Functions ---
 
 export const createUser = (userData) => {
-  return API.post("/admin/users", userData);
+  return API.post("/admin/employees", userData);
 };
 
 export const getAllUsers = () => {
-  return API.get("/admin/users");
+  return API.get("/admin/employees");
 };
 
 export const getUserById = (id) => {
-  return API.get(`/admin/users/${id}`);
+  return API.get(`/admin/employees/${id}`);
 };
 
 // Note: This needs a separate DTO on the backend (UserUpdateRequest)
 // that does not require a password.
 export const updateUser = (id, userData) => {
-  return API.put(`/admin/users/${id}`, userData);
+  return API.put(`/admin/employees/${id}`, userData);
 };
 
 export const deleteUser = (id) => {
-  return API.delete(`/admin/users/${id}`);
+  return API.delete(`/admin/employees/${id}`);
 };
 
 export default API;

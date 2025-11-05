@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, Outlet } from "react-router-dom";
 import AdminNavbar from "./AdminNavbar";
 import AdminSidebar from "./AdminSidebar";
 
@@ -53,7 +53,7 @@ const AdminLayout = ({ children }) => {
     <div className="min-h-screen bg-[#F1F6F9]">
       <AdminNavbar user={user} />
       <AdminSidebar />
-      <main className="ml-64 mt-16 p-8">{children}</main>
+      <main className="ml-64 mt-16 p-8">{children ?? <Outlet />}</main>
     </div>
   );
 };

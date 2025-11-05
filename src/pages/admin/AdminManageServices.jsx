@@ -1,6 +1,8 @@
 import { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
 import { getAllServices, deleteService } from "../../api/Api";
+import ConfirmModal from "../../components/ConfirmModal";
+import Toast from "../../components/Toast";
 
 const AdminManageServices = () => {
   const [services, setServices] = useState([]);
@@ -20,15 +22,33 @@ const AdminManageServices = () => {
   };
 
   const handleDelete = async (id) => {
-    if (window.confirm("Are you sure you want to delete this service?")) {
-      try {
-        await deleteService(id);
-        fetchServices(); // Refresh the list
-      } catch (err) {
-        setError("Failed to delete service. It may be in use.");
-      }
+    setConfirmState({ isOpen: true, id });
+  };
+
+  const [confirmState, setConfirmState] = useState({ isOpen: false, id: null });
+
+  const confirmDelete = async () => {
+    const id = confirmState.id;
+    try {
+      await deleteService(id);
+      setConfirmState({ isOpen: false, id: null });
+      fetchServices(); // Refresh the list
+      setToast({
+        isOpen: true,
+        message: "Service deleted successfully",
+        type: "success",
+      });
+    } catch (err) {
+      setError("Failed to delete service. It may be in use.");
+      setConfirmState({ isOpen: false, id: null });
     }
   };
+
+  const [toast, setToast] = useState({
+    isOpen: false,
+    message: "",
+    type: "success",
+  });
 
   return (
     <div>
@@ -117,6 +137,21 @@ const AdminManageServices = () => {
           </table>
         </div>
       </div>
+      <ConfirmModal
+        isOpen={confirmState.isOpen}
+        title="Delete service"
+        message="Are you sure you want to delete this service? This action cannot be undone."
+        onConfirm={confirmDelete}
+        onCancel={() => setConfirmState({ isOpen: false, id: null })}
+      />
+      <Toast
+        isOpen={toast.isOpen}
+        message={toast.message}
+        type={toast.type}
+        onClose={() =>
+          setToast({ isOpen: false, message: "", type: "success" })
+        }
+      />
     </div>
   );
 };

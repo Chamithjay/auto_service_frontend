@@ -13,12 +13,12 @@ import ForgotPassword from "./pages/ForgotPassword";
 
 // --- Employee Pages (From File 1) ---
 // Note: I'm assuming the paths based on File 1's structure
-import EmployeeDashboard from "./pages/EmployeeDashboard"; 
+import EmployeeDashboard from "./pages/EmployeeDashboard";
 import AppointmentJobDetailsPage from "./pages/Employee/AppointmentJobDetails";
 import RequestLeave from "./pages/Employee/RequestLeave";
 
 // --- Admin Layout (From File 2) ---
-import AdminLayout from "./components/AdminLayout";
+import AdminLayout from "./components/admin/AdminLayout";
 
 // --- Admin Pages (Combined from both files) ---
 // Note: I've assumed all admin pages live in './pages/admin/' for consistency
@@ -37,16 +37,6 @@ import AdminEditService from "./pages/admin/AdminEditService";
 import AdminManageUsers from "./pages/admin/AdminManageUsers";
 import AdminEditUser from "./pages/admin/AdminEditUser";
 
-/*
-NOTE on (Employees vs. AdminManageUsers) and (Services vs. AdminManageServices):
-Your File 1 had `Employees` and `Services`.
-Your File 2 has `AdminManageUsers` and `AdminManageServices` for similar routes.
-I have assumed that these new "Manage" pages REPLACE the old ones.
-If you still need the old `Employees` and `Services` pages, you must import them
-and add routes for them inside the <AdminLayout>.
-*/
-
-
 function App() {
   return (
     <Router>
@@ -62,7 +52,10 @@ function App() {
           {/* === Employee Routes === */}
           {/* These are from File 1. They remain separate for now. */}
           <Route path="/employee/dashboard" element={<EmployeeDashboard />} />
-          <Route path="/appointment-jobs/:id" element={<AppointmentJobDetailsPage />} />
+          <Route
+            path="/appointment-jobs/:id"
+            element={<AppointmentJobDetailsPage />}
+          />
           <Route path="/request-leave" element={<RequestLeave />} />
 
           {/* === Admin Routes (Using File 2's Nested Layout) === */}
@@ -72,18 +65,17 @@ function App() {
             <Route path="services" element={<AdminManageServices />} />
             <Route path="add-service" element={<AdminAddService />} />
             <Route path="service/edit/:id" element={<AdminEditService />} />
-            <Route path="users" element={<AdminManageUsers />} />
-            <Route path="add-user" element={<AdminAddUser />} />
-            <Route path="user/edit/:id" element={<AdminEditUser />} />
+            <Route path="employees" element={<AdminManageUsers />} />
+            <Route path="add-employee" element={<AdminAddUser />} />
+            <Route path="employee/edit/:id" element={<AdminEditUser />} />
 
             {/* Routes from File 1 (now nested) */}
             <Route path="customers-vehicles" element={<CustomersVehicles />} />
             <Route path="leave-requests" element={<LeaveRequests />} />
             <Route path="profile" element={<AdminProfile />} />
-            
+
             {/* <Route path="reports" element={<AdminReports />} /> */}
           </Route>
-          
         </Routes>
       </div>
     </Router>

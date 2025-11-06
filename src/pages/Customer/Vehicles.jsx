@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import CustomerDashboardLayout from "../../components/Customer/CustomerDashboardLayout";
-import { getAllVehicles, deleteVehicle } from "../../api/Api";
+import { getAllVehicles, deleteVehicle } from "../../api/endpoints";
 
 const Vehicles = () => {
   const navigate = useNavigate();

@@ -4,7 +4,7 @@ import CustomerDashboardLayout from "../../components/Customer/CustomerDashboard
 import {
   getDashboardStats,
   getActiveAppointments,
-} from "../../api/Api";
+} from "../../api/endpoints";
 
 const CustomerDashboard = () => {
   const navigate = useNavigate();

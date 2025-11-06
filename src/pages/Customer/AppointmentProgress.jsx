@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import CustomerDashboardLayout from "../../components/Customer/CustomerDashboardLayout";
-import { getAppointmentProgress } from "../../api/Api";
+import { getAppointmentProgress } from "../../api/endpoints";
 
 const AppointmentProgress = () => {
   const { id } = useParams();

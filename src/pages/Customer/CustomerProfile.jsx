@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import CustomerDashboardLayout from "../../components/Customer/CustomerDashboardLayout";
-import { getCustomerProfile, updateCustomerProfile } from "../../api/Api";
+import { getCustomerProfile, updateCustomerProfile } from "../../api/endpoints";
 
 const CustomerProfile = () => {
   const [profile, setProfile] = useState(null);

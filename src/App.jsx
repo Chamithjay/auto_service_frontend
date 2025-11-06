@@ -16,8 +16,6 @@ import PasswordChanged from "./pages/PasswordChanged";
 // --- Employee Pages (From File 1) ---
 // Note: I'm assuming the paths based on File 1's structure
 import EmployeeDashboard from "./pages/EmployeeDashboard";
-import AppointmentBooking from "./pages/Employee/AppointmentBooking";
-import AppointmentHistory from "./pages/Employee/AppointmentHistory";
 import AppointmentJobDetailsPage from "./pages/Employee/AppointmentJobDetails";
 import RequestLeave from "./pages/Employee/RequestLeave";
 
@@ -52,12 +50,6 @@ function App() {
           <Route path="/register" element={<Register />} />
           <Route path="/login" element={<Login />} />
           <Route path="/forgot-password" element={<ForgotPassword />} />
-          <Route path="/reset-initial-password" element={<ResetInitialPassword />} />
-          <Route path="/password-changed" element={<PasswordChanged />} />
-
-          
-          {/* === Admin Routes with Layout === */}
-          
           <Route
             path="/reset-initial-password"
             element={<ResetInitialPassword />}
@@ -67,6 +59,30 @@ function App() {
           {/* === Employee Routes === */}
           {/* These are from File 1. They remain separate for now. */}
           <Route path="/employee/dashboard" element={<EmployeeDashboard />} />
+          <Route
+            path="/appointment-jobs/:id"
+            element={<AppointmentJobDetailsPage />}
+          />
+          <Route path="/request-leave" element={<RequestLeave />} />
+
+          {/* === Admin Routes (Using File 2's Nested Layout) === */}
+          <Route path="/admin" element={<AdminLayout />}>
+            {/* Routes from File 2 */}
+            <Route path="dashboard" element={<AdminDashboard />} />
+            <Route path="services" element={<AdminManageServices />} />
+            <Route path="add-service" element={<AdminAddService />} />
+            <Route path="service/edit/:id" element={<AdminEditService />} />
+            <Route path="employees" element={<AdminManageUsers />} />
+            <Route path="add-employee" element={<AdminAddUser />} />
+            <Route path="employee/edit/:id" element={<AdminEditUser />} />
+
+            {/* Routes from File 1 (now nested) */}
+            <Route path="customers-vehicles" element={<CustomersVehicles />} />
+            <Route path="leave-requests" element={<LeaveRequests />} />
+            <Route path="profile" element={<AdminProfile />} />
+
+            {/* <Route path="reports" element={<AdminReports />} /> */}
+          </Route>
         </Routes>
       </div>
     </Router>

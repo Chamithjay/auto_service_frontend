@@ -87,7 +87,7 @@ const Login = () => {
       } else if (userRole === "EMPLOYEE") {
         navigate("/employee/dashboard");
       } else if (userRole === "CUSTOMER") {
-        navigate("/home");
+        navigate("/customer/dashboard");
       } else {
         // Default to home if role is not recognized
         navigate("/home");

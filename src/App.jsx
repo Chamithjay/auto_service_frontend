@@ -10,6 +10,7 @@ import Register from "./pages/Register";
 import Login from "./pages/Login";
 import Home from "./pages/Home";
 import ForgotPassword from "./pages/ForgotPassword";
+import ProtectedRoute from "./components/ProtectedRoute";
 import ResetInitialPassword from "./pages/ResetInitialPassword";
 import PasswordChanged from "./pages/PasswordChanged";
 
@@ -40,6 +41,13 @@ import AdminManageServices from "./pages/admin/AdminManageServices";
 import AdminEditService from "./pages/admin/AdminEditService";
 import AdminManageUsers from "./pages/admin/AdminManageUsers";
 import AdminEditUser from "./pages/admin/AdminEditUser";
+
+// Customer Pages
+import CustomerDashboard from "./pages/Customer/CustomerDashboard";
+import CustomerProfile from "./pages/Customer/CustomerProfile";
+import Vehicles from "./pages/Customer/Vehicles";
+import VehicleForm from "./pages/Customer/VehicleForm";
+import AppointmentProgress from "./pages/Customer/AppointmentProgress";
 
 function App() {
   return (
@@ -79,6 +87,12 @@ function App() {
             <Route path="employees" element={<AdminManageUsers />} />
             <Route path="add-employee" element={<AdminAddUser />} />
             <Route path="employee/edit/:id" element={<AdminEditUser />} />
+            <Route path="/customer/dashboard" element={<ProtectedRoute allowedRoles={["CUSTOMER"]}><CustomerDashboard /></ProtectedRoute>} />
+            <Route path="/customer/profile" element={<ProtectedRoute allowedRoles={["CUSTOMER"]}><CustomerProfile /></ProtectedRoute>} />
+            <Route path="/customer/vehicles" element={<ProtectedRoute allowedRoles={["CUSTOMER"]}><Vehicles /></ProtectedRoute>} />
+            <Route path="/customer/vehicles/add" element={<ProtectedRoute allowedRoles={["CUSTOMER"]}><VehicleForm /></ProtectedRoute>} />
+            <Route path="/customer/vehicles/edit/:id" element={<ProtectedRoute allowedRoles={["CUSTOMER"]}><VehicleForm /></ProtectedRoute>} />
+            <Route path="/customer/appointments/:id" element={<ProtectedRoute allowedRoles={["CUSTOMER"]}><AppointmentProgress /></ProtectedRoute>} />
 
             {/* Routes from File 1 (now nested) */}
             <Route path="customers-vehicles" element={<CustomersVehicles />} />
@@ -86,6 +100,7 @@ function App() {
             <Route path="profile" element={<AdminProfile />} />
 
             {/* <Route path="reports" element={<AdminReports />} /> */}
+
           </Route>
         </Routes>
       </div>

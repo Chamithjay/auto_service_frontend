@@ -16,8 +16,8 @@ import PasswordChanged from "./pages/PasswordChanged";
 // --- Employee Pages (From File 1) ---
 // Note: I'm assuming the paths based on File 1's structure
 import EmployeeDashboard from "./pages/EmployeeDashboard";
-import AppointmentBooking from "./pages/AppointmentBooking";
-import AppointmentHistory from "./pages/AppointmentHistory";
+import AppointmentBooking from "./pages/Employee/AppointmentBooking";
+import AppointmentHistory from "./pages/Employee/AppointmentHistory";
 import AppointmentJobDetailsPage from "./pages/Employee/AppointmentJobDetails";
 import RequestLeave from "./pages/Employee/RequestLeave";
 
@@ -52,6 +52,12 @@ function App() {
           <Route path="/register" element={<Register />} />
           <Route path="/login" element={<Login />} />
           <Route path="/forgot-password" element={<ForgotPassword />} />
+          <Route path="/reset-initial-password" element={<ResetInitialPassword />} />
+          <Route path="/password-changed" element={<PasswordChanged />} />
+
+          
+          {/* === Admin Routes with Layout === */}
+          
           <Route
             path="/reset-initial-password"
             element={<ResetInitialPassword />}

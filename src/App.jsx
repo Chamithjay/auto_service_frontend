@@ -16,6 +16,8 @@ import PasswordChanged from "./pages/PasswordChanged";
 // --- Employee Pages (From File 1) ---
 // Note: I'm assuming the paths based on File 1's structure
 import EmployeeDashboard from "./pages/EmployeeDashboard";
+import AppointmentBooking from "./pages/AppointmentBooking";
+import AppointmentHistory from "./pages/AppointmentHistory";
 import AppointmentJobDetailsPage from "./pages/Employee/AppointmentJobDetails";
 import RequestLeave from "./pages/Employee/RequestLeave";
 
@@ -59,6 +61,8 @@ function App() {
           {/* === Employee Routes === */}
           {/* These are from File 1. They remain separate for now. */}
           <Route path="/employee/dashboard" element={<EmployeeDashboard />} />
+          <Route path="/appointment/book" element={<AppointmentBooking />} />
+          <Route path="/appointments/history" element={<AppointmentHistory />} />
           <Route
             path="/appointment-jobs/:id"
             element={<AppointmentJobDetailsPage />}

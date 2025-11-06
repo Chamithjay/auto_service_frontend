@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import AdminNavbar from "./AdminNavbar";
 import AdminSidebar from "./AdminSidebar";
+import ChatBot from "../ChatBot/ChatBot.jsx";
 
 const AdminLayout = ({ children }) => {
   const navigate = useNavigate();
@@ -54,6 +55,7 @@ const AdminLayout = ({ children }) => {
       <AdminNavbar user={user} />
       <AdminSidebar />
       <main className="ml-64 mt-16 p-8">{children}</main>
+        <ChatBot />
     </div>
   );
 };

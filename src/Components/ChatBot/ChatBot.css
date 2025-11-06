@@ -1,0 +1,697 @@
+/* ====================================
+   CHATBOT - COMPLETE STYLES
+   ==================================== */
+
+/* Chat Button - Floating Button */
+.chat-bot-button {
+    position: fixed;
+    bottom: 24px;
+    right: 24px;
+    width: 60px;
+    height: 60px;
+    border-radius: 50%;
+    background:#394867;
+    border: none;
+    box-shadow: 0 4px 12px rgba(102, 126, 234, 0.4);
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.3s ease;
+    z-index: 999;
+}
+
+.chat-bot-button:hover {
+    transform: scale(1.1);
+    box-shadow: 0 6px 20px rgba(102, 126, 234, 0.6);
+}
+
+.chat-bot-button:active {
+    transform: scale(0.95);
+}
+
+.chat-icon {
+    width: 30px;
+    height: 30px;
+    color: white;
+}
+
+/* Chat Window */
+.chat-bot-window {
+    position: fixed;
+    bottom: 100px;
+    right: 24px;
+    width: 500px;
+    height: 600px;
+    background: white;
+    border-radius: 16px;
+    box-shadow: 0 10px 40px rgba(0, 0, 0, 0.15);
+    display: flex;
+    flex-direction: column;
+    z-index: 999;
+    animation: slideUp 0.3s ease;
+}
+
+@keyframes slideUp {
+    from {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* Header */
+.chat-bot-header {
+    /*background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);*/
+    background: #394867;
+    color: white;
+    padding: 16px 20px;
+    border-radius: 16px 16px 0 0;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.chat-header-content {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+.bot-avatar {
+    width: 40px;
+    height: 40px;
+    background: rgba(255, 255, 255, 0.2);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 20px;
+}
+
+.chat-bot-header h3 {
+    margin: 0;
+    font-size: 16px;
+    font-weight: 600;
+}
+
+.bot-status {
+    font-size: 12px;
+    opacity: 0.9;
+}
+
+.close-chat-btn {
+    background: rgba(255, 255, 255, 0.2);
+    border: none;
+    color: white;
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 20px;
+    transition: background 0.2s ease;
+}
+
+.close-chat-btn:hover {
+    background: rgba(255, 255, 255, 0.3);
+}
+
+/* Messages Container */
+.chat-bot-messages {
+    flex: 1;
+    overflow-y: auto;
+    padding: 20px;
+    background: #f9fafb;
+}
+
+.chat-bot-messages::-webkit-scrollbar {
+    width: 6px;
+}
+
+.chat-bot-messages::-webkit-scrollbar-track {
+    background: #f1f1f1;
+}
+
+.chat-bot-messages::-webkit-scrollbar-thumb {
+    background: #d1d5db;
+    border-radius: 3px;
+}
+
+.chat-bot-messages::-webkit-scrollbar-thumb:hover {
+    background: #9ca3af;
+}
+
+/* Message */
+.message {
+    display: flex;
+    gap: 10px;
+    margin-bottom: 16px;
+    animation: messageSlide 0.3s ease;
+}
+
+@keyframes messageSlide {
+    from {
+        opacity: 0;
+        transform: translateY(10px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.message.user {
+    flex-direction: row-reverse;
+}
+
+.message-avatar {
+    width: 32px;
+    height: 32px;
+    background: #394867;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 16px;
+    flex-shrink: 0;
+}
+
+.message-content {
+    max-width: 85%;
+    display: flex;
+    flex-direction: column;
+}
+
+.message.user .message-content {
+    align-items: flex-end;
+}
+
+.message-text {
+    background: white;
+    padding: 12px 16px;
+    border-radius: 12px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+    line-height: 1.5;
+    color: #1f2937;
+    word-wrap: break-word;
+    white-space: pre-wrap;
+}
+
+.message.user .message-text {
+    background: #394867;
+    color: white;
+}
+
+.message-time {
+    font-size: 11px;
+    color: #9ca3af;
+    margin-top: 4px;
+}
+
+/* Typing Indicator */
+.typing-indicator {
+    display: flex;
+    gap: 4px;
+    padding: 12px 16px;
+    background: white;
+    border-radius: 12px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+}
+
+.typing-indicator span {
+    width: 8px;
+    height: 8px;
+    background: #9ca3af;
+    border-radius: 50%;
+    animation: typing 1.4s infinite;
+}
+
+.typing-indicator span:nth-child(2) {
+    animation-delay: 0.2s;
+}
+
+.typing-indicator span:nth-child(3) {
+    animation-delay: 0.4s;
+}
+
+@keyframes typing {
+    0%, 60%, 100% {
+        transform: translateY(0);
+    }
+    30% {
+        transform: translateY(-10px);
+    }
+}
+
+/* Input Area */
+.chat-bot-input {
+    padding: 16px 20px;
+    background: white;
+    border-top: 1px solid #e5e7eb;
+    border-radius: 0 0 16px 16px;
+    display: flex;
+    gap: 10px;
+}
+
+.chat-bot-input input {
+    flex: 1;
+    padding: 12px 16px;
+    border: 1px solid #e5e7eb;
+    border-radius: 24px;
+    outline: none;
+    font-size: 14px;
+    transition: border-color 0.2s ease;
+}
+
+.chat-bot-input input:focus {
+    border-color: #394867;
+}
+
+.chat-bot-input input:disabled {
+    background: #f9fafb;
+    cursor: not-allowed;
+}
+
+.chat-bot-input button {
+    width: 44px;
+    height: 44px;
+    background: #394867;
+    border: none;
+    border-radius: 50%;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.2s ease;
+}
+
+.chat-bot-input button:hover:not(:disabled) {
+    transform: scale(1.05);
+    box-shadow: 0 4px 12px rgba(102, 126, 234, 0.4);
+}
+
+.chat-bot-input button:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+}
+
+.send-icon {
+    width: 20px;
+    height: 20px;
+    color: white;
+}
+
+/* ====================================
+   ADVANCED SLOT DISPLAY STYLES
+   ==================================== */
+
+/* Slots Container */
+.slots-container {
+    margin-top: 12px;
+    background: linear-gradient(135deg, #f8f9ff 0%, #f0f4ff 100%);
+    border-radius: 12px;
+    padding: 16px;
+    border: 1px solid #e0e7ff;
+}
+
+.slots-header {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-bottom: 12px;
+    font-weight: 600;
+    color: #394867;
+    font-size: 14px;
+}
+
+.calendar-icon,
+.clock-icon,
+.users-icon {
+    width: 18px;
+    height: 18px;
+}
+
+.slots-count {
+    margin-left: auto;
+    background: #394867;
+    color: white;
+    padding: 2px 8px;
+    border-radius: 12px;
+    font-size: 11px;
+    font-weight: 600;
+}
+
+/* Slots Grid */
+.slots-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+    gap: 10px;
+    margin-bottom: 12px;
+}
+
+/* Slot Card */
+.slot-card {
+    background: white;
+    border: 2px solid #e0e7ff;
+    border-radius: 10px;
+    padding: 12px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    position: relative;
+    overflow: hidden;
+}
+
+.slot-card::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 3px;
+    background: linear-gradient(90deg, #667eea 0%, #764ba2 100%);
+    transform: scaleX(0);
+    transition: transform 0.3s ease;
+}
+
+.slot-card:hover {
+    border-color: #667eea;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(102, 126, 234, 0.2);
+}
+
+.slot-card:hover::before {
+    transform: scaleX(1);
+}
+
+.slot-time {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    color: #1f2937;
+    font-weight: 600;
+    font-size: 14px;
+}
+
+.clock-icon {
+    width: 14px;
+    height: 14px;
+    color: #667eea;
+}
+
+.time-label {
+    font-size: 14px;
+}
+
+.slot-duration {
+    font-size: 11px;
+    color: #6b7280;
+}
+
+.duration-text {
+    font-size: 11px;
+}
+
+.slot-status {
+    margin-top: 4px;
+}
+
+.status-badge {
+    display: inline-block;
+    background: #d1fae5;
+    color: #065f46;
+    padding: 3px 8px;
+    border-radius: 6px;
+    font-size: 10px;
+    font-weight: 600;
+}
+
+/* Slots Footer */
+.slots-footer {
+    text-align: center;
+    font-size: 12px;
+    color: #6b7280;
+    padding-top: 8px;
+    border-top: 1px solid #e0e7ff;
+}
+
+/* ====================================
+   SPECIFIC SLOT AVAILABILITY
+   ==================================== */
+
+.specific-slot-result {
+    margin-top: 12px;
+}
+
+.slot-availability {
+    background: white;
+    border-radius: 10px;
+    padding: 16px;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    border: 2px solid #e5e7eb;
+}
+
+.slot-availability.available {
+    border-color: #10b981;
+    background: linear-gradient(135deg, #f0fdf4 0%, #d1fae5 100%);
+}
+
+.slot-availability.unavailable {
+    border-color: #ef4444;
+    background: linear-gradient(135deg, #fef2f2 0%, #fee2e2 100%);
+}
+
+.availability-icon {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 20px;
+    font-weight: 600;
+    flex-shrink: 0;
+}
+
+.slot-availability.available .availability-icon {
+    background: #10b981;
+    color: white;
+}
+
+.slot-availability.unavailable .availability-icon {
+    background: #ef4444;
+    color: white;
+}
+
+.availability-details {
+    flex: 1;
+}
+
+.availability-status {
+    font-weight: 600;
+    font-size: 14px;
+    color: #1f2937;
+    margin-bottom: 4px;
+}
+
+.availability-time {
+    font-size: 13px;
+    color: #6b7280;
+}
+
+/* ====================================
+   EMPLOYEES DISPLAY
+   ==================================== */
+
+.employees-container {
+    margin-top: 12px;
+    background: linear-gradient(135deg, #fef3f2 0%, #fff7ed 100%);
+    border-radius: 12px;
+    padding: 16px;
+    border: 1px solid #fed7aa;
+}
+
+.employees-header {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-bottom: 12px;
+    font-weight: 600;
+    color: #ea580c;
+    font-size: 14px;
+}
+
+.employees-list {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.employee-card {
+    background: white;
+    border-radius: 10px;
+    padding: 12px;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    border: 1px solid #fed7aa;
+    transition: all 0.2s ease;
+}
+
+.employee-card:hover {
+    border-color: #ea580c;
+    box-shadow: 0 2px 8px rgba(234, 88, 12, 0.1);
+}
+
+.employee-avatar {
+    width: 44px;
+    height: 44px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    color: white;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 18px;
+    font-weight: 600;
+    flex-shrink: 0;
+}
+
+.employee-info {
+    flex: 1;
+}
+
+.employee-name {
+    font-weight: 600;
+    font-size: 14px;
+    color: #1f2937;
+    margin-bottom: 2px;
+}
+
+.employee-role {
+    font-size: 12px;
+    color: #6b7280;
+    margin-bottom: 4px;
+}
+
+.employee-spec {
+    font-size: 11px;
+    color: #ea580c;
+    font-weight: 500;
+}
+
+.employee-status {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 11px;
+    color: #059669;
+    font-weight: 500;
+}
+
+.status-dot {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background: #10b981;
+    animation: pulse-dot 2s infinite;
+}
+
+@keyframes pulse-dot {
+    0%, 100% {
+        opacity: 1;
+    }
+    50% {
+        opacity: 0.5;
+    }
+}
+
+/* ====================================
+   RESPONSIVE DESIGN
+   ==================================== */
+
+@media (max-width: 768px) {
+    .chat-bot-window {
+        width: 100%;
+        height: 100%;
+        bottom: 0;
+        right: 0;
+        border-radius: 0;
+    }
+
+    .chat-bot-button {
+        bottom: 16px;
+        right: 16px;
+        width: 56px;
+        height: 56px;
+    }
+
+    .chat-icon {
+        width: 26px;
+        height: 26px;
+    }
+}
+
+@media (max-width: 480px) {
+    .chat-bot-header {
+        padding: 12px 16px;
+    }
+
+    .chat-bot-messages {
+        padding: 16px;
+    }
+
+    .message-content {
+        max-width: 80%;
+    }
+
+    .chat-bot-input {
+        padding: 12px 16px;
+    }
+
+    .slots-grid {
+        grid-template-columns: repeat(2, 1fr);
+    }
+
+    .slot-card {
+        padding: 10px;
+    }
+
+    .slot-time {
+        font-size: 13px;
+    }
+}
+
+/* ====================================
+   ACCESSIBILITY
+   ==================================== */
+
+.chat-bot-button:focus,
+.close-chat-btn:focus,
+.chat-bot-input button:focus {
+    outline: 2px solid #667eea;
+    outline-offset: 2px;
+}
+
+/* Reduce motion for users who prefer it */
+@media (prefers-reduced-motion: reduce) {
+    .chat-bot-window,
+    .message,
+    .typing-indicator span {
+        animation: none;
+    }
+
+    .chat-bot-button:hover {
+        transform: none;
+    }
+}

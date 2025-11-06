@@ -21,6 +21,7 @@ import AdminProfile from "./pages/admin/AdminProfile";
 
 // Employee Pages (placeholder for now)
 import EmployeeDashboard from "./pages/EmployeeDashboard";
+import ChatBot from "./Components/ChatBot/ChatBot.jsx";
 
 function App() {
     return (
@@ -49,6 +50,7 @@ function App() {
                     {/* Employee Routes */}
                     <Route path="/employee/dashboard" element={<EmployeeDashboard />} />
                 </Routes>
+
             </div>
         </Router>
     );

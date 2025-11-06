@@ -64,7 +64,12 @@ const Login = () => {
       localStorage.setItem("user", JSON.stringify(response.data.user));
 
       // Navigate based on role
-      const userRole = response.data.user?.role || response.data.role;
+          const userRole = response.data.user?.role || 
+                    response.data.role ||
+                    response.data.user?.authorities?.[0]?.authority || // If using Spring Security
+                    response.data.userRole;
+
+    console.log("Detected role:", userRole);
 
       if (userRole === "ADMIN") {
         navigate("/admin/dashboard");
@@ -74,7 +79,7 @@ const Login = () => {
         navigate("/home");
       } else {
         // Default to home if role is not recognized
-        navigate("/home");
+        navigate("/employee/dashboard ");
       }
     } catch (error) {
       if (error.response && error.response.data) {

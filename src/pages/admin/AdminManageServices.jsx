@@ -15,9 +15,43 @@ const AdminManageServices = () => {
   const fetchServices = async () => {
     try {
       const response = await API.get("/admin/services");
-      setServices(response.data);
+
+      // Handle case where backend returns JSON as string
+      let servicesData = [];
+      if (typeof response.data === "string") {
+        try {
+          // Try to parse the JSON string
+          const parsed = JSON.parse(response.data);
+          servicesData = Array.isArray(parsed) ? parsed : [];
+        } catch (parseError) {
+          // Silently handle malformed JSON with circular references
+          // Extract just the basic service info using regex
+          const serviceMatches = response.data.matchAll(
+            /"serviceItemId":(\d+),"serviceItemName":"([^"]+)","vehicleType":"([^"]+)","requiredEmployeeCount":(\d+),"serviceItemCost":([\d.]+),"serviceItemType":"([^"]+)","estimatedDuration":(\d+)/g
+          );
+
+          servicesData = Array.from(serviceMatches).map((match) => ({
+            serviceItemId: parseInt(match[1]),
+            serviceItemName: match[2],
+            vehicleType: match[3],
+            requiredEmployeeCount: parseInt(match[4]),
+            serviceItemCost: parseFloat(match[5]),
+            serviceItemType: match[6],
+            estimatedDuration: parseInt(match[7]),
+          }));
+        }
+      } else if (Array.isArray(response.data)) {
+        servicesData = response.data;
+      } else if (response.data && Array.isArray(response.data.data)) {
+        servicesData = response.data.data;
+      }
+
+      setServices(servicesData);
+      setError(""); // Clear any previous errors
     } catch (err) {
+      console.error("Error fetching services:", err);
       setError("Failed to fetch services. Please try again.");
+      setServices([]); // Set empty array on error
     }
   };
 
@@ -103,36 +137,47 @@ const AdminManageServices = () => {
               </tr>
             </thead>
             <tbody className="bg-white divide-y divide-gray-200">
-              {services.map((service) => (
-                <tr key={service.serviceItemId}>
-                  <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-[#14274E]">
-                    {service.serviceItemName}
-                  </td>
-                  <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                    {service.serviceItemType}
-                  </td>
-                  <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                    {service.serviceItemCost.toFixed(2)}
-                  </td>
-                  <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                    {service.estimatedDuration}
-                  </td>
-                  <td className="px-6 py-4 whitespace-nowrap text-right text-sm font-medium space-x-4">
-                    <Link
-                      to={`/admin/service/edit/${service.serviceItemId}`}
-                      className="text-[#394867] hover:text-[#14274E]"
-                    >
-                      Edit
-                    </Link>
-                    <button
-                      onClick={() => handleDelete(service.serviceItemId)}
-                      className="text-red-600 hover:text-red-900"
-                    >
-                      Delete
-                    </button>
+              {services.length === 0 ? (
+                <tr>
+                  <td
+                    colSpan="5"
+                    className="px-6 py-8 text-center text-gray-500"
+                  >
+                    No services found. Click "Add Services" to create one.
                   </td>
                 </tr>
-              ))}
+              ) : (
+                services.map((service) => (
+                  <tr key={service.serviceItemId}>
+                    <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-[#14274E]">
+                      {service.serviceItemName}
+                    </td>
+                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                      {service.serviceItemType}
+                    </td>
+                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                      {service.serviceItemCost.toFixed(2)}
+                    </td>
+                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                      {service.estimatedDuration}
+                    </td>
+                    <td className="px-6 py-4 whitespace-nowrap text-right text-sm font-medium space-x-4">
+                      <Link
+                        to={`/admin/service/edit/${service.serviceItemId}`}
+                        className="text-[#394867] hover:text-[#14274E]"
+                      >
+                        Edit
+                      </Link>
+                      <button
+                        onClick={() => handleDelete(service.serviceItemId)}
+                        className="text-red-600 hover:text-red-900"
+                      >
+                        Delete
+                      </button>
+                    </td>
+                  </tr>
+                ))
+              )}
             </tbody>
           </table>
         </div>

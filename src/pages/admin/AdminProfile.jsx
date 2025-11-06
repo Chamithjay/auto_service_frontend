@@ -31,7 +31,7 @@ const AdminProfile = () => {
 
   const fetchProfile = async () => {
     try {
-      const response = await API.get("/profile");
+      const response = await API.get("profile");
       setUser(response.data);
       setFormData({
         username: response.data.username,
@@ -129,7 +129,7 @@ const AdminProfile = () => {
     setMessage({ type: "", text: "" });
 
     try {
-      const response = await API.put("/profile", formData);
+      const response = await API.put("profile", formData);
 
       // Check if username was changed
       const usernameChanged = user.username !== response.data.username;
@@ -200,7 +200,7 @@ const AdminProfile = () => {
     setMessage({ type: "", text: "" });
 
     try {
-      await API.put("/profile/change-password", passwordData);
+      await API.put("profile/change-password", passwordData);
 
       setIsChangingPassword(false);
       setPasswordData({

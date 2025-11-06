@@ -8,15 +8,34 @@ const AdminManageServices = () => {
   const [services, setServices] = useState([]);
   const [error, setError] = useState("");
 
+  // Safe formatters to avoid runtime crashes when backend returns null/undefined
+  const formatCost = (value) => {
+    const num = Number(value);
+    return Number.isFinite(num) ? num.toFixed(2) : "-";
+  };
+
+  const formatDuration = (value) =>
+    value === null || value === undefined ? "-" : String(value);
+
   useEffect(() => {
     fetchServices();
   }, []);
 
   const fetchServices = async () => {
     try {
-      const response = await API.get("/admin/services");
-      setServices(response.data);
+      const response = await API.get("admin/services");
+      // Normalize common response shapes: array, { data: [] }, { items: [] }, pageable content
+      const payload = response.data;
+      let list = [];
+      if (Array.isArray(payload)) list = payload;
+      else if (Array.isArray(payload?.data)) list = payload.data;
+      else if (Array.isArray(payload?.items)) list = payload.items;
+      else if (Array.isArray(payload?.content))
+        list = payload.content; // Spring pageable
+      else list = [];
+      setServices(list);
     } catch (err) {
+      console.error("GET /admin/services failed:", err?.response || err);
       setError("Failed to fetch services. Please try again.");
     }
   };
@@ -30,7 +49,7 @@ const AdminManageServices = () => {
   const confirmDelete = async () => {
     const id = confirmState.id;
     try {
-      await API.delete(`/admin/services/${id}`);
+      await API.delete(`admin/services/${id}`);
       setConfirmState({ isOpen: false, id: null });
       fetchServices(); // Refresh the list
       setToast({
@@ -103,19 +122,19 @@ const AdminManageServices = () => {
               </tr>
             </thead>
             <tbody className="bg-white divide-y divide-gray-200">
-              {services.map((service) => (
-                <tr key={service.serviceItemId}>
+              {services.map((service, idx) => (
+                <tr key={service?.serviceItemId ?? idx}>
                   <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-[#14274E]">
-                    {service.serviceItemName}
+                    {service?.serviceItemName ?? "-"}
                   </td>
                   <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                    {service.serviceItemType}
+                    {service?.serviceItemType ?? "-"}
                   </td>
                   <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                    {service.serviceItemCost.toFixed(2)}
+                    {formatCost(service?.serviceItemCost)}
                   </td>
                   <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                    {service.estimatedDuration}
+                    {formatDuration(service?.estimatedDuration)}
                   </td>
                   <td className="px-6 py-4 whitespace-nowrap text-right text-sm font-medium space-x-4">
                     <Link

@@ -87,13 +87,6 @@ function App() {
             <Route path="employees" element={<AdminManageUsers />} />
             <Route path="add-employee" element={<AdminAddUser />} />
             <Route path="employee/edit/:id" element={<AdminEditUser />} />
-            <Route path="/customer/dashboard" element={<ProtectedRoute allowedRoles={["CUSTOMER"]}><CustomerDashboard /></ProtectedRoute>} />
-            <Route path="/customer/profile" element={<ProtectedRoute allowedRoles={["CUSTOMER"]}><CustomerProfile /></ProtectedRoute>} />
-            <Route path="/customer/vehicles" element={<ProtectedRoute allowedRoles={["CUSTOMER"]}><Vehicles /></ProtectedRoute>} />
-            <Route path="/customer/vehicles/add" element={<ProtectedRoute allowedRoles={["CUSTOMER"]}><VehicleForm /></ProtectedRoute>} />
-            <Route path="/customer/vehicles/edit/:id" element={<ProtectedRoute allowedRoles={["CUSTOMER"]}><VehicleForm /></ProtectedRoute>} />
-            <Route path="/customer/appointments/:id" element={<ProtectedRoute allowedRoles={["CUSTOMER"]}><AppointmentProgress /></ProtectedRoute>} />
-
             {/* Routes from File 1 (now nested) */}
             <Route path="customers-vehicles" element={<CustomersVehicles />} />
             <Route path="leave-requests" element={<LeaveRequests />} />
@@ -102,6 +95,13 @@ function App() {
             {/* <Route path="reports" element={<AdminReports />} /> */}
 
           </Route>
+          <Route path="/customer/dashboard" element={<ProtectedRoute allowedRoles={["CUSTOMER"]}><CustomerDashboard /></ProtectedRoute>} />
+          <Route path="/customer/profile" element={<ProtectedRoute allowedRoles={["CUSTOMER"]}><CustomerProfile /></ProtectedRoute>} />
+          <Route path="/customer/vehicles" element={<ProtectedRoute allowedRoles={["CUSTOMER"]}><Vehicles /></ProtectedRoute>} />
+          <Route path="/customer/vehicles/add" element={<ProtectedRoute allowedRoles={["CUSTOMER"]}><VehicleForm /></ProtectedRoute>} />
+          <Route path="/customer/vehicles/edit/:id" element={<ProtectedRoute allowedRoles={["CUSTOMER"]}><VehicleForm /></ProtectedRoute>} />
+          <Route path="/customer/appointments/:id" element={<ProtectedRoute allowedRoles={["CUSTOMER"]}><AppointmentProgress /></ProtectedRoute>} />
+
         </Routes>
       </div>
     </Router>

@@ -40,10 +40,8 @@ const AppointmentBooking = () => {
         try {
             setLoading(true);
             setError('');
-            // Get userId from localStorage or fallback to '1' for temporary testing
-            const userId = localStorage.getItem('userId') || '1'; // temporary fallback
-
-            const response = await API.get(`/appointments/vehicles?userId=${userId}`);
+            // Vehicles endpoint now reads the user from the Authorization JWT header
+            const response = await API.get('/appointments/vehicles');
             setVehicles(response.data);
 
             if (response.data.length === 0) {
@@ -142,9 +140,8 @@ const AppointmentBooking = () => {
                 appointmentDate: appointmentDate,
                 sessionType: sessionType
             };
-            // Include userId as query param per temporary backend change
-            const userId = localStorage.getItem('userId') || '1';
-            const response = await API.post(`/appointments/create?userId=${userId}`, createRequest);
+            // create endpoint now reads the user from the Authorization JWT header
+            const response = await API.post('/appointments/create', createRequest);
             setSuccess(response.data.message || 'Appointment created successfully!');
 
             // Show success message for 2 seconds then redirect
@@ -235,49 +232,44 @@ const AppointmentBooking = () => {
                         </div>
                     )}
 
-                    {/* Step 1: Vehicle Selection */}
-                    {currentStep === 1 && (
-                        <div className="bg-white rounded-lg shadow-md p-6">
-                            <h2 className="text-2xl font-bold text-[#14274E] mb-4">Select Your Vehicle</h2>
+                    {/* Vehicle selector: compact cards on top of the form (includes Add button) */}
+                    <div className="bg-white rounded-lg shadow-md p-4 mb-6">
+                        <h2 className="text-lg font-semibold text-[#14274E] mb-3">Select Vehicle</h2>
 
-                            {loading ? (
-                                <div className="flex justify-center items-center py-12">
-                                    <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-[#14274E]"></div>
-                                </div>
-                            ) : vehicles.length > 0 ? (
-                                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                                    {vehicles.map((vehicle) => (
-                                        <button
-                                            key={vehicle.vehicleId}
-                                            onClick={() => handleVehicleSelect(vehicle)}
-                                            className="p-6 border-2 border-[#9BA4B4] rounded-lg hover:border-[#14274E] hover:bg-[#F1F6F9] transition-all duration-200 text-left group"
-                                        >
-                                            <div className="flex items-center justify-between">
-                                                <div>
-                                                    <h3 className="text-xl font-bold text-[#14274E] group-hover:text-[#394867]">
-                                                        {vehicle.vehicleName}
-                                                    </h3>
-                                                    <p className="text-[#9BA4B4] mt-1 capitalize">
-                                                        {vehicle.vehicleType?.toLowerCase().replace('_', ' ')}
-                                                    </p>
-                                                </div>
-                                                <svg
-                                                    className="w-6 h-6 text-[#14274E] group-hover:translate-x-1 transition-transform"
-                                                    fill="none"
-                                                    stroke="currentColor"
-                                                    viewBox="0 0 24 24"
-                                                >
-                                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
-                                                </svg>
-                                            </div>
-                                        </button>
-                                    ))}
-                                </div>
-                            ) : (
-                                <p className="text-[#9BA4B4] text-center py-8">No vehicles found. Please register a vehicle first.</p>
-                            )}
-                        </div>
-                    )}
+                        {loading ? (
+                            <div className="flex justify-center items-center py-6">
+                                <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-[#14274E]"></div>
+                            </div>
+                        ) : (
+                            <div className="flex items-center gap-3 overflow-x-auto py-2">
+                                {vehicles.length > 0 ? vehicles.map((vehicle) => (
+                                    <button
+                                        key={vehicle.vehicleId}
+                                        onClick={() => handleVehicleSelect(vehicle)}
+                                        className={`flex-shrink-0 p-3 w-44 text-left border-2 rounded-lg transition-colors ${selectedVehicle?.vehicleId === vehicle.vehicleId ? 'border-[#14274E] bg-[#F1F6F9]' : 'border-[#9BA4B4] hover:border-[#14274E] hover:bg-[#F8FAFC]'}`}
+                                    >
+                                        <div className="text-sm font-semibold text-[#14274E] truncate">{vehicle.vehicleName}</div>
+                                        <div className="text-xs text-[#9BA4B4] mt-1 capitalize truncate">{vehicle.vehicleType?.toLowerCase().replace('_', ' ')}</div>
+                                    </button>
+                                )) : (
+                                    <div className="text-sm text-[#9BA4B4]">No vehicles found.</div>
+                                )}
+
+                                {/* Add vehicle button (simple +) - placed after vehicles */}
+                                <button
+                                    onClick={() => navigate('/vehicles')}
+                                    title="Add vehicle"
+                                    className="flex-shrink-0 w-12 h-12 flex items-center justify-center text-2xl rounded-lg border-2 border-dashed border-[#9BA4B4] text-[#14274E] hover:bg-[#F1F6F9]"
+                                >
+                                    +
+                                </button>
+                            </div>
+                        )}
+
+                        {!selectedVehicle && (
+                            <p className="text-[#9BA4B4] mt-3">Select a vehicle to continue with booking.</p>
+                        )}
+                    </div>
 
                     {/* Step 2: Service Selection and Appointment Details */}
                     {currentStep === 2 && selectedVehicle && (

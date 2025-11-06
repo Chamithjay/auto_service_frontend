@@ -8,23 +8,28 @@ const AppointmentHistory = () => {
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState('');
     const [appointments, setAppointments] = useState([]);
+    const [startDate, setStartDate] = useState('');
+    const [endDate, setEndDate] = useState('');
 
     useEffect(() => {
+        // initial load: no dates -> backend returns last 15
         fetchAppointments();
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, []);
 
-    const fetchAppointments = async () => {
+    const fetchAppointments = async (opts = {}) => {
         try {
             setLoading(true);
             setError('');
 
-            // Read userId from query param, fallback to localStorage or '1' for testing
-            const params = new URLSearchParams(window.location.search);
-            const queryUserId = params.get('userId');
-            const userId = queryUserId || localStorage.getItem('userId') || '1';
-
-            const res = await API.get(`/appointments/my-appointments?userId=${userId}`);
+            // Backend uses Authorization JWT to identify user. Build optional date params.
+            const s = opts.startDate ?? startDate;
+            const e = opts.endDate ?? endDate;
+            const params = new URLSearchParams();
+            if (s) params.set('startDate', s);
+            if (e) params.set('endDate', e);
+            const q = params.toString();
+            const res = await API.get(`/appointments/history${q ? `?${q}` : ''}`);
             setAppointments(res.data || []);
         } catch (err) {
             setError(err.response?.data?.message || 'Failed to fetch appointments');
@@ -34,10 +39,22 @@ const AppointmentHistory = () => {
         }
     };
 
-    const formatDate = (d) => {
+    const formatDate = (d, withTime = false) => {
         if (!d) return '-';
         try {
-            const date = new Date(d);
+            // backend may return LocalDate (yyyy-MM-dd) or LocalDateTime (yyyy-MM-dd HH:mm)
+            // new Date() expects a 'T' between date and time, so replace space with 'T' when present
+            let ds = String(d);
+            if (ds.includes(' ')) ds = ds.replace(' ', 'T');
+            const date = new Date(ds);
+
+            if (withTime) {
+                return date.toLocaleString(undefined, {
+                    year: 'numeric', month: 'short', day: 'numeric',
+                    hour: '2-digit', minute: '2-digit'
+                });
+            }
+
             return date.toLocaleDateString();
         } catch {
             return d;
@@ -61,7 +78,51 @@ const AppointmentHistory = () => {
                     </div>
                 )}
 
-                {/* NOTE: search/sort controls removed per request */}
+                {/* Date range filter: optional — if empty backend returns last 15 */}
+                <div className="bg-white rounded-lg shadow-md p-4 mb-6 flex flex-col md:flex-row gap-4 items-center">
+                    <div className="flex items-center space-x-2 w-full md:w-1/3">
+                        <label className="text-sm text-[#394867]">Start Date</label>
+                        <input
+                            type="date"
+                            value={startDate}
+                            onChange={(e) => setStartDate(e.target.value)}
+                            className="ml-2 px-3 py-2 border-2 border-[#9BA4B4] rounded-lg text-[#14274E]"
+                        />
+                    </div>
+
+                    <div className="flex items-center space-x-2 w-full md:w-1/3">
+                        <label className="text-sm text-[#394867]">End Date</label>
+                        <input
+                            type="date"
+                            value={endDate}
+                            onChange={(e) => setEndDate(e.target.value)}
+                            className="ml-2 px-3 py-2 border-2 border-[#9BA4B4] rounded-lg text-[#14274E] w-full"
+                        />
+                    </div>
+
+                    <div className="flex items-center space-x-2 w-full md:w-1/3 justify-end">
+                        <button
+                            onClick={() => {
+                                // validate date range
+                                if (startDate && endDate && startDate > endDate) {
+                                    setError('Start date cannot be later than end date');
+                                    return;
+                                }
+                                setError('');
+                                fetchAppointments({ startDate, endDate });
+                            }}
+                            className="ml-2 px-4 py-2 bg-[#14274E] text-white rounded-lg hover:bg-[#394867]"
+                        >
+                            Apply
+                        </button>
+                        <button
+                            onClick={() => { setStartDate(''); setEndDate(''); setError(''); fetchAppointments({ startDate: '', endDate: '' }); }}
+                            className="ml-2 px-4 py-2 bg-white border border-[#9BA4B4] text-[#14274E] rounded-lg hover:bg-[#F1F6F9]"
+                        >
+                            Reset
+                        </button>
+                    </div>
+                </div>
 
                 {loading ? (
                     <div className="flex justify-center items-center py-12">
@@ -77,7 +138,8 @@ const AppointmentHistory = () => {
                             <thead>
                                 <tr className="text-left border-b">
                                     <th className="px-4 py-2 text-sm text-[#394867]">ID</th>
-                                    <th className="px-4 py-2 text-sm text-[#394867]">Date</th>
+                                    <th className="px-4 py-2 text-sm text-[#394867]">Created At</th>
+                                    <th className="px-4 py-2 text-sm text-[#394867]">Appointment Date</th>
                                     <th className="px-4 py-2 text-sm text-[#394867]">Vehicle</th>
                                     <th className="px-4 py-2 text-sm text-[#394867]">Selected Services</th>
                                     <th className="px-4 py-2 text-sm text-[#394867]">Session</th>
@@ -89,6 +151,7 @@ const AppointmentHistory = () => {
                                 {appointments.map((a) => (
                                     <tr key={a.appointmentId} className="border-b hover:bg-[#F1F6F9]">
                                         <td className="px-4 py-3 text-sm text-[#14274E]">{a.appointmentId}</td>
+                                        <td className="px-4 py-3 text-sm text-[#14274E]">{formatDate(a.createdAt, true)}</td>
                                         <td className="px-4 py-3 text-sm text-[#14274E]">{formatDate(a.appointmentDate)}</td>
                                         <td className="px-4 py-3 text-sm text-[#14274E]">{a.vehicleName}</td>
                                         <td className="px-4 py-3 text-sm text-[#14274E]">{(a.selectedServices || []).join(', ')}</td>

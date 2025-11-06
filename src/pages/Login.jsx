@@ -58,7 +58,7 @@ const Login = () => {
     setIsLoading(true);
 
     try {
-      const response = await API.post("/auth/login", formData);
+      const response = await API.post("v1/auth/login", formData);
 
       console.log("Login response:", response.data); // Debug log
 

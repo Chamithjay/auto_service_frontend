@@ -1,7 +1,7 @@
 import axios from "axios";
 
 const API = axios.create({
-  baseURL: "http://localhost:8080/api",
+  baseURL: "http://localhost:8080/api/v1",
   headers: {
     "Content-Type": "application/json",
   },
@@ -49,5 +49,18 @@ export const appointmentAPI = {
   // Get user appointments (optional, alternate endpoint)
   getUserAppointments: (userId) => API.get(`/appointments/user/${userId}`),
 };
+// Add request interceptor to include JWT token
+API.interceptors.request.use(
+  (config) => {
+    const token = localStorage.getItem("token");
+    if (token) {
+      config.headers.Authorization = `Bearer ${token}`;
+    }
+    return config;
+  },
+  (error) => {
+    return Promise.reject(error);
+  }
+);
 
 export default API;

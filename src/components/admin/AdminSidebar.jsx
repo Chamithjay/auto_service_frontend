@@ -110,6 +110,31 @@ const AdminSidebar = () => {
       ),
     },
     {
+      name: "Analytics",
+      path: "/admin/reports",
+      icon: (
+        <svg
+          className="w-6 h-6"
+          fill="none"
+          stroke="currentColor"
+          viewBox="0 0 24 24"
+        >
+          <path
+            strokeLinecap="round"
+            strokeLinejoin="round"
+            strokeWidth="2"
+            d="M11 3v18M20 12v6M4 6v12"
+          />
+          <path
+            strokeLinecap="round"
+            strokeLinejoin="round"
+            strokeWidth="2"
+            d="M6 14h4v4H6zM14 8h4v10h-4z"
+          />
+        </svg>
+      ),
+    },
+    {
       name: "Profile",
       path: "/admin/profile",
       icon: (

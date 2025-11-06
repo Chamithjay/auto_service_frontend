@@ -25,6 +25,7 @@ import AdminLayout from "./components/admin/AdminLayout";
 // --- Admin Pages (Combined from both files) ---
 // Note: I've assumed all admin pages live in './pages/admin/' for consistency
 import AdminDashboard from "./pages/admin/AdminDashboard";
+import AdminReports from "./pages/admin/AdminReports";
 
 // (File 1's routes, now added to the layout)
 import CustomersVehicles from "./pages/admin/CustomersVehicles";
@@ -81,7 +82,7 @@ function App() {
             <Route path="leave-requests" element={<LeaveRequests />} />
             <Route path="profile" element={<AdminProfile />} />
 
-            {/* <Route path="reports" element={<AdminReports />} /> */}
+            <Route path="reports" element={<AdminReports />} />
           </Route>
         </Routes>
       </div>

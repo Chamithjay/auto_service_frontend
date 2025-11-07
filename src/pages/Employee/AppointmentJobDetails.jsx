@@ -13,6 +13,8 @@ import {
 
 import API from "../../api/Api";
 import InfoCard from "../../Components/InfoCard";
+import EmployeeNavbar from "../../components/employee/EmployeeNavbar";
+import EmployeeSidebar from "../../components/employee/EmployeeSidebar";
 
 const AppointmentJobDetailsPage = () => {
   const { jobId } = useParams();
@@ -22,13 +24,28 @@ const AppointmentJobDetailsPage = () => {
   const [costNote, setCostNote] = useState("");
   const [totalCost, setTotalCost] = useState("");
   const [note, setNote] = useState("");
-  const currentEmployeeId = 3; 
+  const currentEmployeeId = 3;
   const [isTimerRunning, setIsTimerRunning] = useState(false);
-  
+
+  // Get user info from localStorage and decode JWT token
+  const user = JSON.parse(localStorage.getItem("user") || "{}");
+  let employeeId = user.id || user.employeeId || user.userId;
+
+  if (!employeeId && user.token) {
+    try {
+      const payload = JSON.parse(atob(user.token.split(".")[1]));
+      employeeId = payload.uid;
+    } catch (error) {
+      console.error("Error decoding token:", error);
+    }
+  }
+
   // Get the current employee's assignment
   const getCurrentEmployeeAssignment = () => {
     if (!jobData?.jobAssignments) return null;
-    return jobData.jobAssignments.find(assignment => assignment.employeeId === currentEmployeeId);
+    return jobData.jobAssignments.find(
+      (assignment) => assignment.employeeId === currentEmployeeId
+    );
   };
 
   const [isLoading, setIsLoading] = useState(true);
@@ -51,10 +68,10 @@ const AppointmentJobDetailsPage = () => {
 
       const payload = {
         status: "ONGOING",
-        startTime: formatTimeString(new Date())
+        startTime: formatTimeString(new Date()),
       };
 
-      console.log('Starting work:', payload);
+      console.log("Starting work:", payload);
 
       const response = await API.patch(
         `/job-assignments/log-start-time/1`,
@@ -103,7 +120,7 @@ const AppointmentJobDetailsPage = () => {
       }
 
       const payload = {
-        endTime: formatTimeString(new Date())
+        endTime: formatTimeString(new Date()),
       };
 
       console.log("Finishing work:", payload);
@@ -129,12 +146,15 @@ const AppointmentJobDetailsPage = () => {
 
   // Mark the appointment job as completed.
   const CompleteTheJob = async () => {
-    try{
+    try {
       const payload = {
-        jobStatus: "COMPLETED"
-      }
+        jobStatus: "COMPLETED",
+      };
       console.log("Completing job with payload:", payload);
-      const response = await API.patch(`/appointment-jobs/update-job-status/1`, payload);
+      const response = await API.patch(
+        `/appointment-jobs/update-job-status/1`,
+        payload
+      );
       if (response.status === 200) {
         setShowSuccess("Job Completed");
         setTimeout(() => setShowSuccess(""), 3000);
@@ -147,7 +167,7 @@ const AppointmentJobDetailsPage = () => {
       setError("Failed to complete job. Please try again.");
       setTimeout(() => setError(null), 3000);
     }
-  }
+  };
 
   // Save additional cost.
   const SaveAdditionalCost = async () => {
@@ -179,7 +199,9 @@ const AppointmentJobDetailsPage = () => {
       }
     } catch (error) {
       console.error("Error adding additional cost:", error);
-      setError(error.message || "Failed to add additional cost. Please try again.");
+      setError(
+        error.message || "Failed to add additional cost. Please try again."
+      );
       setTimeout(() => setError(null), 3000);
     }
   };
@@ -188,16 +210,19 @@ const AppointmentJobDetailsPage = () => {
   const SaveJobNote = async () => {
     try {
       const payload = {
-        jobNote: note, 
+        jobNote: note,
       };
       console.log("Adding note:", payload);
 
-      const response = await API.patch(`/appointment-jobs/save-job-note/1`, payload);
+      const response = await API.patch(
+        `/appointment-jobs/save-job-note/1`,
+        payload
+      );
       if (response.status === 200) {
         setShowSuccess("note");
         setNote("");
         setTimeout(() => setShowSuccess(""), 3000);
-        await getJobDetails(); 
+        await getJobDetails();
       } else {
         throw new Error("Failed to add job note");
       }
@@ -206,10 +231,7 @@ const AppointmentJobDetailsPage = () => {
       setError("Failed to add job note. Please try again.");
       setTimeout(() => setError(null), 3000);
     }
-  }
-
-
-
+  };
 
   const getJobDetails = async () => {
     try {
@@ -271,8 +293,10 @@ const AppointmentJobDetailsPage = () => {
   }
 
   return (
-    <div className="min-h-screen bg-gray-50 p-6">
-      <div className="max-w-6xl mx-auto">
+    <div className="min-h-screen bg-gray-50">
+      <EmployeeNavbar user={user} />
+      <EmployeeSidebar />
+      <div className="max-w-6xl mx-auto p-6 ml-64 mt-16">
         {/* Header */}
         <div className="bg-white rounded-lg shadow-sm p-6 mb-6">
           <div className="flex justify-between items-center">
@@ -401,7 +425,7 @@ const AppointmentJobDetailsPage = () => {
                         </p>
                       );
                     }
-              
+
                     return null;
                   })()}
                 </div>
@@ -409,7 +433,7 @@ const AppointmentJobDetailsPage = () => {
                 <div className="flex justify-center">
                   {(() => {
                     const assignment = getCurrentEmployeeAssignment();
-                    
+
                     // If job is completed, show completion message
                     if (jobData.jobStatus === "COMPLETED") {
                       return (
@@ -419,7 +443,7 @@ const AppointmentJobDetailsPage = () => {
                         </div>
                       );
                     }
-                    
+
                     // If employee is not assigned
                     if (!assignment) {
                       return (
@@ -485,10 +509,12 @@ const AppointmentJobDetailsPage = () => {
                 Time History
               </h3>
               <div className="space-y-3">
-                {jobData.jobAssignments && 
-                 jobData.jobAssignments.filter(log => log.startTime && log.endTime).length > 0 ? (
+                {jobData.jobAssignments &&
+                jobData.jobAssignments.filter(
+                  (log) => log.startTime && log.endTime
+                ).length > 0 ? (
                   jobData.jobAssignments
-                    .filter(log => log.startTime && log.endTime)
+                    .filter((log) => log.startTime && log.endTime)
                     .map((log, idx) => (
                       <div
                         key={idx}
@@ -524,9 +550,12 @@ const AppointmentJobDetailsPage = () => {
                     ))
                 ) : (
                   <div className="text-center py-4">
-                    <p className="text-[#9BA4B4] mb-2">No completed time records available</p>
+                    <p className="text-[#9BA4B4] mb-2">
+                      No completed time records available
+                    </p>
                     <p className="text-sm text-[#9BA4B4]">
-                      Time history will appear here once you complete and save your work session
+                      Time history will appear here once you complete and save
+                      your work session
                     </p>
                   </div>
                 )}
@@ -556,7 +585,10 @@ const AppointmentJobDetailsPage = () => {
                   placeholder="Enter amount"
                   value={costAmount}
                   onChange={(e) => setCostAmount(e.target.value)}
-                  disabled={jobData.jobStatus === "COMPLETED" || getCurrentEmployeeAssignment()?.additional_cost !== null}
+                  disabled={
+                    jobData.jobStatus === "COMPLETED" ||
+                    getCurrentEmployeeAssignment()?.additional_cost !== null
+                  }
                   className="w-full px-4 py-2 border border-[#9BA4B4] rounded-lg focus:outline-none focus:ring-2 focus:ring-[#14274E] disabled:bg-gray-100"
                 />
               </div>
@@ -569,7 +601,10 @@ const AppointmentJobDetailsPage = () => {
                   placeholder="Add details about this cost"
                   value={costNote}
                   onChange={(e) => setCostNote(e.target.value)}
-                  disabled={jobData.jobStatus === "COMPLETED" || getCurrentEmployeeAssignment()?.additional_cost !== null}
+                  disabled={
+                    jobData.jobStatus === "COMPLETED" ||
+                    getCurrentEmployeeAssignment()?.additional_cost !== null
+                  }
                   className={`w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-[#14274E] disabled:bg-gray-100 h-32 resize-none ${
                     costAmount && !costNote.trim()
                       ? "border-red-500"
@@ -704,7 +739,7 @@ const AppointmentJobDetailsPage = () => {
               </h3>
               <div className="space-y-3 max-h-[300px] overflow-y-auto">
                 {jobData.jonNote ? (
-                  <div className="p-4 bg-gray-50 rounded-lg"> 
+                  <div className="p-4 bg-gray-50 rounded-lg">
                     <p className="text-[#394867] text-sm">{jobData.jonNote}</p>
                   </div>
                 ) : (

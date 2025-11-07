@@ -1,13 +1,18 @@
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import API from "../api/Api";
-import Navbar from "../components/Navbar";
+import CustomerNavbar from "../components/Customer/CustomerNavbar";
+import CustomerSidebar from "../components/Customer/CustomerSidebar";
 
 const AppointmentBooking = () => {
   const navigate = useNavigate();
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
   const [success, setSuccess] = useState("");
+  const [isSidebarOpen, setIsSidebarOpen] = useState(false);
+
+  // Get user info from localStorage
+  const user = JSON.parse(localStorage.getItem("user") || "{}");
 
   // Step state management
   const [currentStep, setCurrentStep] = useState(1); // 1: vehicle selection, 2: service selection & details
@@ -225,9 +230,17 @@ const AppointmentBooking = () => {
 
   return (
     <div className="min-h-screen bg-[#F1F6F9]">
-      {/* <Navbar /> */}
+      <CustomerNavbar
+        user={user}
+        onMenuToggle={() => setIsSidebarOpen(!isSidebarOpen)}
+        isSidebarOpen={isSidebarOpen}
+      />
+      <CustomerSidebar
+        isOpen={isSidebarOpen}
+        onClose={() => setIsSidebarOpen(false)}
+      />
 
-      <div className="container mx-auto px-4 py-8">
+      <div className="container mx-auto px-4 py-8 lg:ml-64 pt-20">
         <div className="max-w-4xl mx-auto">
           {/* Header */}
           <div className="bg-white rounded-lg shadow-md p-6 mb-6">

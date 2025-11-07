@@ -1,8 +1,9 @@
 import { useNavigate } from "react-router-dom";
+import { Link } from "react-router-dom";
 import companyLogo from "../../assets/company_logo.png";
 import NotificationBell from "../Notification/NotificationBell";
 
-const AdminNavbar = ({ user }) => {
+const CustomerNavbar = ({ user, onMenuToggle, isSidebarOpen }) => {
   const navigate = useNavigate();
 
   const handleLogout = () => {
@@ -15,16 +16,46 @@ const AdminNavbar = ({ user }) => {
     <nav className="bg-[#14274E] shadow-lg fixed w-full top-0 z-50 border-b border-[#394867]/20">
       <div className="w-full px-6">
         <div className="flex justify-between items-center h-16">
-          {/* Logo */}
+          {/* Left Side: Mobile Menu Button & Logo */}
           <div className="flex items-center">
-            <img
-              src={companyLogo}
-              alt="AutoService Logo"
-              className="h-20 w-auto object-contain"
-            />
-            <span className="ml-4 text-white text-xl font-bold">
-              Admin Panel
-            </span>
+            {/* Mobile Menu Toggle */}
+            <button
+              onClick={onMenuToggle}
+              className="lg:hidden mr-4 text-white hover:text-[#9BA4B4] transition-colors"
+              aria-label="Toggle menu"
+            >
+              <svg
+                className="w-6 h-6"
+                fill="none"
+                stroke="currentColor"
+                viewBox="0 0 24 24"
+              >
+                {isSidebarOpen ? (
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth="2"
+                    d="M6 18L18 6M6 6l12 12"
+                  />
+                ) : (
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth="2"
+                    d="M4 6h16M4 12h16M4 18h16"
+                  />
+                )}
+              </svg>
+            </button>
+
+            {/* Logo */}
+            <Link to="/customer/dashboard" className="flex items-center">
+              <img
+                src={companyLogo}
+                alt="AutoService Logo"
+                className="h-20 w-auto object-contain"
+              />
+            </Link>
           </div>
 
           {/* Right Side: Notifications, User Info & Logout */}
@@ -37,7 +68,7 @@ const AdminNavbar = ({ user }) => {
             {/* User Info */}
             <div className="text-right">
               <p className="text-white font-semibold">{user?.username}</p>
-              <p className="text-[#9BA4B4] text-sm">{user?.role}</p>
+              <p className="text-[#9BA4B4] text-sm">Customer</p>
             </div>
 
             {/* Logout Button */}
@@ -67,4 +98,4 @@ const AdminNavbar = ({ user }) => {
   );
 };
 
-export default AdminNavbar;
+export default CustomerNavbar;

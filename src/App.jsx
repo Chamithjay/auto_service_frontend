@@ -13,11 +13,14 @@ import ForgotPassword from "./pages/ForgotPassword";
 import ProtectedRoute from "./components/ProtectedRoute";
 import ResetInitialPassword from "./pages/ResetInitialPassword";
 import PasswordChanged from "./pages/PasswordChanged";
-import EmployeeProfile from "./components/EmployeeProfile";
+
+// --- Employee Layout ---
+import EmployeeLayout from "./components/employee/EmployeeLayout";
+import EmployeeDashboard from "./components/employee/EmployeeDashboard";
+import EmployeeProfile from "./components/employee/EmployeeProfile";
 
 // --- Employee Pages (From File 1) ---
 // Note: I'm assuming the paths based on File 1's structure
-import EmployeeDashboard from "./pages/EmployeeDashboard";
 import AppointmentBooking from "./pages/AppointmentBooking";
 import AppointmentHistory from "./pages/AppointmentHistory";
 import AppointmentJobDetailsPage from "./pages/Employee/AppointmentJobDetails";
@@ -56,21 +59,6 @@ function App() {
     <Router>
       <div className="App">
         <Routes>
-          {/* Direct routes to employee pages - no login */}
-          <Route path="/employee/dashboard" element={<EmployeeDashboard />} />
-          <Route path="/employee/profile" element={<EmployeeProfile />} />
-
-          {/* Default route goes straight to dashboard */}
-          <Route
-            path="/"
-            element={<Navigate to="/employee/dashboard" replace />}
-          />
-
-          {/* Catch all other routes and redirect to dashboard */}
-          <Route
-            path="*"
-            element={<Navigate to="/employee/dashboard" replace />}
-          />
           {/* === Public Routes === */}
           <Route path="/" element={<Navigate to="/home" replace />} />
           <Route path="/home" element={<Home />} />
@@ -83,9 +71,15 @@ function App() {
           />
           <Route path="/password-changed" element={<PasswordChanged />} />
 
-          {/* === Employee Routes === */}
-          {/* These are from File 1. They remain separate for now. */}
-          <Route path="/employee/dashboard" element={<EmployeeDashboard />} />
+          {/* === Employee Routes (Using Nested Layout) === */}
+          <Route path="/employee" element={<EmployeeLayout />}>
+            <Route path="dashboard" element={<EmployeeDashboard />} />
+            <Route path="profile" element={<EmployeeProfile />} />
+            <Route path="assignments" element={<EmployeeDashboard />} />
+            <Route path="leave-requests" element={<RequestLeave />} />
+          </Route>
+
+          {/* Additional Employee Routes (outside layout for now) */}
           <Route path="/appointment/book" element={<AppointmentBooking />} />
           <Route
             path="/appointments/history"
@@ -95,7 +89,6 @@ function App() {
             path="/appointment-jobs/:id"
             element={<AppointmentJobDetailsPage />}
           />
-          <Route path="/request-leave" element={<RequestLeave />} />
 
           {/* === Admin Routes (Using File 2's Nested Layout) === */}
           <Route path="/admin" element={<AdminLayout />}>

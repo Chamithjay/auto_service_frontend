@@ -1,12 +1,26 @@
 import React, { useState, useEffect, useRef } from "react";
 import { useNavigate } from "react-router-dom";
-import { employeeAPI } from "../api/Api";
+import { employeeAPI } from "../../api/Api";
 
 const EmployeeProfile = () => {
   const navigate = useNavigate();
   const fileInputRef = useRef(null);
 
-  const employeeId = 5;
+  // Get employee ID from logged-in user
+  const user = JSON.parse(localStorage.getItem("user") || "{}");
+
+  // Decode JWT token to get uid (employee ID)
+  let employeeId = user.id || user.employeeId || user.userId;
+
+  if (!employeeId && user.token) {
+    try {
+      // Decode JWT token (format: header.payload.signature)
+      const payload = JSON.parse(atob(user.token.split(".")[1]));
+      employeeId = payload.uid;
+    } catch (error) {
+      console.error("Error decoding token:", error);
+    }
+  }
 
   const [profile, setProfile] = useState({
     employeeId: "",
@@ -45,8 +59,17 @@ const EmployeeProfile = () => {
 
   useEffect(() => {
     const fetchProfile = async () => {
+      // Check if employee ID exists
+      if (!employeeId) {
+        console.error("No employee ID found. User object:", user);
+        setError("User information not found. Please login again.");
+        setLoading(false);
+        return;
+      }
+
       try {
         setLoading(true);
+        console.log("Fetching profile for employee ID:", employeeId);
         const response = await employeeAPI.getProfile(employeeId);
         const employeeData = response.data;
 
@@ -85,7 +108,20 @@ const EmployeeProfile = () => {
         setLoading(false);
       } catch (err) {
         console.error("Error fetching profile:", err);
-        setError("Failed to load profile data. Please try again.");
+
+        // More detailed error message
+        if (err.response?.status === 500) {
+          setError(
+            "Backend server error. The employee profile endpoint may not be implemented or there's a database issue. Please contact your system administrator."
+          );
+        } else if (err.response?.status === 404) {
+          setError("Employee profile not found. Please contact support.");
+        } else if (err.response?.status === 401) {
+          setError("Session expired. Redirecting to login...");
+          setTimeout(() => navigate("/login"), 2000);
+        } else {
+          setError("Failed to load profile data. Please try again.");
+        }
         setLoading(false);
       }
     };

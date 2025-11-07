@@ -1,11 +1,25 @@
 import React, { useState, useEffect, useMemo } from "react";
 import { useNavigate } from "react-router-dom";
-import { employeeAPI } from "../api/Api";
+import { employeeAPI } from "../../api/Api";
 
 const EmployeeDashboard = () => {
   const navigate = useNavigate();
 
-  const employeeId = 5;
+  // Get employee ID from logged-in user
+  const user = JSON.parse(localStorage.getItem("user") || "{}");
+
+  // Decode JWT token to get uid (employee ID)
+  let employeeId = user.id || user.employeeId || user.userId;
+
+  if (!employeeId && user.token) {
+    try {
+      // Decode JWT token (format: header.payload.signature)
+      const payload = JSON.parse(atob(user.token.split(".")[1]));
+      employeeId = payload.uid;
+    } catch (error) {
+      console.error("Error decoding token:", error);
+    }
+  }
 
   const [dashboardData, setDashboardData] = useState({
     todayAssignments: [],
@@ -65,6 +79,13 @@ const EmployeeDashboard = () => {
 
   useEffect(() => {
     const initializeDashboard = async () => {
+      // Check if employee ID exists
+      if (!employeeId) {
+        setError("User information not found. Please login again.");
+        setLoading(false);
+        return;
+      }
+
       try {
         setLoading(true);
 
@@ -75,18 +96,34 @@ const EmployeeDashboard = () => {
 
         setEmployee(profileResponse.data);
         setDashboardData(dashboardResponse.data);
+        setError(null); // Clear any previous errors
         setLoading(false);
       } catch (err) {
         console.error("Error loading dashboard:", err);
-        setError("Failed to load dashboard data. Please try again.");
+
+        // More detailed error message
+        if (err.response?.status === 500) {
+          setError(
+            "Server error. The backend may not have data for this employee ID. Please contact support."
+          );
+        } else if (err.response?.status === 404) {
+          setError("Employee profile not found. Please contact support.");
+        } else if (err.response?.status === 401) {
+          setError("Session expired. Please login again.");
+          setTimeout(() => navigate("/login"), 2000);
+        } else {
+          setError("Failed to load dashboard data. Please try again.");
+        }
         setLoading(false);
       }
     };
 
     initializeDashboard();
 
-    // Auto-refresh
-    const interval = setInterval(initializeDashboard, refreshInterval);
+    // Auto-refresh only if no error
+    const interval = setInterval(() => {
+      if (!error) initializeDashboard();
+    }, refreshInterval);
     return () => clearInterval(interval);
   }, [employeeId, refreshInterval]);
 
@@ -190,15 +227,15 @@ const EmployeeDashboard = () => {
           <div className="flex gap-4 justify-center">
             <button
               onClick={handleRefresh}
-              className="px-6 py-3 bg-gradient-to-r from-indigo-500 to-purple-600 text-white rounded-lg font-semibold hover:-translate-y-0.5 transition-all shadow-lg hover:shadow-xl"
+              className="px-6 py-3 bg-[#14274E] text-white rounded-lg font-semibold hover:-translate-y-0.5 transition-all shadow-lg hover:shadow-xl"
             >
               Try Again
             </button>
             <button
-              onClick={() => navigate("/employee/profile")}
+              onClick={() => navigate("/login")}
               className="px-6 py-3 bg-gray-200 text-gray-700 rounded-lg font-semibold hover:bg-gray-300 transition-all"
             >
-              Go to Profile
+              Go to Login
             </button>
           </div>
         </div>

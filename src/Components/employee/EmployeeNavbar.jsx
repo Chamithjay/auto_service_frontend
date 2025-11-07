@@ -2,7 +2,7 @@ import { useNavigate } from "react-router-dom";
 import companyLogo from "../../assets/company_logo.png";
 import NotificationBell from "../Notification/NotificationBell";
 
-const AdminNavbar = ({ user }) => {
+const EmployeeNavbar = ({ user }) => {
   const navigate = useNavigate();
 
   const handleLogout = () => {
@@ -23,7 +23,7 @@ const AdminNavbar = ({ user }) => {
               className="h-20 w-auto object-contain"
             />
             <span className="ml-4 text-white text-xl font-bold">
-              Admin Panel
+              Employee Portal
             </span>
           </div>
 
@@ -67,4 +67,4 @@ const AdminNavbar = ({ user }) => {
   );
 };
 
-export default AdminNavbar;
+export default EmployeeNavbar;

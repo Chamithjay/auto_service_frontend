@@ -24,19 +24,6 @@ const AdminManageServices = () => {
   const fetchServices = async () => {
     try {
       const response = await API.get("admin/services");
-      // Normalize common response shapes: array, { data: [] }, { items: [] }, pageable content
-      const payload = response.data;
-      let list = [];
-      if (Array.isArray(payload)) list = payload;
-      else if (Array.isArray(payload?.data)) list = payload.data;
-      else if (Array.isArray(payload?.items)) list = payload.items;
-      else if (Array.isArray(payload?.content))
-        list = payload.content; // Spring pageable
-      else list = [];
-      setServices(list);
-    } catch (err) {
-      console.error("GET /admin/services failed:", err?.response || err);
-      const response = await API.get("/admin/services");
 
       // Handle case where backend returns JSON as string
       let servicesData = [];
@@ -66,6 +53,10 @@ const AdminManageServices = () => {
         servicesData = response.data;
       } else if (response.data && Array.isArray(response.data.data)) {
         servicesData = response.data.data;
+      } else if (response.data && Array.isArray(response.data.items)) {
+        servicesData = response.data.items;
+      } else if (response.data && Array.isArray(response.data.content)) {
+        servicesData = response.data.content;
       }
 
       setServices(servicesData);
@@ -159,49 +150,29 @@ const AdminManageServices = () => {
               </tr>
             </thead>
             <tbody className="bg-white divide-y divide-gray-200">
-              {services.map((service, idx) => (
-                <tr key={service?.serviceItemId ?? idx}>
-                  <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-[#14274E]">
-                    {service?.serviceItemName ?? "-"}
-                  </td>
-                  <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                    {service?.serviceItemType ?? "-"}
-                  </td>
-                  <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                    {formatCost(service?.serviceItemCost)}
-                  </td>
-                  <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                    {formatDuration(service?.estimatedDuration)}
-                  </td>
-                  <td className="px-6 py-4 whitespace-nowrap text-right text-sm font-medium space-x-4">
-                    <Link
-                      to={`/admin/service/edit/${service.serviceItemId}`}
-                      className="text-[#394867] hover:text-[#14274E]"
-                    >
-                      Edit
-                    </Link>
-                    <button
-                      onClick={() => handleDelete(service.serviceItemId)}
-                      className="text-red-600 hover:text-red-900"
-                    >
-                      Delete
-                    </button>
+              {services.length === 0 ? (
+                <tr>
+                  <td
+                    colSpan="5"
+                    className="px-6 py-8 text-center text-gray-500"
+                  >
+                    No services found. Click "Add Services" to create one.
                   </td>
                 </tr>
               ) : (
-                services.map((service) => (
-                  <tr key={service.serviceItemId}>
+                services.map((service, idx) => (
+                  <tr key={service?.serviceItemId ?? idx}>
                     <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-[#14274E]">
-                      {service.serviceItemName}
+                      {service?.serviceItemName ?? "-"}
                     </td>
                     <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                      {service.serviceItemType}
+                      {service?.serviceItemType ?? "-"}
                     </td>
                     <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                      {service.serviceItemCost.toFixed(2)}
+                      {formatCost(service?.serviceItemCost)}
                     </td>
                     <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                      {service.estimatedDuration}
+                      {formatDuration(service?.estimatedDuration)}
                     </td>
                     <td className="px-6 py-4 whitespace-nowrap text-right text-sm font-medium space-x-4">
                       <Link

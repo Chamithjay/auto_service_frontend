@@ -11,9 +11,6 @@ const LeaveRequests = () => {
   const [toast, setToast] = useState({ show: false, message: '', type: '' });
   const [sortConfig, setSortConfig] = useState({ key: 'leaveDate', direction: 'desc' });
 
-  // Get admin ID from localStorage
-  const adminId = localStorage.getItem('adminId');
-
   useEffect(() => {
     fetchLeaves();
   }, []);
@@ -47,7 +44,6 @@ const LeaveRequests = () => {
       let aValue = a[sortConfig.key];
       let bValue = b[sortConfig.key];
 
-      // Handle dates
       if (sortConfig.key === 'leaveDate') {
         aValue = new Date(aValue);
         bValue = new Date(bValue);
@@ -68,43 +64,20 @@ const LeaveRequests = () => {
     }));
   };
 
-  // const handleStatusUpdate = async (leaveId, newStatus) => {
-  //   try {
-  //     const endpoint = newStatus === 'APPROVED' ? 'approve' : 'reject';
-  //     await axios.put(
-  //       `http://localhost:9091/api/leaves/${leaveId}/${endpoint}?adminId=${adminId}`
-  //     );
-  //     fetchLeaves();
-  //     showToast(`Leave request ${newStatus.toLowerCase()} successfully`, 'success');
-  //   } catch (error) {
-  //     console.error('Error updating leave status:', error);
-  //     showToast(`Failed to ${newStatus.toLowerCase()} leave request`, 'error');
-  //   }
-  // };
-const handleStatusUpdate = async (leaveId, newStatus) => {
-  try {
-    const admin = JSON.parse(localStorage.getItem("user")); // get logged-in user
-    const adminId = admin ? admin.id : null;
+  // ✅ Updated: No adminId required
+  const handleStatusUpdate = async (leaveId, newStatus) => {
+    try {
+      const endpoint = newStatus === "APPROVED" ? "approve" : "reject";
+      
+      await axios.put(`http://localhost:9091/api/leaves/${leaveId}/${endpoint}`);
 
-    if (!adminId) {
-      console.error("Admin ID not found. Cannot update leave.");
-      showToast("You are not logged in as an admin", "error");
-      return;
+      fetchLeaves(); // refresh the leave list
+      showToast(`Leave request ${newStatus.toLowerCase()} successfully`, "success");
+    } catch (error) {
+      console.error("Error updating leave status:", error);
+      showToast(`Failed to ${newStatus.toLowerCase()} leave request`, "error");
     }
-
-    const endpoint = newStatus === "APPROVED" ? "approve" : "reject";
-
-    await axios.put(
-      `http://localhost:9091/api/leaves/${leaveId}/${endpoint}?adminId=${adminId}`
-    );
-
-    fetchLeaves(); // refresh the leave list
-    showToast(`Leave request ${newStatus.toLowerCase()} successfully`, "success");
-  } catch (error) {
-    console.error("Error updating leave status:", error);
-    showToast(`Failed to ${newStatus.toLowerCase()} leave request`, "error");
-  }
-};
+  };
 
   const showToast = (message, type) => {
     setToast({ show: true, message, type });
@@ -169,7 +142,7 @@ const handleStatusUpdate = async (leaveId, newStatus) => {
               <tr>
                 <th 
                   className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider cursor-pointer hover:bg-gray-100"
-                  onClick={() => handleSort('employe')}
+                  onClick={() => handleSort('employee')}
                 >
                   Employee
                 </th>
@@ -204,7 +177,7 @@ const handleStatusUpdate = async (leaveId, newStatus) => {
                 <tr key={leave.leaveId} className="hover:bg-gray-50">
                   <td className="px-6 py-4 whitespace-nowrap">
                     <div className="text-sm font-medium text-gray-900">
-                      {leave.employee?.firstName} {leave.employee?.lastName}
+                      {leave.employeeId}
                     </div>
                   </td>
                   <td className="px-6 py-4 whitespace-nowrap">

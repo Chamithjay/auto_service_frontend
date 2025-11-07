@@ -64,14 +64,14 @@ const LeaveRequests = () => {
     }));
   };
 
-  // ✅ Updated: No adminId required
+  
   const handleStatusUpdate = async (leaveId, newStatus) => {
     try {
       const endpoint = newStatus === "APPROVED" ? "approve" : "reject";
       
       await axios.put(`http://localhost:8080/api/leaves/${leaveId}/${endpoint}`);
 
-      fetchLeaves(); // refresh the leave list
+      fetchLeaves();
       showToast(`Leave request ${newStatus.toLowerCase()} successfully`, "success");
     } catch (error) {
       console.error("Error updating leave status:", error);

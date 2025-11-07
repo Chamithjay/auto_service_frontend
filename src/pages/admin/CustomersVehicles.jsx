@@ -120,7 +120,7 @@ const CustomersVehicles = () => {
   return (
     <AdminLayout>
       <div className="w-max -mx-50">
-        {/* Header */}
+        
         <div className="flex flex-col md:flex-row justify-between items-start md:items-center mb-6 gap-4">
           <h1 className="text-3xl font-bold text-[#14274E]">Vehicles</h1>
           <div className="flex flex-col sm:flex-row gap-4 w-full md:w-2/3">

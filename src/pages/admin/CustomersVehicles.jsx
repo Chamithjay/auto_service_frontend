@@ -29,7 +29,7 @@ const CustomersVehicles = () => {
   // Fetch vehicles
   const fetchVehicles = async () => {
     try {
-      const response = await axios.get('http://localhost:8080/api/vehicles');
+      const response = await axios.get('http://localhost:9091/api/vehicles');
       setVehicles(response.data);
       setErrorVehicles(null);
       setLoadingVehicles(false);
@@ -44,7 +44,7 @@ const CustomersVehicles = () => {
   // Fetch customers
   const fetchCustomers = async () => {
     try {
-      const response = await axios.get('http://localhost:8080/api/users/customers');
+      const response = await axios.get('http://localhost:9091/api/users/customers');
       setCustomers(response.data);
       setErrorCustomers(null);
       setLoadingCustomers(false);

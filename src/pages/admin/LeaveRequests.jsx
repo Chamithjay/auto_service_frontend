@@ -21,7 +21,7 @@ const LeaveRequests = () => {
 
   const fetchLeaves = async () => {
     try {
-      const response = await axios.get('http://localhost:8080/api/leaves');
+      const response = await axios.get('http://localhost:9091/api/leaves');
       setLeaves(response.data);
       setLoading(false);
     } catch (error) {
@@ -69,7 +69,7 @@ const LeaveRequests = () => {
     try {
       const endpoint = newStatus === "APPROVED" ? "approve" : "reject";
       
-      await axios.put(`http://localhost:8080/api/leaves/${leaveId}/${endpoint}`);
+      await axios.put(`http://localhost:9091/api/leaves/${leaveId}/${endpoint}`);
 
       fetchLeaves(); // refresh the leave list
       showToast(`Leave request ${newStatus.toLowerCase()} successfully`, "success");

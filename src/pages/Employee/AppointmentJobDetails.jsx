@@ -17,19 +17,20 @@ import EmployeeNavbar from "../../components/employee/EmployeeNavbar";
 import EmployeeSidebar from "../../components/employee/EmployeeSidebar";
 
 const AppointmentJobDetailsPage = () => {
-  const { jobId } = useParams();
+  const { assignmentId } = useParams();
   const [jobData, setJobData] = useState(null);
   const [showSuccess, setShowSuccess] = useState("");
   const [costAmount, setCostAmount] = useState("");
   const [costNote, setCostNote] = useState("");
   const [totalCost, setTotalCost] = useState("");
   const [note, setNote] = useState("");
-  const currentEmployeeId = 3;
+ 
   const [isTimerRunning, setIsTimerRunning] = useState(false);
 
   // Get user info from localStorage and decode JWT token
   const user = JSON.parse(localStorage.getItem("user") || "{}");
   let employeeId = user.id || user.employeeId || user.userId;
+  const currentEmployeeId = employeeId;
 
   if (!employeeId && user.token) {
     try {
@@ -74,7 +75,7 @@ const AppointmentJobDetailsPage = () => {
       console.log("Starting work:", payload);
 
       const response = await API.patch(
-        `/job-assignments/log-start-time/1`,
+        `/job-assignments/log-start-time/${assignmentId}`,
         payload
       );
 
@@ -126,7 +127,7 @@ const AppointmentJobDetailsPage = () => {
       console.log("Finishing work:", payload);
 
       const response = await API.patch(
-        `/job-assignments/log-end-time/1`,
+        `/job-assignments/log-end-time/${assignmentId}`,
         payload
       );
 
@@ -152,7 +153,7 @@ const AppointmentJobDetailsPage = () => {
       };
       console.log("Completing job with payload:", payload);
       const response = await API.patch(
-        `/appointment-jobs/update-job-status/1`,
+        `/appointment-jobs/update-job-status/${assignmentId}`,
         payload
       );
       if (response.status === 200) {
@@ -187,7 +188,7 @@ const AppointmentJobDetailsPage = () => {
       };
       console.log("Adding cost:", payload);
 
-      const response = await API.patch(`/job-assignments/add-costs/1`, payload);
+      const response = await API.patch(`/job-assignments/add-costs/${assignmentId}`, payload);
       if (response.status === 200) {
         setShowSuccess("cost");
         setCostAmount("");
@@ -215,7 +216,7 @@ const AppointmentJobDetailsPage = () => {
       console.log("Adding note:", payload);
 
       const response = await API.patch(
-        `/appointment-jobs/save-job-note/1`,
+        `/appointment-jobs/save-job-note/${assignmentId}`,
         payload
       );
       if (response.status === 200) {
@@ -235,7 +236,8 @@ const AppointmentJobDetailsPage = () => {
 
   const getJobDetails = async () => {
     try {
-      const response = await API.get(`/appointment-jobs/1`);
+      console.log("Fetching job details for assignmentId:", assignmentId);
+      const response = await API.get(`/appointment-jobs/${assignmentId}`);
       if (response.data) {
         setIsLoading(false);
         console.log("Job data received:", response.data);
@@ -301,8 +303,8 @@ const AppointmentJobDetailsPage = () => {
         <div className="bg-white rounded-lg shadow-sm p-4 sm:p-6 mb-6">
           <div className="flex flex-col lg:flex-row lg:justify-between lg:items-center gap-4">
             <div>
-              <h1 className="text-2xl sm:text-3xl font-bold text-[#14274E] mb-2">
-                Job #{jobId}
+              <h1 className="text-3xl font-bold text-[#14274E] mb-2">
+                Job #{assignmentId}
               </h1>
               <p className="text-[#394867] text-base sm:text-lg">
                 {jobData?.serviceItem?.serviceItemName || "N/A"}

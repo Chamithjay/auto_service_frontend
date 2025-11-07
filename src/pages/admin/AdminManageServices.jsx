@@ -3,10 +3,21 @@ import { Link } from "react-router-dom";
 import API from "../../api/Api";
 import ConfirmModal from "../../components/ConfirmModal";
 import Toast from "../../components/Toast";
+import ListFilter from "../../components/ListFilter";
+import PaginationControls from "../../components/PaginationControls";
+import { TableSkeleton } from "../../components/LoadingStates";
 
 const AdminManageServices = () => {
   const [services, setServices] = useState([]);
   const [error, setError] = useState("");
+  const [loading, setLoading] = useState(true);
+  const [searchTerm, setSearchTerm] = useState("");
+  const [serviceTypeFilter, setServiceTypeFilter] = useState("ALL");
+  const [sortBy, setSortBy] = useState("name"); // 'name', 'cost', 'duration'
+  const [sortOrder, setSortOrder] = useState("asc");
+  const [currentPage, setCurrentPage] = useState(1);
+  const [groupByType, setGroupByType] = useState(false); // Toggle category grouping
+  const itemsPerPage = 10;
 
   // Safe formatters to avoid runtime crashes when backend returns null/undefined
   const formatCost = (value) => {
@@ -21,52 +32,131 @@ const AdminManageServices = () => {
     fetchServices();
   }, []);
 
+  // Handle sorting by clicking headers
+  const handleSort = (column) => {
+    if (sortBy === column) {
+      setSortOrder(sortOrder === "asc" ? "desc" : "asc");
+    } else {
+      setSortBy(column);
+      setSortOrder("asc");
+    }
+    setCurrentPage(1);
+  };
+
+  // Get sort icon for headers
+  const getSortIcon = (column) => {
+    if (sortBy !== column) return "↕️";
+    return sortOrder === "asc" ? "↑" : "↓";
+  };
+
   const fetchServices = async () => {
     try {
+      setLoading(true);
       const response = await API.get("admin/services");
-
-      // Handle case where backend returns JSON as string
-      let servicesData = [];
-      if (typeof response.data === "string") {
+      // Normalize common response shapes: array, { data: [] }, { items: [] }, pageable content
+      const payload = response?.data;
+      let list = [];
+      if (Array.isArray(payload)) list = payload;
+      else if (Array.isArray(payload?.data)) list = payload.data;
+      else if (Array.isArray(payload?.items)) list = payload.items;
+      else if (Array.isArray(payload?.content))
+        list = payload.content; // Spring pageable
+      else if (typeof payload === "string") {
+        // Backend sometimes returns JSON as string; try to parse
         try {
-          // Try to parse the JSON string
-          const parsed = JSON.parse(response.data);
-          servicesData = Array.isArray(parsed) ? parsed : [];
-        } catch (parseError) {
-          // Silently handle malformed JSON with circular references
-          // Extract just the basic service info using regex
-          const serviceMatches = response.data.matchAll(
-            /"serviceItemId":(\d+),"serviceItemName":"([^"]+)","vehicleType":"([^"]+)","requiredEmployeeCount":(\d+),"serviceItemCost":([\d.]+),"serviceItemType":"([^"]+)","estimatedDuration":(\d+)/g
-          );
-
-          servicesData = Array.from(serviceMatches).map((match) => ({
-            serviceItemId: parseInt(match[1]),
-            serviceItemName: match[2],
-            vehicleType: match[3],
-            requiredEmployeeCount: parseInt(match[4]),
-            serviceItemCost: parseFloat(match[5]),
-            serviceItemType: match[6],
-            estimatedDuration: parseInt(match[7]),
-          }));
+          const parsed = JSON.parse(payload);
+          if (Array.isArray(parsed)) list = parsed;
+        } catch (e) {
+          // ignore parse errors and leave list empty
+          console.warn("Could not parse services payload string", e);
         }
-      } else if (Array.isArray(response.data)) {
-        servicesData = response.data;
-      } else if (response.data && Array.isArray(response.data.data)) {
-        servicesData = response.data.data;
-      } else if (response.data && Array.isArray(response.data.items)) {
-        servicesData = response.data.items;
-      } else if (response.data && Array.isArray(response.data.content)) {
-        servicesData = response.data.content;
       }
 
-      setServices(servicesData);
-      setError(""); // Clear any previous errors
+      setServices(list);
+      setError("");
+      setLoading(false);
     } catch (err) {
-      console.error("Error fetching services:", err);
+      console.error("Error fetching services:", err?.response || err);
       setError("Failed to fetch services. Please try again.");
-      setServices([]); // Set empty array on error
+      setServices([]);
+      setLoading(false);
     }
   };
+
+  // Get unique service types for filtering
+  const serviceTypes = [
+    "ALL",
+    ...new Set(services.map((s) => s?.serviceItemType).filter(Boolean)),
+  ];
+
+  // Filter and sort services
+  const filteredServices = services
+    .filter((service) => {
+      const matchesSearch =
+        !searchTerm ||
+        service?.serviceItemName
+          ?.toLowerCase()
+          .includes(searchTerm.toLowerCase()) ||
+        service?.vehicleType?.toLowerCase().includes(searchTerm.toLowerCase());
+      const matchesType =
+        serviceTypeFilter === "ALL" ||
+        service?.serviceItemType === serviceTypeFilter;
+      return matchesSearch && matchesType;
+    })
+    .sort((a, b) => {
+      let aVal, bVal;
+      if (sortBy === "name") {
+        aVal = a?.serviceItemName || "";
+        bVal = b?.serviceItemName || "";
+      } else if (sortBy === "cost") {
+        aVal = parseFloat(a?.serviceItemCost) || 0;
+        bVal = parseFloat(b?.serviceItemCost) || 0;
+      } else if (sortBy === "duration") {
+        aVal = parseInt(a?.estimatedDuration) || 0;
+        bVal = parseInt(b?.estimatedDuration) || 0;
+      }
+
+      if (typeof aVal === "string") {
+        aVal = aVal.toLowerCase();
+        bVal = bVal.toLowerCase();
+      }
+      if (aVal < bVal) return sortOrder === "asc" ? -1 : 1;
+      if (aVal > bVal) return sortOrder === "asc" ? 1 : -1;
+      return 0;
+    });
+
+  // Group by type if enabled
+  let displayServices = filteredServices;
+  let groupedServices = {};
+  if (groupByType) {
+    groupedServices = filteredServices.reduce((acc, service) => {
+      const type = service?.serviceItemType || "Uncategorized";
+      if (!acc[type]) acc[type] = [];
+      acc[type].push(service);
+      return acc;
+    }, {});
+    displayServices = [];
+  }
+
+  // Pagination (only for ungrouped view)
+  const totalPages = groupByType
+    ? 1
+    : Math.ceil(filteredServices.length / itemsPerPage);
+  const paginatedServices = groupByType
+    ? displayServices
+    : filteredServices.slice(
+        (currentPage - 1) * itemsPerPage,
+        currentPage * itemsPerPage
+      );
+
+  // Calculate average cost
+  const avgCost =
+    filteredServices.length > 0
+      ? filteredServices.reduce(
+          (sum, s) => sum + (parseFloat(s?.serviceItemCost) || 0),
+          0
+        ) / filteredServices.length
+      : 0;
 
   const handleDelete = async (id) => {
     setConfirmState({ isOpen: true, id });
@@ -96,6 +186,14 @@ const AdminManageServices = () => {
     message: "",
     type: "success",
   });
+
+  // Service type filters
+  const typeFilters = serviceTypes.map((type) => ({
+    id: type,
+    label: type,
+    active: serviceTypeFilter === type,
+    count: services.filter((s) => s?.serviceItemType === type).length,
+  }));
 
   return (
     <div className="p-4 sm:p-6">
@@ -164,7 +262,8 @@ const AdminManageServices = () => {
                   </td>
                 </tr>
               ) : (
-                services.map((service, idx) => (
+                // Normal paginated view
+                paginatedServices.map((service, idx) => (
                   <tr key={service?.serviceItemId ?? idx}>
                     <td className="px-3 sm:px-6 py-4 whitespace-nowrap text-xs sm:text-sm font-medium text-[#14274E]">
                       {service?.serviceItemName ?? "-"}
@@ -180,13 +279,15 @@ const AdminManageServices = () => {
                     </td>
                     <td className="px-3 sm:px-6 py-4 whitespace-nowrap text-right text-xs sm:text-sm font-medium space-x-2 sm:space-x-4">
                       <Link
-                        to={`/admin/service/edit/${service.serviceItemId}`}
+                        to={`/admin/service/edit/${
+                          service?.serviceItemId ?? ""
+                        }`}
                         className="text-[#394867] hover:text-[#14274E]"
                       >
                         Edit
                       </Link>
                       <button
-                        onClick={() => handleDelete(service.serviceItemId)}
+                        onClick={() => handleDelete(service?.serviceItemId)}
                         className="text-red-600 hover:text-red-900"
                       >
                         Delete
@@ -198,6 +299,17 @@ const AdminManageServices = () => {
             </tbody>
           </table>
         </div>
+
+        {/* Pagination Controls (hidden when grouped or loading) */}
+        {!loading && !groupByType && paginatedServices.length > 0 && (
+          <PaginationControls
+            currentPage={currentPage}
+            totalPages={totalPages}
+            onPageChange={setCurrentPage}
+            totalItems={filteredServices.length}
+            itemsPerPage={itemsPerPage}
+          />
+        )}
       </div>
       <ConfirmModal
         isOpen={confirmState.isOpen}

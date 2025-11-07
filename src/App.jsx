@@ -86,7 +86,7 @@ function App() {
             element={<AppointmentHistory />}
           />
           <Route
-            path="/appointment-jobs/:id"
+            path="/appointment-jobs/:assignmentId"
             element={<AppointmentJobDetailsPage />}
           />
 

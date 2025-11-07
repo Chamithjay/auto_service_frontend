@@ -55,7 +55,9 @@ const AppointmentProgress = () => {
     return (
       <CustomerDashboardLayout>
         <div className="bg-red-50 border border-red-200 rounded-xl p-6">
-          <p className="text-red-800 font-semibold">{error || "Appointment not found"}</p>
+          <p className="text-red-800 font-semibold">
+            {error || "Appointment not found"}
+          </p>
           <button
             onClick={() => navigate("/customer/dashboard")}
             className="mt-4 text-[#394867] hover:text-[#14274E] font-semibold"
@@ -70,7 +72,6 @@ const AppointmentProgress = () => {
   return (
     <CustomerDashboardLayout>
       <div className="space-y-6">
-        {/* Back Button */}
         <button
           onClick={() => navigate("/customer/dashboard")}
           className="flex items-center text-[#394867] hover:text-[#14274E] font-semibold transition-colors"
@@ -91,7 +92,6 @@ const AppointmentProgress = () => {
           Back to Dashboard
         </button>
 
-        {/* Appointment Header */}
         <div className="bg-white rounded-2xl shadow-lg p-6">
           <div className="flex flex-col lg:flex-row lg:items-start lg:justify-between">
             <div className="flex-1 mb-4 lg:mb-0">
@@ -123,7 +123,6 @@ const AppointmentProgress = () => {
           </div>
         </div>
 
-        {/* Vehicle Information */}
         <div className="bg-white rounded-2xl shadow-lg p-6">
           <h2 className="text-xl font-bold text-[#14274E] mb-4">
             Vehicle Information
@@ -158,7 +157,6 @@ const AppointmentProgress = () => {
           </div>
         </div>
 
-        {/* Jobs Progress */}
         <div className="bg-white rounded-2xl shadow-lg p-6">
           <h2 className="text-xl font-bold text-[#14274E] mb-4">
             Service/Project Progress
@@ -201,7 +199,6 @@ const AppointmentProgress = () => {
                     </span>
                   </div>
 
-                  {/* Job Times */}
                   {(job.startTime || job.endTime) && (
                     <div className="flex flex-wrap gap-4 text-sm mb-3">
                       {job.startTime && (
@@ -223,7 +220,6 @@ const AppointmentProgress = () => {
                     </div>
                   )}
 
-                  {/* Additional Cost */}
                   {job.additionalCost && job.additionalCost > 0 && (
                     <div className="bg-yellow-50 border border-yellow-200 rounded-lg p-3 mb-3">
                       <p className="text-sm text-yellow-800">
@@ -233,7 +229,6 @@ const AppointmentProgress = () => {
                     </div>
                   )}
 
-                  {/* Job Notes */}
                   {job.jobNote && (
                     <div className="bg-[#F1F6F9] rounded-lg p-3">
                       <p className="text-sm text-[#394867]">

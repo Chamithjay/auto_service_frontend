@@ -1,10 +1,7 @@
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import CustomerDashboardLayout from "../../components/Customer/CustomerDashboardLayout";
-import {
-  getDashboardStats,
-  getActiveAppointments,
-} from "../../api/endpoints";
+import { getDashboardStats, getActiveAppointments } from "../../api/endpoints";
 
 const CustomerDashboard = () => {
   const navigate = useNavigate();
@@ -95,10 +92,8 @@ const CustomerDashboard = () => {
           </div>
         )}
 
-        {/* Stats Grid */}
         {stats && (
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6">
-            {/* Total Vehicles */}
             <div className="bg-white rounded-2xl p-6 shadow-lg hover:shadow-xl transition-all duration-300 border border-[#9BA4B4]/20">
               <div className="flex items-center justify-between">
                 <div>
@@ -127,7 +122,6 @@ const CustomerDashboard = () => {
               </div>
             </div>
 
-            {/* Total Appointments */}
             <div className="bg-white rounded-2xl p-6 shadow-lg hover:shadow-xl transition-all duration-300 border border-[#9BA4B4]/20">
               <div className="flex items-center justify-between">
                 <div>
@@ -156,7 +150,6 @@ const CustomerDashboard = () => {
               </div>
             </div>
 
-            {/* Active Appointments */}
             <div className="bg-white rounded-2xl p-6 shadow-lg hover:shadow-xl transition-all duration-300 border border-[#9BA4B4]/20">
               <div className="flex items-center justify-between">
                 <div>
@@ -185,7 +178,6 @@ const CustomerDashboard = () => {
               </div>
             </div>
 
-            {/* Completed Appointments */}
             <div className="bg-white rounded-2xl p-6 shadow-lg hover:shadow-xl transition-all duration-300 border border-[#9BA4B4]/20">
               <div className="flex items-center justify-between">
                 <div>
@@ -216,7 +208,6 @@ const CustomerDashboard = () => {
           </div>
         )}
 
-        {/* Active Appointments */}
         <div className="bg-white rounded-2xl shadow-lg p-6">
           <div className="flex items-center justify-between mb-6">
             <h2 className="text-xl font-bold text-[#14274E]">
@@ -299,7 +290,6 @@ const CustomerDashboard = () => {
                       </div>
                     </div>
 
-                    {/* Progress Bar */}
                     <div className="flex items-center space-x-2">
                       <div className="flex-1 bg-[#F1F6F9] rounded-full h-2">
                         <div
@@ -318,7 +308,6 @@ const CustomerDashboard = () => {
           )}
         </div>
 
-        {/* Quick Actions */}
         <div className="bg-white rounded-2xl shadow-lg p-6">
           <h2 className="text-xl font-bold text-[#14274E] mb-4">
             Quick Actions

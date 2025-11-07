@@ -298,25 +298,25 @@ const AppointmentJobDetailsPage = () => {
     <div className="min-h-screen bg-gray-50">
       <EmployeeNavbar user={user} />
       <EmployeeSidebar />
-      <div className="max-w-6xl mx-auto p-6 ml-64 mt-16">
+      <div className="max-w-6xl mx-auto p-4 sm:p-6 lg:ml-64 mt-16">
         {/* Header */}
-        <div className="bg-white rounded-lg shadow-sm p-6 mb-6">
-          <div className="flex justify-between items-center">
+        <div className="bg-white rounded-lg shadow-sm p-4 sm:p-6 mb-6">
+          <div className="flex flex-col lg:flex-row lg:justify-between lg:items-center gap-4">
             <div>
               <h1 className="text-3xl font-bold text-[#14274E] mb-2">
                 Job #{assignmentId}
               </h1>
-              <p className="text-[#394867] text-lg">
+              <p className="text-[#394867] text-base sm:text-lg">
                 {jobData?.serviceItem?.serviceItemName || "N/A"}
               </p>
-              <p className="text-[#9BA4B4] mt-1">
+              <p className="text-[#9BA4B4] mt-1 text-sm sm:text-base">
                 Estimated Duration:{" "}
                 {jobData?.serviceItem?.estimatedDuration || "Not specified"}
               </p>
             </div>
-            <div className="flex flex-col items-end gap-4">
+            <div className="flex flex-col items-start lg:items-end gap-4 w-full lg:w-auto">
               <span
-                className={`inline-block px-6 py-2 rounded-full text-sm font-semibold ${
+                className={`inline-block px-4 sm:px-6 py-2 rounded-full text-sm font-semibold ${
                   jobData?.jobStatus === "ONGOING"
                     ? "bg-green-100 text-green-700"
                     : jobData?.jobStatus === "COMPLETED"
@@ -378,23 +378,23 @@ const AppointmentJobDetailsPage = () => {
         </div>
 
         {/* Work time and Time History Grid */}
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-6">
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-4 sm:gap-6 mb-6">
           {/* Work Tracking */}
           <div className="lg:col-span-2">
-            <div className="bg-white rounded-lg shadow-sm p-6">
-              <h2 className="text-xl font-bold text-[#14274E] mb-4 flex items-center gap-2">
+            <div className="bg-white rounded-lg shadow-sm p-4 sm:p-6">
+              <h2 className="text-lg sm:text-xl font-bold text-[#14274E] mb-4 flex items-center gap-2">
                 <Clock className="text-[#394867]" size={24} />
                 Work Tracking
               </h2>
 
               {showSuccess === "started" && (
-                <div className="mb-4 p-3 bg-green-50 border border-green-200 rounded-lg text-green-700 flex items-center gap-2">
+                <div className="mb-4 p-3 bg-green-50 border border-green-200 rounded-lg text-green-700 flex items-center gap-2 text-sm sm:text-base">
                   <CheckCircle size={18} />
                   Work started successfully!
                 </div>
               )}
               {showSuccess === "time" && (
-                <div className="mb-4 p-3 bg-green-50 border border-green-200 rounded-lg text-green-700 flex items-center gap-2">
+                <div className="mb-4 p-3 bg-green-50 border border-green-200 rounded-lg text-green-700 flex items-center gap-2 text-sm sm:text-base">
                   <CheckCircle size={18} />
                   Work finished successfully!
                 </div>
@@ -406,9 +406,9 @@ const AppointmentJobDetailsPage = () => {
                 </div>
               )}
 
-              <div className="p-8 bg-[#14274E] rounded-lg text-white">
+              <div className="p-6 sm:p-8 bg-[#14274E] rounded-lg text-white">
                 <div className="text-center mb-4">
-                  <h3 className="text-xl font-semibold mb-2">
+                  <h3 className="text-lg sm:text-xl font-semibold mb-2">
                     Track Your Work Time
                   </h3>
                   {(() => {
@@ -506,8 +506,8 @@ const AppointmentJobDetailsPage = () => {
 
           {/* Time History */}
           <div className="lg:col-span-1">
-            <div className="bg-white rounded-lg shadow-sm p-6 h-full">
-              <h3 className="text-lg font-semibold text-[#394867]  mb-4 flex items-center gap-2">
+            <div className="bg-white rounded-lg shadow-sm p-4 sm:p-6 h-full">
+              <h3 className="text-base sm:text-lg font-semibold text-[#394867] mb-4 flex items-center gap-2">
                 Time History
               </h3>
               <div className="space-y-3">
@@ -567,14 +567,14 @@ const AppointmentJobDetailsPage = () => {
         </div>
 
         {/* Cost Section */}
-        <div className="bg-white rounded-lg shadow-sm p-6 mb-6">
-          <h2 className="text-xl font-bold text-[#14274E] mb-4 flex items-center gap-2">
+        <div className="bg-white rounded-lg shadow-sm p-4 sm:p-6 mb-6">
+          <h2 className="text-lg sm:text-xl font-bold text-[#14274E] mb-4 flex items-center gap-2">
             <DollarSign className="text-[#394867]" size={24} />
             Additional Costs
           </h2>
 
           {/* Add Cost Form */}
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 sm:gap-6 mb-6">
             <div className="space-y-4">
               <div>
                 <label className="block text-[#394867] font-medium mb-2">
@@ -687,11 +687,11 @@ const AppointmentJobDetailsPage = () => {
           </div>
 
           {/* Total Costs */}
-          <div className="pt-4 border-t border-gray-200 flex justify-between items-center">
-            <span className="text-[#394867] font-semibold">
+          <div className="pt-4 border-t border-gray-200 flex flex-col sm:flex-row sm:justify-between sm:items-center gap-2">
+            <span className="text-[#394867] font-semibold text-base sm:text-lg">
               Total Additional Costs
             </span>
-            <span className="text-[#14274E] font-bold text-2xl">
+            <span className="text-[#14274E] font-bold text-xl sm:text-2xl">
               Rs.{" "}
               {jobData.additional_cost
                 ? jobData.additional_cost.toFixed(2)
@@ -701,8 +701,8 @@ const AppointmentJobDetailsPage = () => {
         </div>
 
         {/* Job Notes */}
-        <div className="bg-white rounded-lg shadow-sm p-6 mb-6">
-          <h2 className="text-xl font-bold text-[#14274E] mb-4 flex items-center gap-2">
+        <div className="bg-white rounded-lg shadow-sm p-4 sm:p-6 mb-6">
+          <h2 className="text-lg sm:text-xl font-bold text-[#14274E] mb-4 flex items-center gap-2">
             <FileText className="text-[#394867]" size={24} />
             Job Notes
           </h2>
@@ -714,7 +714,7 @@ const AppointmentJobDetailsPage = () => {
             </div>
           )}
 
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 sm:gap-6">
             <div>
               <label className="block text-[#394867] font-medium mb-2">
                 Add New Note
@@ -755,24 +755,24 @@ const AppointmentJobDetailsPage = () => {
         </div>
 
         {/* Complete Job Section */}
-        <div className="bg-white rounded-lg shadow-sm p-6">
+        <div className="bg-white rounded-lg shadow-sm p-4 sm:p-6">
           {jobData.jobStatus !== "COMPLETED" ? (
-            <div className="flex items-start gap-6">
+            <div className="flex flex-col sm:flex-row items-start gap-4 sm:gap-6">
               <div className="shrink-0">
                 <AlertCircle className="text-[#394867]" size={32} />
               </div>
               <div className="flex-1">
-                <h3 className="text-xl font-bold text-[#14274E] mb-3">
+                <h3 className="text-lg sm:text-xl font-bold text-[#14274E] mb-3">
                   Complete This Job
                 </h3>
-                <p className="text-[#9BA4B4] mb-6 leading-relaxed">
+                <p className="text-[#9BA4B4] mb-4 sm:mb-6 leading-relaxed text-sm sm:text-base">
                   Marking this job as completed will update the job status for
                   all assigned employees. Make sure all work is finished and
                   your time is saved before proceeding.
                 </p>
                 <button
                   disabled={isTimerRunning}
-                  className="px-8 py-3 bg-[#14274E] text-white rounded-lg hover:bg-[#394867] transition-colors font-semibold disabled:bg-gray-300 disabled:cursor-not-allowed flex items-center gap-2"
+                  className="w-full sm:w-auto px-6 sm:px-8 py-3 bg-[#14274E] text-white rounded-lg hover:bg-[#394867] transition-colors font-semibold disabled:bg-gray-300 disabled:cursor-not-allowed flex items-center justify-center gap-2"
                   title={
                     isTimerRunning
                       ? "Please stop the timer before completing the job"
@@ -788,13 +788,13 @@ const AppointmentJobDetailsPage = () => {
               </div>
             </div>
           ) : (
-            <div className="flex items-center gap-6 bg-blue-50 p-6 rounded-lg">
+            <div className="flex flex-col sm:flex-row items-start sm:items-center gap-4 sm:gap-6 bg-blue-50 p-4 sm:p-6 rounded-lg">
               <CheckCircle className="text-[#14274E] shrink-0" size={40} />
               <div>
-                <h3 className="text-xl font-bold text-[#14274E] mb-2">
+                <h3 className="text-lg sm:text-xl font-bold text-[#14274E] mb-2">
                   Job Completed
                 </h3>
-                <p className="text-[#394867] leading-relaxed">
+                <p className="text-[#394867] leading-relaxed text-sm sm:text-base">
                   This job has been marked as completed. No further
                   modifications can be made.
                 </p>

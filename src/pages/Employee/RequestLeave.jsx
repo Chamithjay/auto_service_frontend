@@ -1,5 +1,12 @@
 import { useState } from "react";
-import { Calendar, Clock, FileText, CheckCircle, AlertCircle, Loader2 } from "lucide-react";
+import {
+  Calendar,
+  Clock,
+  FileText,
+  CheckCircle,
+  AlertCircle,
+  Loader2,
+} from "lucide-react";
 import API from "../../api/Api";
 
 const RequestLeave = () => {
@@ -61,14 +68,13 @@ const RequestLeave = () => {
     setIsSubmitting(true);
 
     try {
-        const payload = {
-            employeeId:3,
-            leaveDate: formData.leaveDate,
-            leaveType: formData.leaveType,
-            leaveReason: formData.reason
-
-        }
-        console.log("submitting", payload)
+      const payload = {
+        employeeId: 3,
+        leaveDate: formData.leaveDate,
+        leaveType: formData.leaveType,
+        leaveReason: formData.reason,
+      };
+      console.log("submitting", payload);
       const response = await API.post("/leaves/request", payload);
 
       if (response.status === 201) {
@@ -84,33 +90,42 @@ const RequestLeave = () => {
       }
     } catch (error) {
       console.error("Error submitting leave request:", error);
-      setError(error.message || "Failed to submit leave request. Please try again.");
+      setError(
+        error.message || "Failed to submit leave request. Please try again."
+      );
     } finally {
       setIsSubmitting(false);
     }
   };
 
   return (
-    <div className="min-h-screen bg-gray-50 p-6">
+    <div className="min-h-screen bg-gray-50 p-4 sm:p-6">
       <div className="max-w-2xl mx-auto">
-        <div className="bg-white rounded-lg shadow-sm p-6">
-          <h1 className="text-2xl font-bold text-[#14274E] mb-6">Request Leave</h1>
+        <div className="bg-white rounded-lg shadow-sm p-4 sm:p-6">
+          <h1 className="text-xl sm:text-2xl font-bold text-[#14274E] mb-4 sm:mb-6">
+            Request Leave
+          </h1>
 
           {showSuccess && (
-            <div className="mb-6 p-3 bg-green-50 border border-green-200 rounded-lg text-green-700 flex items-center gap-2">
+            <div className="mb-4 sm:mb-6 p-3 bg-green-50 border border-green-200 rounded-lg text-green-700 flex items-center gap-2">
               <CheckCircle size={18} />
               Leave request submitted successfully!
             </div>
           )}
 
           {error && (
-            <div className="mb-6 p-3 bg-red-50 border border-red-200 rounded-lg text-red-700 flex items-center gap-2">
+            <div className="mb-4 sm:mb-6 p-3 bg-red-50 border border-red-200 rounded-lg text-red-700 flex items-center gap-2">
               <AlertCircle size={18} />
               {error}
             </div>
           )}
 
-          <form onSubmit={handleSubmit} className={`space-y-6 ${isSubmitting ? 'opacity-75 pointer-events-none' : ''}`}>
+          <form
+            onSubmit={handleSubmit}
+            className={`space-y-4 sm:space-y-6 ${
+              isSubmitting ? "opacity-75 pointer-events-none" : ""
+            }`}
+          >
             {/* Leave Date */}
             <div>
               <label className="block text-[#394867] font-medium mb-2 flex items-center gap-2">
@@ -123,7 +138,7 @@ const RequestLeave = () => {
                 name="leaveDate"
                 value={formData.leaveDate}
                 onChange={handleInputChange}
-                                  min={minDateString}
+                min={minDateString}
                 className="w-full px-4 py-2 border border-[#9BA4B4] rounded-lg focus:outline-none focus:ring-2 focus:ring-[#14274E]"
                 required
               />
@@ -176,9 +191,9 @@ const RequestLeave = () => {
               type="submit"
               disabled={isSubmitting}
               className={`w-full px-6 py-3 rounded-lg font-semibold flex items-center justify-center gap-2 transition-colors ${
-                isSubmitting 
-                  ? 'bg-gray-400 cursor-not-allowed' 
-                  : 'bg-[#14274E] hover:bg-[#394867]'
+                isSubmitting
+                  ? "bg-gray-400 cursor-not-allowed"
+                  : "bg-[#14274E] hover:bg-[#394867]"
               } text-white`}
             >
               {isSubmitting ? (
@@ -187,7 +202,7 @@ const RequestLeave = () => {
                   Submitting...
                 </>
               ) : (
-                'Submit Leave Request'
+                "Submit Leave Request"
               )}
             </button>
           </form>

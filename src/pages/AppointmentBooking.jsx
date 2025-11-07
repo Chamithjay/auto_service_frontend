@@ -240,34 +240,34 @@ const AppointmentBooking = () => {
         onClose={() => setIsSidebarOpen(false)}
       />
 
-      <div className="container mx-auto px-4 py-8 lg:ml-64 pt-20">
+      <div className="container mx-auto px-4 py-6 sm:py-8 lg:ml-64 pt-20">
         <div className="max-w-4xl mx-auto">
           {/* Header */}
-          <div className="bg-white rounded-lg shadow-md p-6 mb-6">
-            <h1 className="text-3xl font-bold text-[#14274E] mb-2">
+          <div className="bg-white rounded-lg shadow-md p-4 sm:p-6 mb-4 sm:mb-6">
+            <h1 className="text-2xl sm:text-3xl font-bold text-[#14274E] mb-2">
               Book an Appointment
             </h1>
-            <p className="text-[#394867]">
+            <p className="text-[#394867] text-sm sm:text-base">
               Schedule your vehicle service or modifications
             </p>
           </div>
 
           {/* Error and Success Messages */}
           {error && (
-            <div className="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded-lg mb-6">
+            <div className="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded-lg mb-4 sm:mb-6 text-sm sm:text-base">
               {error}
             </div>
           )}
 
           {success && (
-            <div className="bg-green-100 border border-green-400 text-green-700 px-4 py-3 rounded-lg mb-6">
+            <div className="bg-green-100 border border-green-400 text-green-700 px-4 py-3 rounded-lg mb-4 sm:mb-6 text-sm sm:text-base">
               {success}
             </div>
           )}
 
           {/* Vehicle selector: compact cards on top of the form (includes Add button) */}
-          <div className="bg-white rounded-lg shadow-md p-4 mb-6">
-            <h2 className="text-lg font-semibold text-[#14274E] mb-3">
+          <div className="bg-white rounded-lg shadow-md p-4 mb-4 sm:mb-6">
+            <h2 className="text-base sm:text-lg font-semibold text-[#14274E] mb-3">
               Select Vehicle
             </h2>
 

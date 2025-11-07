@@ -13,6 +13,8 @@ import ForgotPassword from "./pages/ForgotPassword";
 import ProtectedRoute from "./components/ProtectedRoute";
 import ResetInitialPassword from "./pages/ResetInitialPassword";
 import PasswordChanged from "./pages/PasswordChanged";
+import EmployeeDashboard from './components/EmployeeDashboard';
+import EmployeeProfile from './components/EmployeeProfile';
 
 // --- Employee Pages (From File 1) ---
 // Note: I'm assuming the paths based on File 1's structure
@@ -54,6 +56,15 @@ function App() {
     <Router>
       <div className="App">
         <Routes>
+          {/* Direct routes to employee pages - no login */}
+          <Route path="/employee/dashboard" element={<EmployeeDashboard />} />
+          <Route path="/employee/profile" element={<EmployeeProfile />} />
+          
+          {/* Default route goes straight to dashboard */}
+          <Route path="/" element={<Navigate to="/employee/dashboard" replace />} />
+          
+          {/* Catch all other routes and redirect to dashboard */}
+          <Route path="*" element={<Navigate to="/employee/dashboard" replace />} />
           {/* === Public Routes === */}
           <Route path="/" element={<Navigate to="/home" replace />} />
           <Route path="/home" element={<Home />} />

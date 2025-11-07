@@ -90,7 +90,7 @@ const Login = () => {
         navigate("/customer/dashboard");
       } else {
         // Default to home if role is not recognized
-        navigate("/home");
+        navigate("/employee/dashboard ");
       }
     } catch (error) {
       if (error.response && error.response.data) {

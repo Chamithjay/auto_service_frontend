@@ -13,8 +13,7 @@ import ForgotPassword from "./pages/ForgotPassword";
 import ProtectedRoute from "./components/ProtectedRoute";
 import ResetInitialPassword from "./pages/ResetInitialPassword";
 import PasswordChanged from "./pages/PasswordChanged";
-import EmployeeDashboard from './components/EmployeeDashboard';
-import EmployeeProfile from './components/EmployeeProfile';
+import EmployeeProfile from "./components/EmployeeProfile";
 
 // --- Employee Pages (From File 1) ---
 // Note: I'm assuming the paths based on File 1's structure
@@ -59,12 +58,18 @@ function App() {
           {/* Direct routes to employee pages - no login */}
           <Route path="/employee/dashboard" element={<EmployeeDashboard />} />
           <Route path="/employee/profile" element={<EmployeeProfile />} />
-          
+
           {/* Default route goes straight to dashboard */}
-          <Route path="/" element={<Navigate to="/employee/dashboard" replace />} />
-          
+          <Route
+            path="/"
+            element={<Navigate to="/employee/dashboard" replace />}
+          />
+
           {/* Catch all other routes and redirect to dashboard */}
-          <Route path="*" element={<Navigate to="/employee/dashboard" replace />} />
+          <Route
+            path="*"
+            element={<Navigate to="/employee/dashboard" replace />}
+          />
           {/* === Public Routes === */}
           <Route path="/" element={<Navigate to="/home" replace />} />
           <Route path="/home" element={<Home />} />
@@ -81,7 +86,10 @@ function App() {
           {/* These are from File 1. They remain separate for now. */}
           <Route path="/employee/dashboard" element={<EmployeeDashboard />} />
           <Route path="/appointment/book" element={<AppointmentBooking />} />
-          <Route path="/appointments/history" element={<AppointmentHistory />} />
+          <Route
+            path="/appointments/history"
+            element={<AppointmentHistory />}
+          />
           <Route
             path="/appointment-jobs/:id"
             element={<AppointmentJobDetailsPage />}
@@ -104,15 +112,55 @@ function App() {
             <Route path="profile" element={<AdminProfile />} />
 
             {/* <Route path="reports" element={<AdminReports />} /> */}
-
           </Route>
-          <Route path="/customer/dashboard" element={<ProtectedRoute allowedRoles={["CUSTOMER"]}><CustomerDashboard /></ProtectedRoute>} />
-          <Route path="/customer/profile" element={<ProtectedRoute allowedRoles={["CUSTOMER"]}><CustomerProfile /></ProtectedRoute>} />
-          <Route path="/customer/vehicles" element={<ProtectedRoute allowedRoles={["CUSTOMER"]}><Vehicles /></ProtectedRoute>} />
-          <Route path="/customer/vehicles/add" element={<ProtectedRoute allowedRoles={["CUSTOMER"]}><VehicleForm /></ProtectedRoute>} />
-          <Route path="/customer/vehicles/edit/:id" element={<ProtectedRoute allowedRoles={["CUSTOMER"]}><VehicleForm /></ProtectedRoute>} />
-          <Route path="/customer/appointments/:id" element={<ProtectedRoute allowedRoles={["CUSTOMER"]}><AppointmentProgress /></ProtectedRoute>} />
-
+          <Route
+            path="/customer/dashboard"
+            element={
+              <ProtectedRoute allowedRoles={["CUSTOMER"]}>
+                <CustomerDashboard />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/customer/profile"
+            element={
+              <ProtectedRoute allowedRoles={["CUSTOMER"]}>
+                <CustomerProfile />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/customer/vehicles"
+            element={
+              <ProtectedRoute allowedRoles={["CUSTOMER"]}>
+                <Vehicles />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/customer/vehicles/add"
+            element={
+              <ProtectedRoute allowedRoles={["CUSTOMER"]}>
+                <VehicleForm />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/customer/vehicles/edit/:id"
+            element={
+              <ProtectedRoute allowedRoles={["CUSTOMER"]}>
+                <VehicleForm />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/customer/appointments/:id"
+            element={
+              <ProtectedRoute allowedRoles={["CUSTOMER"]}>
+                <AppointmentProgress />
+              </ProtectedRoute>
+            }
+          />
         </Routes>
       </div>
     </Router>

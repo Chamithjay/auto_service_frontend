@@ -11,32 +11,25 @@ const AppointmentBooking = () => {
   const [success, setSuccess] = useState("");
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
 
-  // Get user info from localStorage
   const user = JSON.parse(localStorage.getItem("user") || "{}");
 
-  // Step state management
-  const [currentStep, setCurrentStep] = useState(1); // 1: vehicle selection, 2: service selection & details
+  const [currentStep, setCurrentStep] = useState(1);
 
-  // Vehicle selection state
   const [vehicles, setVehicles] = useState([]);
   const [selectedVehicle, setSelectedVehicle] = useState(null);
 
-  // Services and modifications state
   const [servicesAndModifications, setServicesAndModifications] = useState({
     services: [],
     modifications: [],
   });
   const [selectedServiceIds, setSelectedServiceIds] = useState([]);
 
-  // Appointment details state
   const [appointmentDate, setAppointmentDate] = useState("");
-  const [sessionType, setSessionType] = useState(""); // MORNING or EVENING
+  const [sessionType, setSessionType] = useState("");
 
-  // Calculation result state
   const [calculationResult, setCalculationResult] = useState(null);
   const [isCalculating, setIsCalculating] = useState(false);
 
-  // Fetch user vehicles on component mount
   useEffect(() => {
     fetchUserVehicles();
   }, []);
@@ -45,7 +38,6 @@ const AppointmentBooking = () => {
     try {
       setLoading(true);
       setError("");
-      // Vehicles endpoint now reads the user from the Authorization JWT header
       const response = await API.get("/appointments/vehicles");
       setVehicles(response.data);
 
@@ -69,7 +61,6 @@ const AppointmentBooking = () => {
       setError("");
       setSelectedVehicle(vehicle);
 
-      // Fetch services and modifications for the selected vehicle
       const response = await API.post("/appointments/services", {
         vehicleId: vehicle.vehicleId,
       });
@@ -96,7 +87,6 @@ const AppointmentBooking = () => {
         return [...prev, serviceId];
       }
     });
-    // Reset calculation when selection changes
     setCalculationResult(null);
   };
 
@@ -156,13 +146,11 @@ const AppointmentBooking = () => {
         appointmentDate: appointmentDate,
         sessionType: sessionType,
       };
-      // create endpoint now reads the user from the Authorization JWT header
       const response = await API.post("/appointments/create", createRequest);
       setSuccess(response.data.message || "Appointment created successfully!");
 
-      // Show success message for 2 seconds then redirect
       setTimeout(() => {
-        navigate("/appointments/history"); // Adjust route as needed
+        navigate("/appointments/history");
       }, 2000);
     } catch (err) {
       const serverMsg = err.response?.data?.message;
@@ -175,14 +163,11 @@ const AppointmentBooking = () => {
     }
   };
 
-  // Sanitize server messages before showing to users.
-  // Replace verbose/internal messages with a single friendly message when appropriate.
   const sanitizeServerMessage = (msg) => {
     if (!msg) return "";
 
     const lower = msg.toLowerCase();
 
-    // Map backend internal staffing/unavailability messages to a single user-facing message.
     const patterns = [
       "no available employees",
       "no available staff",
@@ -197,7 +182,6 @@ const AppointmentBooking = () => {
       }
     }
 
-    // Default: return the original message unchanged
     return msg;
   };
 
@@ -212,7 +196,6 @@ const AppointmentBooking = () => {
     setError("");
   };
 
-  // Get today's date for min date attribute
   const getTodayDate = () => {
     const today = new Date();
     return today.toISOString().split("T")[0];
@@ -242,7 +225,6 @@ const AppointmentBooking = () => {
 
       <div className="container mx-auto px-4 py-6 sm:py-8 lg:ml-64 pt-20">
         <div className="max-w-4xl mx-auto">
-          {/* Header */}
           <div className="bg-white rounded-lg shadow-md p-4 sm:p-6 mb-4 sm:mb-6">
             <h1 className="text-2xl sm:text-3xl font-bold text-[#14274E] mb-2">
               Book an Appointment
@@ -252,7 +234,6 @@ const AppointmentBooking = () => {
             </p>
           </div>
 
-          {/* Error and Success Messages */}
           {error && (
             <div className="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded-lg mb-4 sm:mb-6 text-sm sm:text-base">
               {error}
@@ -265,7 +246,6 @@ const AppointmentBooking = () => {
             </div>
           )}
 
-          {/* Vehicle selector: compact cards on top of the form (includes Add button) */}
           <div className="bg-white rounded-lg shadow-md p-4 mb-4 sm:mb-6">
             <h2 className="text-base sm:text-lg font-semibold text-[#14274E] mb-3">
               Select Vehicle
@@ -302,7 +282,6 @@ const AppointmentBooking = () => {
                   </div>
                 )}
 
-                {/* Add vehicle button (simple +) - placed after vehicles */}
                 <button
                   onClick={() => navigate("/vehicles")}
                   title="Add vehicle"
@@ -320,10 +299,8 @@ const AppointmentBooking = () => {
             )}
           </div>
 
-          {/* Step 2: Service Selection and Appointment Details */}
           {currentStep === 2 && selectedVehicle && (
             <div className="space-y-6">
-              {/* Selected Vehicle Info */}
               <div className="bg-white rounded-lg shadow-md p-6">
                 <div className="flex items-center justify-between">
                   <div>
@@ -346,7 +323,6 @@ const AppointmentBooking = () => {
                 </div>
               </div>
 
-              {/* Services Selection */}
               {servicesAndModifications.services.length > 0 && (
                 <div className="bg-white rounded-lg shadow-md p-6">
                   <h2 className="text-2xl font-bold text-[#14274E] mb-4">
@@ -373,7 +349,6 @@ const AppointmentBooking = () => {
                 </div>
               )}
 
-              {/* Modifications Selection */}
               {servicesAndModifications.modifications.length > 0 && (
                 <div className="bg-white rounded-lg shadow-md p-6">
                   <h2 className="text-2xl font-bold text-[#14274E] mb-4">
@@ -406,7 +381,6 @@ const AppointmentBooking = () => {
                 </div>
               )}
 
-              {/* Date and Session Selection */}
               <div className="bg-white rounded-lg shadow-md p-6">
                 <h2 className="text-2xl font-bold text-[#14274E] mb-4">
                   Select Date & Session
@@ -460,7 +434,6 @@ const AppointmentBooking = () => {
                 </button>
               </div>
 
-              {/* Calculation Results */}
               {calculationResult && (
                 <div className="bg-white rounded-lg shadow-md p-6">
                   <h2 className="text-2xl font-bold text-[#14274E] mb-4">

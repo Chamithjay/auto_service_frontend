@@ -7,7 +7,6 @@ const API = axios.create({
   },
 });
 
-// Add request interceptor to include JWT token
 API.interceptors.request.use(
   (config) => {
     const token = localStorage.getItem("token");
@@ -21,7 +20,6 @@ API.interceptors.request.use(
   }
 );
 
-// Employee-specific API calls
 export const employeeAPI = {
   getDashboard: (employeeId) => API.get(`/employee/${employeeId}/dashboard`),
 
@@ -31,24 +29,18 @@ export const employeeAPI = {
     API.put(`/employee/${employeeId}/profile`, profileData),
 };
 
-// Appointment API methods
 export const appointmentAPI = {
-  // Get user vehicles (JWT in Authorization header)
   getUserVehicles: () => API.get("/appointments/vehicles"),
 
-  // Get services and modifications for a vehicle
   getServicesAndModifications: (vehicleId) =>
     API.post("/appointments/services", { vehicleId }),
 
-  // Calculate appointment cost and duration
   calculateAppointment: (calculationRequest) =>
     API.post("/appointments/calculate", calculationRequest),
 
-  // Create appointment (userId resolved server-side from JWT)
   createAppointment: (createRequest) =>
     API.post("/appointments/create", createRequest),
 
-  // Get customer appointments (JWT used to identify user). Supports optional startDate and endDate.
   getCustomerAppointments: (startDate, endDate) => {
     const params = new URLSearchParams();
     if (startDate) params.set("startDate", startDate);
@@ -57,7 +49,6 @@ export const appointmentAPI = {
     return API.get(`/appointments/history${q ? `?${q}` : ""}`);
   },
 
-  // Get user appointments (optional, alternate endpoint)
   getUserAppointments: (userId) => API.get(`/appointments/user/${userId}`),
 };
 

@@ -128,7 +128,7 @@ const RequestLeave = () => {
           >
             {/* Leave Date */}
             <div>
-              <label className="block text-[#394867] font-medium mb-2 flex items-center gap-2">
+              <label className="text-[#394867] font-medium mb-2 flex items-center gap-2">
                 <Calendar size={18} />
                 Leave Date
                 <span className="text-red-500">*</span>
@@ -146,7 +146,7 @@ const RequestLeave = () => {
 
             {/* Leave Type */}
             <div>
-              <label className="block text-[#394867] font-medium mb-2 flex items-center gap-2">
+              <label className="text-[#394867] font-medium mb-2 flex items-center gap-2">
                 <Clock size={18} />
                 Leave Type
                 <span className="text-red-500">*</span>
@@ -167,7 +167,7 @@ const RequestLeave = () => {
 
             {/* Reason */}
             <div>
-              <label className="block text-[#394867] font-medium mb-2 flex items-center gap-2">
+              <label className="text-[#394867] font-medium mb-2 flex items-center gap-2">
                 <FileText size={18} />
                 Reason for Leave
                 <span className="text-red-500">*</span>

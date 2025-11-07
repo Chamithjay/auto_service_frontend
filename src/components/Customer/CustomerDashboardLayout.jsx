@@ -9,7 +9,6 @@ const CustomerDashboardLayout = ({ children }) => {
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
 
   useEffect(() => {
-    // Check if user is logged in and has customer role
     const token = localStorage.getItem("token");
     const userData = localStorage.getItem("user");
 
@@ -20,7 +19,6 @@ const CustomerDashboardLayout = ({ children }) => {
 
     const parsedUser = JSON.parse(userData);
     if (parsedUser.role !== "CUSTOMER") {
-      // Redirect to appropriate dashboard based on role
       if (parsedUser.role === "ADMIN") {
         navigate("/admin/dashboard");
       } else if (parsedUser.role === "EMPLOYEE") {
@@ -43,21 +41,19 @@ const CustomerDashboardLayout = ({ children }) => {
   if (!user) {
     return (
       <div className="min-h-screen bg-[#F1F6F9] flex items-center justify-center">
-        <div className="animate-spin rounded-full h-16 w-16 border-t-2 border-b-2 border-[#14274E]"></div>
+        <div className="animate-spin rounded-full h-12 w-12 sm:h-16 sm:w-16 border-t-2 border-b-2 border-[#14274E]"></div>
       </div>
     );
   }
 
   return (
     <div className="min-h-screen bg-[#F1F6F9]">
-      {/* Navbar */}
       <CustomerNavbar
         user={user}
         onMenuToggle={handleSidebarToggle}
         isSidebarOpen={isSidebarOpen}
       />
 
-      {/* Mobile Sidebar Overlay */}
       {isSidebarOpen && (
         <div
           className="fixed inset-0 bg-black bg-opacity-50 z-40 lg:hidden"
@@ -65,10 +61,8 @@ const CustomerDashboardLayout = ({ children }) => {
         ></div>
       )}
 
-      {/* Sidebar Navigation */}
       <CustomerSidebar isOpen={isSidebarOpen} onClose={handleSidebarClose} />
 
-      {/* Main Content */}
       <main className="lg:ml-64 pt-16 min-h-screen">
         <div className="p-4 sm:p-6 lg:p-8">{children}</div>
       </main>

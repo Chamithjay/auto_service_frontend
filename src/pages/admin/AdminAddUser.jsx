@@ -108,16 +108,16 @@ const AdminAddUser = () => {
         </svg>
       </Link>
 
-      <div className="max-w-2xl mx-auto bg-white p-8 md:p-12 rounded-2xl shadow-lg relative">
-        <h1 className="text-3xl font-bold text-[#14274E] mb-6">
+      <div className="max-w-2xl mx-auto bg-white p-4 sm:p-6 md:p-8 lg:p-12 rounded-2xl shadow-lg relative">
+        <h1 className="text-2xl sm:text-3xl font-bold text-[#14274E] mb-4 sm:mb-6">
           Create New User
         </h1>
-        <p className="text-[#9BA4B4] mb-8">
+        <p className="text-[#9BA4B4] mb-6 sm:mb-8 text-sm sm:text-base">
           Create a new Employee or Admin account. The user will be required to
           reset their password on first login.
         </p>
 
-        <form onSubmit={handleSubmit} className="space-y-6">
+        <form onSubmit={handleSubmit} className="space-y-4 sm:space-y-6">
           <FormInput
             label="Username"
             id="username"
@@ -164,7 +164,7 @@ const AdminAddUser = () => {
 
         {message && (
           <p
-            className={`mt-6 text-center text-sm font-medium ${
+            className={`mt-4 sm:mt-6 text-center text-xs sm:text-sm font-medium ${
               message?.startsWith?.("Error")
                 ? "text-red-600"
                 : "text-emerald-800"

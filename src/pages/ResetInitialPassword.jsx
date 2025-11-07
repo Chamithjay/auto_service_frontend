@@ -24,13 +24,11 @@ const ResetInitialPassword = () => {
       user = null;
     }
 
-    // If there's no token, force login.
     if (!token) {
       navigate("/login");
       return;
     }
 
-    // If the current user does not require a password change, redirect them away.
     if (!user?.requiresPasswordChange) {
       const role = user?.role;
       if (role === "ADMIN") navigate("/admin/dashboard");
@@ -65,7 +63,6 @@ const ResetInitialPassword = () => {
         newPassword: form.newPassword,
       });
 
-      // After a successful reset, force the user to re-authenticate.
       localStorage.removeItem("token");
       localStorage.removeItem("user");
 
@@ -74,7 +71,6 @@ const ResetInitialPassword = () => {
         message: "Password updated. Please sign in with your new password.",
         type: "success",
       });
-      // Navigate to an explicit confirmation page so user sees a clear message
       setTimeout(() => navigate("/password-changed"), 900);
     } catch (error) {
       const status = error?.response?.status;
@@ -83,7 +79,6 @@ const ResetInitialPassword = () => {
         error.message ||
         "Failed to reset password";
 
-      // Common cause: token missing/expired or insufficient permissions
       if (status === 401 || status === 403) {
         setToast({
           isOpen: true,
@@ -91,7 +86,6 @@ const ResetInitialPassword = () => {
             "Session invalid or you do not have permission. Please sign in again.",
           type: "error",
         });
-        // clear credentials and force login
         localStorage.removeItem("token");
         localStorage.removeItem("user");
         setTimeout(() => navigate("/login"), 1200);

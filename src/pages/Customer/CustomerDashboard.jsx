@@ -67,7 +67,6 @@ const CustomerDashboard = () => {
   return (
     <CustomerDashboardLayout>
       <div className="space-y-6">
-        {/* Page Header */}
         <div>
           <h1 className="text-2xl sm:text-3xl font-bold text-[#14274E]">
             Dashboard
@@ -77,7 +76,6 @@ const CustomerDashboard = () => {
           </p>
         </div>
 
-        {/* Error Message */}
         {error && (
           <div className="bg-red-50 border border-red-200 rounded-xl p-4">
             <div className="flex items-center">

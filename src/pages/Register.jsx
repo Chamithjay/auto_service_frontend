@@ -25,7 +25,6 @@ const Register = () => {
       [name]: value,
     }));
 
-    // Clear error when user starts typing
     if (errors[name]) {
       setErrors((prev) => ({
         ...prev,
@@ -86,7 +85,6 @@ const Register = () => {
       setSuccessMessage("Registration successful! Redirecting to login...");
       setFormData({ username: "", email: "", phoneNumber: "", password: "" });
 
-      // Redirect to login page after successful registration
       setTimeout(() => {
         navigate("/login");
       }, 2000);

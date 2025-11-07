@@ -90,13 +90,15 @@ const AdminEditService = () => {
         </svg>
       </Link>
 
-      <div className="max-w-2xl mx-auto bg-white p-8 md:p-12 rounded-2xl shadow-lg">
-        <h1 className="text-3xl font-bold text-[#14274E] mb-6">Edit Service</h1>
-        <p className="text-primary-light mb-8">
+      <div className="max-w-2xl mx-auto bg-white p-4 sm:p-6 md:p-8 lg:p-12 rounded-2xl shadow-lg">
+        <h1 className="text-2xl sm:text-3xl font-bold text-[#14274E] mb-4 sm:mb-6">
+          Edit Service
+        </h1>
+        <p className="text-primary-light mb-6 sm:mb-8 text-sm sm:text-base">
           Update the details for "{formData.serviceItemName}".
         </p>
 
-        <form onSubmit={handleSubmit} className="space-y-6">
+        <form onSubmit={handleSubmit} className="space-y-4 sm:space-y-6">
           <FormInput
             label="Service/Modification Name"
             id="serviceItemName"
@@ -106,7 +108,7 @@ const AdminEditService = () => {
             required
           />
 
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4 sm:gap-6">
             <FormSelect
               label="Type"
               id="serviceItemType"
@@ -131,7 +133,7 @@ const AdminEditService = () => {
             </FormSelect>
           </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4 sm:gap-6">
             <FormInput
               label="Cost (LKR)"
               id="serviceItemCost"

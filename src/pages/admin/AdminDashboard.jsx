@@ -168,23 +168,25 @@ const AdminDashboard = () => {
   }
 
   return (
-    <div>
-      <h1 className="text-3xl font-bold text-[#14274E] mb-8">Dashboard</h1>
+    <div className="p-4 sm:p-6">
+      <h1 className="text-2xl sm:text-3xl font-bold text-[#14274E] mb-6 sm:mb-8">
+        Dashboard
+      </h1>
 
       {/* Stats Grid */}
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-6 mb-8">
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-4 sm:gap-6 mb-6 sm:mb-8">
         {/* Total Users */}
-        <div className="bg-white rounded-2xl p-6 shadow-lg hover:shadow-xl transition-all duration-300 border border-[#9BA4B4]/20">
+        <div className="bg-white rounded-2xl p-4 sm:p-6 shadow-lg hover:shadow-xl transition-all duration-300 border border-[#9BA4B4]/20">
           <div className="flex items-center justify-between">
             <div>
-              <p className="text-[#9BA4B4] text-sm font-semibold uppercase">
+              <p className="text-[#9BA4B4] text-xs sm:text-sm font-semibold uppercase">
                 Total Users
               </p>
-              <h3 className="text-3xl font-bold text-[#14274E] mt-2">
+              <h3 className="text-2xl sm:text-3xl font-bold text-[#14274E] mt-2">
                 {stats?.totalUsers || 0}
               </h3>
             </div>
-            <div className="bg-[#14274E]/10 p-3 rounded-xl">
+            <div className="bg-[#14274E]/10 p-2 sm:p-3 rounded-xl">
               <svg
                 className="w-8 h-8 text-[#14274E]"
                 fill="none"
@@ -203,17 +205,17 @@ const AdminDashboard = () => {
         </div>
 
         {/* Total Appointments */}
-        <div className="bg-white rounded-2xl p-6 shadow-lg hover:shadow-xl transition-all duration-300 border border-[#9BA4B4]/20">
+        <div className="bg-white rounded-2xl p-4 sm:p-6 shadow-lg hover:shadow-xl transition-all duration-300 border border-[#9BA4B4]/20">
           <div className="flex items-center justify-between">
             <div>
-              <p className="text-[#9BA4B4] text-sm font-semibold uppercase">
+              <p className="text-[#9BA4B4] text-xs sm:text-sm font-semibold uppercase">
                 Appointments
               </p>
-              <h3 className="text-3xl font-bold text-[#14274E] mt-2">
+              <h3 className="text-2xl sm:text-3xl font-bold text-[#14274E] mt-2">
                 {stats?.totalAppointments || 0}
               </h3>
             </div>
-            <div className="bg-[#394867]/10 p-3 rounded-xl">
+            <div className="bg-[#394867]/10 p-2 sm:p-3 rounded-xl">
               <svg
                 className="w-8 h-8 text-[#394867]"
                 fill="none"
@@ -232,17 +234,17 @@ const AdminDashboard = () => {
         </div>
 
         {/* Active Employees */}
-        <div className="bg-white rounded-2xl p-6 shadow-lg hover:shadow-xl transition-all duration-300 border border-[#9BA4B4]/20">
+        <div className="bg-white rounded-2xl p-4 sm:p-6 shadow-lg hover:shadow-xl transition-all duration-300 border border-[#9BA4B4]/20">
           <div className="flex items-center justify-between">
             <div>
-              <p className="text-[#9BA4B4] text-sm font-semibold uppercase">
+              <p className="text-[#9BA4B4] text-xs sm:text-sm font-semibold uppercase">
                 Employees
               </p>
-              <h3 className="text-3xl font-bold text-[#14274E] mt-2">
+              <h3 className="text-2xl sm:text-3xl font-bold text-[#14274E] mt-2">
                 {stats?.totalEmployees || 0}
               </h3>
             </div>
-            <div className="bg-[#14274E]/10 p-3 rounded-xl">
+            <div className="bg-[#14274E]/10 p-2 sm:p-3 rounded-xl">
               <svg
                 className="w-8 h-8 text-[#14274E]"
                 fill="none"
@@ -261,17 +263,17 @@ const AdminDashboard = () => {
         </div>
 
         {/* Total Vehicles */}
-        <div className="bg-white rounded-2xl p-6 shadow-lg hover:shadow-xl transition-all duration-300 border border-[#9BA4B4]/20">
+        <div className="bg-white rounded-2xl p-4 sm:p-6 shadow-lg hover:shadow-xl transition-all duration-300 border border-[#9BA4B4]/20">
           <div className="flex items-center justify-between">
             <div>
-              <p className="text-[#9BA4B4] text-sm font-semibold uppercase">
+              <p className="text-[#9BA4B4] text-xs sm:text-sm font-semibold uppercase">
                 Vehicles
               </p>
-              <h3 className="text-3xl font-bold text-[#14274E] mt-2">
+              <h3 className="text-2xl sm:text-3xl font-bold text-[#14274E] mt-2">
                 {stats?.totalVehicles || 0}
               </h3>
             </div>
-            <div className="bg-[#394867]/10 p-3 rounded-xl">
+            <div className="bg-[#394867]/10 p-2 sm:p-3 rounded-xl">
               <svg
                 className="w-8 h-8 text-[#394867]"
                 fill="none"
@@ -296,17 +298,17 @@ const AdminDashboard = () => {
         </div>
 
         {/* Revenue */}
-        <div className="bg-white rounded-2xl p-6 shadow-lg hover:shadow-xl transition-all duration-300 border border-[#9BA4B4]/20">
+        <div className="bg-white rounded-2xl p-4 sm:p-6 shadow-lg hover:shadow-xl transition-all duration-300 border border-[#9BA4B4]/20">
           <div className="flex items-center justify-between">
             <div>
-              <p className="text-[#9BA4B4] text-sm font-semibold uppercase">
+              <p className="text-[#9BA4B4] text-xs sm:text-sm font-semibold uppercase">
                 Revenue
               </p>
-              <h3 className="text-2xl font-bold text-[#14274E] mt-2">
+              <h3 className="text-xl sm:text-2xl font-bold text-[#14274E] mt-2">
                 {formatCurrency(stats?.totalRevenue)}
               </h3>
             </div>
-            <div className="bg-[#14274E]/10 p-3 rounded-xl">
+            <div className="bg-[#14274E]/10 p-2 sm:p-3 rounded-xl">
               <svg
                 className="w-8 h-8 text-[#14274E]"
                 fill="none"

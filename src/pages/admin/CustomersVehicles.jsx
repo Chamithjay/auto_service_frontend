@@ -126,22 +126,24 @@ const CustomersVehicles = () => {
 
   return (
     <AdminLayout>
-      <div className="w-max -mx-50">
+      <div className="w-max -mx-50 p-4 sm:p-6">
         {/* Header */}
-        <div className="flex flex-col md:flex-row justify-between items-start md:items-center mb-6 gap-4">
-          <h1 className="text-3xl font-bold text-[#14274E]">Vehicles</h1>
-          <div className="flex flex-col sm:flex-row gap-4 w-full md:w-2/3">
+        <div className="flex flex-col lg:flex-row justify-between items-start lg:items-center mb-4 sm:mb-6 gap-4">
+          <h1 className="text-2xl sm:text-3xl font-bold text-[#14274E]">
+            Vehicles
+          </h1>
+          <div className="flex flex-col sm:flex-row gap-3 sm:gap-4 w-full lg:w-2/3">
             <input
               type="text"
               placeholder="Search by name, registration, or model..."
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
-              className="flex-1 border border-gray-300 rounded-lg px-4 py-2 shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-400 transition duration-200"
+              className="flex-1 border border-gray-300 rounded-lg px-3 sm:px-4 py-2 shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-400 transition duration-200 text-sm sm:text-base"
             />
             <select
               value={typeFilter}
               onChange={(e) => setTypeFilter(e.target.value)}
-              className="border border-gray-300 rounded-lg px-4 py-2 shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-400 transition duration-200"
+              className="border border-gray-300 rounded-lg px-3 sm:px-4 py-2 shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-400 transition duration-200 text-sm sm:text-base"
             >
               <option value="ALL">All Types</option>
               <option value="CAR">Car</option>
@@ -153,11 +155,11 @@ const CustomersVehicles = () => {
 
         {/* Vehicles Table */}
         {errorVehicles && (
-          <div className="mb-4 border-l-4 border-red-500 bg-red-50 text-red-700 px-6 py-4 rounded-md font-medium shadow">
+          <div className="mb-4 border-l-4 border-red-500 bg-red-50 text-red-700 px-4 sm:px-6 py-3 sm:py-4 rounded-md font-medium shadow text-sm sm:text-base">
             {errorVehicles}
           </div>
         )}
-        <div className="overflow-x-auto bg-white rounded-lg shadow-lg w-full border border-gray-200 mb-10">
+        <div className="overflow-x-auto bg-white rounded-lg shadow-lg w-full border border-gray-200 mb-6 sm:mb-10">
           <table className="w-full divide-y divide-gray-200">
             <thead className="bg-gray-100">
               <tr>
@@ -172,7 +174,7 @@ const CustomersVehicles = () => {
                   <th
                     key={key}
                     onClick={() => handleSort(key)}
-                    className={`px-6 py-4 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider cursor-pointer hover:bg-gray-200 ${
+                    className={`px-3 sm:px-6 py-3 sm:py-4 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider cursor-pointer hover:bg-gray-200 ${
                       key === "customerId"
                         ? "cursor-default hover:bg-transparent"
                         : ""
@@ -193,7 +195,7 @@ const CustomersVehicles = () => {
                 <tr>
                   <td
                     colSpan="6"
-                    className="text-center py-12 text-gray-400 text-lg font-medium"
+                    className="text-center py-8 sm:py-12 text-gray-400 text-base sm:text-lg font-medium"
                   >
                     No vehicles found
                   </td>
@@ -204,13 +206,13 @@ const CustomersVehicles = () => {
                     key={vehicle.vehicleId}
                     className="hover:bg-gray-50 transition duration-150"
                   >
-                    <td className="px-6 py-4 text-gray-900 font-medium">
+                    <td className="px-3 sm:px-6 py-3 sm:py-4 text-gray-900 font-medium text-xs sm:text-sm">
                       {vehicle.vehicleName}
                     </td>
-                    <td className="px-6 py-4 text-gray-700">
+                    <td className="px-3 sm:px-6 py-3 sm:py-4 text-gray-700 text-xs sm:text-sm">
                       {vehicle.registrationNo}
                     </td>
-                    <td className="px-6 py-4">
+                    <td className="px-3 sm:px-6 py-3 sm:py-4">
                       <span
                         className={`px-2 py-1 rounded-full text-xs font-semibold ${
                           vehicle.vehicleType === "CAR"
@@ -223,11 +225,13 @@ const CustomersVehicles = () => {
                         {vehicle.vehicleType}
                       </span>
                     </td>
-                    <td className="px-6 py-4 text-gray-700">{vehicle.model}</td>
-                    <td className="px-6 py-4 text-gray-500">
+                    <td className="px-3 sm:px-6 py-3 sm:py-4 text-gray-700 text-xs sm:text-sm">
+                      {vehicle.model}
+                    </td>
+                    <td className="px-3 sm:px-6 py-3 sm:py-4 text-gray-500 text-xs sm:text-sm">
                       {formatDate(vehicle.createdAt)}
                     </td>
-                    <td className="px-6 py-4 text-indigo-700 font-semibold">
+                    <td className="px-3 sm:px-6 py-3 sm:py-4 text-indigo-700 font-semibold text-xs sm:text-sm">
                       #{vehicle.customerId}
                     </td>
                   </tr>
@@ -238,9 +242,11 @@ const CustomersVehicles = () => {
         </div>
 
         {/* Customers Table */}
-        <h1 className="text-3xl font-bold text-[#14274E] mb-4">Customers</h1>
+        <h1 className="text-2xl sm:text-3xl font-bold text-[#14274E] mb-4 sm:mb-6">
+          Customers
+        </h1>
         {errorCustomers && (
-          <div className="mb-4 border-l-4 border-red-500 bg-red-50 text-red-700 px-6 py-4 rounded-md font-medium shadow">
+          <div className="mb-4 border-l-4 border-red-500 bg-red-50 text-red-700 px-4 sm:px-6 py-3 sm:py-4 rounded-md font-medium shadow text-sm sm:text-base">
             {errorCustomers}
           </div>
         )}
@@ -248,13 +254,13 @@ const CustomersVehicles = () => {
           <table className="w-full divide-y divide-gray-200">
             <thead className="bg-gray-100">
               <tr>
-                <th className="px-6 py-4 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">
+                <th className="px-3 sm:px-6 py-3 sm:py-4 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">
                   Customer ID
                 </th>
-                <th className="px-6 py-4 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">
+                <th className="px-3 sm:px-6 py-3 sm:py-4 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">
                   Email
                 </th>
-                <th className="px-6 py-4 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">
+                <th className="px-3 sm:px-6 py-3 sm:py-4 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">
                   Mobile
                 </th>
               </tr>
@@ -264,7 +270,7 @@ const CustomersVehicles = () => {
                 <tr>
                   <td
                     colSpan="3"
-                    className="text-center py-12 text-gray-400 text-lg font-medium"
+                    className="text-center py-8 sm:py-12 text-gray-400 text-base sm:text-lg font-medium"
                   >
                     No customers found
                   </td>
@@ -275,13 +281,13 @@ const CustomersVehicles = () => {
                     key={customer.customerId}
                     className="hover:bg-gray-50 transition duration-150"
                   >
-                    <td className="px-6 py-4 text-indigo-700 font-semibold">
+                    <td className="px-3 sm:px-6 py-3 sm:py-4 text-indigo-700 font-semibold text-xs sm:text-sm">
                       #{customer.customerId}
                     </td>
-                    <td className="px-6 py-4 text-gray-700">
+                    <td className="px-3 sm:px-6 py-3 sm:py-4 text-gray-700 text-xs sm:text-sm">
                       {customer.email}
                     </td>
-                    <td className="px-6 py-4 text-gray-700">
+                    <td className="px-3 sm:px-6 py-3 sm:py-4 text-gray-700 text-xs sm:text-sm">
                       {customer.mobile}
                     </td>
                   </tr>

@@ -6,7 +6,6 @@ const EmployeeDashboard = () => {
   const [user, setUser] = useState(null);
 
   useEffect(() => {
-    // Check if user is logged in and has employee role
     const token = localStorage.getItem("token");
     const userData = localStorage.getItem("user");
 
@@ -17,7 +16,6 @@ const EmployeeDashboard = () => {
 
     const parsedUser = JSON.parse(userData);
     if (parsedUser.role !== "EMPLOYEE") {
-      // Redirect to appropriate dashboard based on role
       if (parsedUser.role === "ADMIN") {
         navigate("/admin/dashboard");
       } else {
@@ -38,28 +36,27 @@ const EmployeeDashboard = () => {
   if (!user) {
     return (
       <div className="min-h-screen bg-[#F1F6F9] flex items-center justify-center">
-        <div className="animate-spin rounded-full h-16 w-16 border-t-2 border-b-2 border-[#14274E]"></div>
+        <div className="animate-spin rounded-full h-12 w-12 sm:h-16 sm:w-16 border-t-2 border-b-2 border-[#14274E]"></div>
       </div>
     );
   }
 
   return (
     <div className="min-h-screen bg-[#F1F6F9]">
-      {/* Header */}
       <header className="bg-[#14274E] shadow-lg">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4">
-          <div className="flex justify-between items-center">
+          <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-3 sm:gap-0">
             <div>
-              <h1 className="text-2xl font-bold text-white">
+              <h1 className="text-xl sm:text-2xl font-bold text-white">
                 Employee Dashboard
               </h1>
-              <p className="text-[#9BA4B4] text-sm mt-1">
+              <p className="text-[#9BA4B4] text-xs sm:text-sm mt-1">
                 Welcome back, {user.username}
               </p>
             </div>
             <button
               onClick={handleLogout}
-              className="px-6 py-2.5 bg-[#394867] hover:bg-[#9BA4B4] text-white rounded-lg font-semibold transition-all duration-200 shadow-lg"
+              className="w-full sm:w-auto px-4 sm:px-6 py-2 sm:py-2.5 bg-[#394867] hover:bg-[#9BA4B4] text-white rounded-lg font-semibold transition-all duration-200 shadow-lg text-sm sm:text-base"
             >
               Logout
             </button>
@@ -67,22 +64,21 @@ const EmployeeDashboard = () => {
         </div>
       </header>
 
-      {/* Main Content */}
-      <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-        {/* Stats Grid */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
-          {/* Today's Tasks */}
-          <div className="bg-white rounded-2xl p-6 shadow-lg hover:shadow-xl transition-all duration-300 border border-[#9BA4B4]/20">
+      <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6 sm:py-8">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6 mb-6 sm:mb-8">
+          <div className="bg-white rounded-2xl p-4 sm:p-6 shadow-lg hover:shadow-xl transition-all duration-300 border border-[#9BA4B4]/20">
             <div className="flex items-center justify-between">
               <div>
-                <p className="text-[#9BA4B4] text-sm font-semibold uppercase">
+                <p className="text-[#9BA4B4] text-xs sm:text-sm font-semibold uppercase">
                   Today's Tasks
                 </p>
-                <h3 className="text-3xl font-bold text-[#14274E] mt-2">8</h3>
+                <h3 className="text-2xl sm:text-3xl font-bold text-[#14274E] mt-2">
+                  8
+                </h3>
               </div>
-              <div className="bg-[#14274E]/10 p-3 rounded-xl">
+              <div className="bg-[#14274E]/10 p-2 sm:p-3 rounded-xl">
                 <svg
-                  className="w-8 h-8 text-[#14274E]"
+                  className="w-6 h-6 sm:w-8 sm:h-8 text-[#14274E]"
                   fill="none"
                   stroke="currentColor"
                   viewBox="0 0 24 24"
@@ -98,18 +94,19 @@ const EmployeeDashboard = () => {
             </div>
           </div>
 
-          {/* Completed */}
-          <div className="bg-white rounded-2xl p-6 shadow-lg hover:shadow-xl transition-all duration-300 border border-[#9BA4B4]/20">
+          <div className="bg-white rounded-2xl p-4 sm:p-6 shadow-lg hover:shadow-xl transition-all duration-300 border border-[#9BA4B4]/20">
             <div className="flex items-center justify-between">
               <div>
-                <p className="text-[#9BA4B4] text-sm font-semibold uppercase">
+                <p className="text-[#9BA4B4] text-xs sm:text-sm font-semibold uppercase">
                   Completed
                 </p>
-                <h3 className="text-3xl font-bold text-[#14274E] mt-2">5</h3>
+                <h3 className="text-2xl sm:text-3xl font-bold text-[#14274E] mt-2">
+                  5
+                </h3>
               </div>
-              <div className="bg-green-500/10 p-3 rounded-xl">
+              <div className="bg-green-500/10 p-2 sm:p-3 rounded-xl">
                 <svg
-                  className="w-8 h-8 text-green-600"
+                  className="w-6 h-6 sm:w-8 sm:h-8 text-green-600"
                   fill="none"
                   stroke="currentColor"
                   viewBox="0 0 24 24"
@@ -125,18 +122,19 @@ const EmployeeDashboard = () => {
             </div>
           </div>
 
-          {/* Pending */}
-          <div className="bg-white rounded-2xl p-6 shadow-lg hover:shadow-xl transition-all duration-300 border border-[#9BA4B4]/20">
+          <div className="bg-white rounded-2xl p-4 sm:p-6 shadow-lg hover:shadow-xl transition-all duration-300 border border-[#9BA4B4]/20">
             <div className="flex items-center justify-between">
               <div>
-                <p className="text-[#9BA4B4] text-sm font-semibold uppercase">
+                <p className="text-[#9BA4B4] text-xs sm:text-sm font-semibold uppercase">
                   Pending
                 </p>
-                <h3 className="text-3xl font-bold text-[#14274E] mt-2">3</h3>
+                <h3 className="text-2xl sm:text-3xl font-bold text-[#14274E] mt-2">
+                  3
+                </h3>
               </div>
-              <div className="bg-yellow-500/10 p-3 rounded-xl">
+              <div className="bg-yellow-500/10 p-2 sm:p-3 rounded-xl">
                 <svg
-                  className="w-8 h-8 text-yellow-600"
+                  className="w-6 h-6 sm:w-8 sm:h-8 text-yellow-600"
                   fill="none"
                   stroke="currentColor"
                   viewBox="0 0 24 24"
@@ -152,18 +150,19 @@ const EmployeeDashboard = () => {
             </div>
           </div>
 
-          {/* Hours Worked */}
-          <div className="bg-white rounded-2xl p-6 shadow-lg hover:shadow-xl transition-all duration-300 border border-[#9BA4B4]/20">
+          <div className="bg-white rounded-2xl p-4 sm:p-6 shadow-lg hover:shadow-xl transition-all duration-300 border border-[#9BA4B4]/20">
             <div className="flex items-center justify-between">
               <div>
-                <p className="text-[#9BA4B4] text-sm font-semibold uppercase">
+                <p className="text-[#9BA4B4] text-xs sm:text-sm font-semibold uppercase">
                   Hours Today
                 </p>
-                <h3 className="text-3xl font-bold text-[#14274E] mt-2">6.5</h3>
+                <h3 className="text-2xl sm:text-3xl font-bold text-[#14274E] mt-2">
+                  6.5
+                </h3>
               </div>
-              <div className="bg-[#394867]/10 p-3 rounded-xl">
+              <div className="bg-[#394867]/10 p-2 sm:p-3 rounded-xl">
                 <svg
-                  className="w-8 h-8 text-[#394867]"
+                  className="w-6 h-6 sm:w-8 sm:h-8 text-[#394867]"
                   fill="none"
                   stroke="currentColor"
                   viewBox="0 0 24 24"
@@ -180,24 +179,22 @@ const EmployeeDashboard = () => {
           </div>
         </div>
 
-        {/* Current Tasks */}
-        <div className="bg-white rounded-2xl shadow-lg p-6 mb-8">
-          <h2 className="text-xl font-bold text-[#14274E] mb-4">
+        <div className="bg-white rounded-2xl shadow-lg p-4 sm:p-6 mb-6 sm:mb-8">
+          <h2 className="text-lg sm:text-xl font-bold text-[#14274E] mb-3 sm:mb-4">
             Current Tasks
           </h2>
-          <div className="space-y-4">
-            {/* Task 1 */}
-            <div className="border-2 border-[#9BA4B4]/30 rounded-xl p-4 hover:border-[#394867] transition-all duration-200">
-              <div className="flex items-start justify-between mb-3">
+          <div className="space-y-3 sm:space-y-4">
+            <div className="border-2 border-[#9BA4B4]/30 rounded-xl p-3 sm:p-4 hover:border-[#394867] transition-all duration-200">
+              <div className="flex flex-col sm:flex-row items-start sm:justify-between mb-2 sm:mb-3 gap-2 sm:gap-0">
                 <div className="flex-1">
-                  <h3 className="font-bold text-[#14274E] mb-1">
+                  <h3 className="font-bold text-[#14274E] mb-1 text-sm sm:text-base">
                     Oil Change - Vehicle #1234
                   </h3>
-                  <p className="text-sm text-[#9BA4B4]">
+                  <p className="text-xs sm:text-sm text-[#9BA4B4]">
                     Customer: John Doe | Appointment: 10:00 AM
                   </p>
                 </div>
-                <span className="bg-yellow-100 text-yellow-800 text-xs font-semibold px-3 py-1 rounded-full">
+                <span className="bg-yellow-100 text-yellow-800 text-xs font-semibold px-2.5 sm:px-3 py-1 rounded-full whitespace-nowrap">
                   In Progress
                 </span>
               </div>
@@ -208,24 +205,23 @@ const EmployeeDashboard = () => {
                     style={{ width: "60%" }}
                   ></div>
                 </div>
-                <span className="text-sm font-semibold text-[#394867]">
+                <span className="text-xs sm:text-sm font-semibold text-[#394867]">
                   60%
                 </span>
               </div>
             </div>
 
-            {/* Task 2 */}
-            <div className="border-2 border-[#9BA4B4]/30 rounded-xl p-4 hover:border-[#394867] transition-all duration-200">
-              <div className="flex items-start justify-between mb-3">
+            <div className="border-2 border-[#9BA4B4]/30 rounded-xl p-3 sm:p-4 hover:border-[#394867] transition-all duration-200">
+              <div className="flex flex-col sm:flex-row items-start sm:justify-between mb-2 sm:mb-3 gap-2 sm:gap-0">
                 <div className="flex-1">
-                  <h3 className="font-bold text-[#14274E] mb-1">
+                  <h3 className="font-bold text-[#14274E] mb-1 text-sm sm:text-base">
                     Brake Inspection - Vehicle #5678
                   </h3>
-                  <p className="text-sm text-[#9BA4B4]">
+                  <p className="text-xs sm:text-sm text-[#9BA4B4]">
                     Customer: Jane Smith | Appointment: 2:00 PM
                   </p>
                 </div>
-                <span className="bg-blue-100 text-blue-800 text-xs font-semibold px-3 py-1 rounded-full">
+                <span className="bg-blue-100 text-blue-800 text-xs font-semibold px-2.5 sm:px-3 py-1 rounded-full whitespace-nowrap">
                   Scheduled
                 </span>
               </div>
@@ -236,22 +232,23 @@ const EmployeeDashboard = () => {
                     style={{ width: "0%" }}
                   ></div>
                 </div>
-                <span className="text-sm font-semibold text-[#9BA4B4]">0%</span>
+                <span className="text-xs sm:text-sm font-semibold text-[#9BA4B4]">
+                  0%
+                </span>
               </div>
             </div>
 
-            {/* Task 3 */}
-            <div className="border-2 border-[#9BA4B4]/30 rounded-xl p-4 hover:border-[#394867] transition-all duration-200">
-              <div className="flex items-start justify-between mb-3">
+            <div className="border-2 border-[#9BA4B4]/30 rounded-xl p-3 sm:p-4 hover:border-[#394867] transition-all duration-200">
+              <div className="flex flex-col sm:flex-row items-start sm:justify-between mb-2 sm:mb-3 gap-2 sm:gap-0">
                 <div className="flex-1">
-                  <h3 className="font-bold text-[#14274E] mb-1">
+                  <h3 className="font-bold text-[#14274E] mb-1 text-sm sm:text-base">
                     Tire Rotation - Vehicle #9101
                   </h3>
-                  <p className="text-sm text-[#9BA4B4]">
+                  <p className="text-xs sm:text-sm text-[#9BA4B4]">
                     Customer: Mike Johnson | Appointment: 4:00 PM
                   </p>
                 </div>
-                <span className="bg-blue-100 text-blue-800 text-xs font-semibold px-3 py-1 rounded-full">
+                <span className="bg-blue-100 text-blue-800 text-xs font-semibold px-2.5 sm:px-3 py-1 rounded-full whitespace-nowrap">
                   Scheduled
                 </span>
               </div>
@@ -262,23 +259,24 @@ const EmployeeDashboard = () => {
                     style={{ width: "0%" }}
                   ></div>
                 </div>
-                <span className="text-sm font-semibold text-[#9BA4B4]">0%</span>
+                <span className="text-xs sm:text-sm font-semibold text-[#9BA4B4]">
+                  0%
+                </span>
               </div>
             </div>
           </div>
         </div>
 
-        {/* Quick Actions */}
-        <div className="bg-white rounded-2xl shadow-lg p-6">
-          <h2 className="text-xl font-bold text-[#14274E] mb-4">
+        <div className="bg-white rounded-2xl shadow-lg p-4 sm:p-6">
+          <h2 className="text-lg sm:text-xl font-bold text-[#14274E] mb-3 sm:mb-4">
             Quick Actions
           </h2>
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-            <button className="p-4 border-2 border-[#9BA4B4]/30 rounded-xl hover:border-[#394867] hover:bg-[#F1F6F9] transition-all duration-200 text-left group">
-              <div className="flex items-center space-x-3">
-                <div className="bg-[#14274E]/10 p-2 rounded-lg group-hover:bg-[#14274E]/20 transition-colors">
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-3 sm:gap-4">
+            <button className="p-3 sm:p-4 border-2 border-[#9BA4B4]/30 rounded-xl hover:border-[#394867] hover:bg-[#F1F6F9] transition-all duration-200 text-left group">
+              <div className="flex items-center space-x-2 sm:space-x-3">
+                <div className="bg-[#14274E]/10 p-1.5 sm:p-2 rounded-lg group-hover:bg-[#14274E]/20 transition-colors">
                   <svg
-                    className="w-6 h-6 text-[#14274E]"
+                    className="w-5 h-5 sm:w-6 sm:h-6 text-[#14274E]"
                     fill="none"
                     stroke="currentColor"
                     viewBox="0 0 24 24"
@@ -291,17 +289,17 @@ const EmployeeDashboard = () => {
                     />
                   </svg>
                 </div>
-                <span className="font-semibold text-[#14274E]">
+                <span className="font-semibold text-[#14274E] text-sm sm:text-base">
                   Start New Task
                 </span>
               </div>
             </button>
 
-            <button className="p-4 border-2 border-[#9BA4B4]/30 rounded-xl hover:border-[#394867] hover:bg-[#F1F6F9] transition-all duration-200 text-left group">
-              <div className="flex items-center space-x-3">
-                <div className="bg-[#394867]/10 p-2 rounded-lg group-hover:bg-[#394867]/20 transition-colors">
+            <button className="p-3 sm:p-4 border-2 border-[#9BA4B4]/30 rounded-xl hover:border-[#394867] hover:bg-[#F1F6F9] transition-all duration-200 text-left group">
+              <div className="flex items-center space-x-2 sm:space-x-3">
+                <div className="bg-[#394867]/10 p-1.5 sm:p-2 rounded-lg group-hover:bg-[#394867]/20 transition-colors">
                   <svg
-                    className="w-6 h-6 text-[#394867]"
+                    className="w-5 h-5 sm:w-6 sm:h-6 text-[#394867]"
                     fill="none"
                     stroke="currentColor"
                     viewBox="0 0 24 24"
@@ -314,17 +312,17 @@ const EmployeeDashboard = () => {
                     />
                   </svg>
                 </div>
-                <span className="font-semibold text-[#14274E]">
+                <span className="font-semibold text-[#14274E] text-sm sm:text-base">
                   View Schedule
                 </span>
               </div>
             </button>
 
-            <button className="p-4 border-2 border-[#9BA4B4]/30 rounded-xl hover:border-[#394867] hover:bg-[#F1F6F9] transition-all duration-200 text-left group">
-              <div className="flex items-center space-x-3">
-                <div className="bg-[#14274E]/10 p-2 rounded-lg group-hover:bg-[#14274E]/20 transition-colors">
+            <button className="p-3 sm:p-4 border-2 border-[#9BA4B4]/30 rounded-xl hover:border-[#394867] hover:bg-[#F1F6F9] transition-all duration-200 text-left group">
+              <div className="flex items-center space-x-2 sm:space-x-3">
+                <div className="bg-[#14274E]/10 p-1.5 sm:p-2 rounded-lg group-hover:bg-[#14274E]/20 transition-colors">
                   <svg
-                    className="w-6 h-6 text-[#14274E]"
+                    className="w-5 h-5 sm:w-6 sm:h-6 text-[#14274E]"
                     fill="none"
                     stroke="currentColor"
                     viewBox="0 0 24 24"
@@ -337,7 +335,7 @@ const EmployeeDashboard = () => {
                     />
                   </svg>
                 </div>
-                <span className="font-semibold text-[#14274E]">
+                <span className="font-semibold text-[#14274E] text-sm sm:text-base">
                   Submit Report
                 </span>
               </div>

@@ -22,7 +22,6 @@ const Login = () => {
       [name]: value,
     }));
 
-    // Clear error when user starts typing
     if (errors[name]) {
       setErrors((prev) => ({
         ...prev,
@@ -60,9 +59,6 @@ const Login = () => {
     try {
       const response = await API.post("auth/login", formData);
 
-      console.log("Login response:", response.data); // Debug log
-
-      // Store token and user data
       const token = response.data.token || response.data;
       const userData = response.data.user || response.data;
 
@@ -74,12 +70,10 @@ const Login = () => {
       );
 
       if (requiresPasswordChange) {
-        // Force the user to reset the initial password
         navigate("/reset-initial-password");
         return;
       }
 
-      // Navigate based on role
       const userRole = userData.role;
 
       if (userRole === "ADMIN") {
@@ -89,7 +83,6 @@ const Login = () => {
       } else if (userRole === "CUSTOMER") {
         navigate("/customer/dashboard");
       } else {
-        // Default to home if role is not recognized
         navigate("/employee/dashboard ");
       }
     } catch (error) {

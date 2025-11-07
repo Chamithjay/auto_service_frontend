@@ -117,13 +117,15 @@ const AdminEditUser = () => {
         </svg>
       </Link>
 
-      <div className="max-w-2xl mx-auto bg-white p-8 md:p-12 rounded-2xl shadow-lg">
-        <h1 className="text-3xl font-bold text-[#14274E] mb-6">Edit User</h1>
-        <p className="text-primary-light mb-8">
+      <div className="max-w-2xl mx-auto bg-white p-4 sm:p-6 md:p-8 lg:p-12 rounded-2xl shadow-lg">
+        <h1 className="text-2xl sm:text-3xl font-bold text-[#14274E] mb-4 sm:mb-6">
+          Edit User
+        </h1>
+        <p className="text-primary-light mb-6 sm:mb-8 text-sm sm:text-base">
           Update details for user: {formData.username}
         </p>
 
-        <form onSubmit={handleSubmit} className="space-y-6">
+        <form onSubmit={handleSubmit} className="space-y-4 sm:space-y-6">
           <FormInput
             label="Username"
             id="username"
@@ -159,7 +161,7 @@ const AdminEditUser = () => {
 
         {message && (
           <p
-            className={`mt-6 text-center text-sm font-medium ${
+            className={`mt-4 sm:mt-6 text-center text-xs sm:text-sm font-medium ${
               message?.startsWith?.("Error")
                 ? "text-red-600"
                 : "text-emerald-800"

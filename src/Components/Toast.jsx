@@ -1,6 +1,5 @@
 import { useEffect } from "react";
 
-// type: 'success' | 'error'
 const Toast = ({ isOpen, message, onClose, type = "success" }) => {
   useEffect(() => {
     if (!isOpen) return;
@@ -23,16 +22,16 @@ const Toast = ({ isOpen, message, onClose, type = "success" }) => {
     : "text-emerald-600 hover:text-emerald-800";
 
   return (
-    <div className="fixed right-6 bottom-6 z-50">
+    <div className="fixed right-4 sm:right-6 bottom-4 sm:bottom-6 z-50">
       <div
-        className={`max-w-xs w-full ${bg} border ${border} ${text} px-4 py-3 rounded-lg shadow-lg`}
+        className={`max-w-xs w-full ${bg} border ${border} ${text} px-3 sm:px-4 py-2 sm:py-3 rounded-lg shadow-lg`}
       >
-        <div className="flex items-center space-x-3">
-          <div className={`${iconBg} p-2 rounded-full`}>
+        <div className="flex items-center space-x-2 sm:space-x-3">
+          <div className={`${iconBg} p-1.5 sm:p-2 rounded-full`}>
             {isError ? (
               <svg
                 xmlns="http://www.w3.org/2000/svg"
-                className={`h-5 w-5 ${iconColor}`}
+                className={`h-4 w-4 sm:h-5 sm:w-5 ${iconColor}`}
                 viewBox="0 0 20 20"
                 fill="currentColor"
               >
@@ -45,7 +44,7 @@ const Toast = ({ isOpen, message, onClose, type = "success" }) => {
             ) : (
               <svg
                 xmlns="http://www.w3.org/2000/svg"
-                className={`h-5 w-5 ${iconColor}`}
+                className={`h-4 w-4 sm:h-5 sm:w-5 ${iconColor}`}
                 viewBox="0 0 20 20"
                 fill="currentColor"
               >
@@ -57,10 +56,10 @@ const Toast = ({ isOpen, message, onClose, type = "success" }) => {
               </svg>
             )}
           </div>
-          <div className="flex-1 text-sm font-medium">{message}</div>
+          <div className="flex-1 text-xs sm:text-sm font-medium">{message}</div>
           <button
             onClick={onClose}
-            className={`${closeText} text-sm font-semibold`}
+            className={`${closeText} text-xs sm:text-sm font-semibold`}
           >
             Close
           </button>

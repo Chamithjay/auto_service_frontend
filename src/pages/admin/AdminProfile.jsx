@@ -264,13 +264,15 @@ const AdminProfile = () => {
   }
 
   return (
-    <div>
-      <h1 className="text-3xl font-bold text-[#14274E] mb-8">My Profile</h1>
+    <div className="p-4 sm:p-6">
+      <h1 className="text-2xl sm:text-3xl font-bold text-[#14274E] mb-6 sm:mb-8">
+        My Profile
+      </h1>
 
       {/* Success/Error Message */}
       {message.text && (
         <div
-          className={`mb-6 p-4 rounded-xl border ${
+          className={`mb-4 sm:mb-6 p-3 sm:p-4 rounded-xl border text-sm sm:text-base ${
             message.type === "success"
               ? "bg-green-50 border-green-200 text-green-800"
               : "bg-red-50 border-red-200 text-red-800"
@@ -307,37 +309,39 @@ const AdminProfile = () => {
         </div>
       )}
 
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+      <div className="grid grid-cols-1 lg:grid-cols-3 gap-4 sm:gap-6">
         {/* Profile Card */}
-        <div className="bg-white rounded-2xl shadow-lg p-6">
+        <div className="bg-white rounded-2xl shadow-lg p-4 sm:p-6">
           <div className="text-center">
-            <div className="w-24 h-24 bg-gradient-to-br from-[#14274E] to-[#394867] rounded-full flex items-center justify-center mx-auto mb-4 shadow-lg">
-              <span className="text-white text-3xl font-bold">
+            <div className="w-20 h-20 sm:w-24 sm:h-24 bg-gradient-to-br from-[#14274E] to-[#394867] rounded-full flex items-center justify-center mx-auto mb-4 shadow-lg">
+              <span className="text-white text-2xl sm:text-3xl font-bold">
                 {user.username?.charAt(0).toUpperCase()}
               </span>
             </div>
-            <h2 className="text-xl font-bold text-[#14274E] mb-2">
+            <h2 className="text-lg sm:text-xl font-bold text-[#14274E] mb-2">
               {user.username}
             </h2>
-            <p className="text-[#9BA4B4] mb-1">{user.email}</p>
-            <span className="inline-block px-3 py-1 bg-[#394867] text-white text-sm font-semibold rounded-full">
+            <p className="text-[#9BA4B4] mb-1 text-sm sm:text-base">
+              {user.email}
+            </p>
+            <span className="inline-block px-3 py-1 bg-[#394867] text-white text-xs sm:text-sm font-semibold rounded-full">
               {user.role}
             </span>
           </div>
         </div>
 
         {/* Profile Details */}
-        <div className="lg:col-span-2 space-y-6">
+        <div className="lg:col-span-2 space-y-4 sm:space-y-6">
           {/* Profile Information Section */}
-          <div className="bg-white rounded-2xl shadow-lg p-6">
-            <div className="flex justify-between items-center mb-6">
-              <h2 className="text-xl font-bold text-[#14274E]">
+          <div className="bg-white rounded-2xl shadow-lg p-4 sm:p-6">
+            <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-3 sm:gap-0 mb-6">
+              <h2 className="text-lg sm:text-xl font-bold text-[#14274E]">
                 Profile Information
               </h2>
               {!isEditing && !isChangingPassword && (
                 <button
                   onClick={() => setIsEditing(true)}
-                  className="px-4 py-2 bg-[#394867] hover:bg-[#14274E] text-white rounded-lg font-semibold transition-all duration-200 flex items-center space-x-2"
+                  className="w-full sm:w-auto px-4 py-2 bg-[#394867] hover:bg-[#14274E] text-white rounded-lg font-semibold transition-all duration-200 flex items-center justify-center space-x-2 text-sm sm:text-base"
                 >
                   <svg
                     className="w-5 h-5"

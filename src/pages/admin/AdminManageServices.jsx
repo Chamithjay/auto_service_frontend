@@ -98,17 +98,19 @@ const AdminManageServices = () => {
   });
 
   return (
-    <div>
-      <h1 className="text-3xl font-bold text-[#14274E] mb-8">
+    <div className="p-4 sm:p-6">
+      <h1 className="text-2xl sm:text-3xl font-bold text-[#14274E] mb-6 sm:mb-8">
         Service Management
       </h1>
 
-      <div className="bg-white rounded-2xl shadow-lg p-6">
-        <div className="flex justify-between items-center mb-6">
-          <h2 className="text-xl font-bold text-[#14274E]">All Services</h2>
+      <div className="bg-white rounded-2xl shadow-lg p-4 sm:p-6">
+        <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 mb-6">
+          <h2 className="text-lg sm:text-xl font-bold text-[#14274E]">
+            All Services
+          </h2>
           <Link
             to="/admin/add-service"
-            className="px-6 py-2.5 bg-[#394867] hover:bg-[#14274E] text-white rounded-lg font-semibold transition-all duration-200 shadow-lg flex items-center space-x-2"
+            className="w-full sm:w-auto px-4 sm:px-6 py-2.5 bg-[#394867] hover:bg-[#14274E] text-white rounded-lg font-semibold transition-all duration-200 shadow-lg flex items-center justify-center space-x-2 text-sm sm:text-base"
           >
             <svg
               className="w-5 h-5"
@@ -127,24 +129,26 @@ const AdminManageServices = () => {
           </Link>
         </div>
 
-        {error && <p className="text-red-500 mb-4">{error}</p>}
+        {error && (
+          <p className="text-red-500 mb-4 text-sm sm:text-base">{error}</p>
+        )}
         <div className="overflow-x-auto">
           <table className="min-w-full divide-y divide-gray-200">
             <thead className="bg-[#F1F6F9]">
               <tr>
-                <th className="px-6 py-3 text-left text-xs font-bold text-[#394867] uppercase tracking-wider">
+                <th className="px-3 sm:px-6 py-3 text-left text-xs font-bold text-[#394867] uppercase tracking-wider">
                   Name
                 </th>
-                <th className="px-6 py-3 text-left text-xs font-bold text-[#394867] uppercase tracking-wider">
+                <th className="px-3 sm:px-6 py-3 text-left text-xs font-bold text-[#394867] uppercase tracking-wider">
                   Type
                 </th>
-                <th className="px-6 py-3 text-left text-xs font-bold text-[#394867] uppercase tracking-wider">
+                <th className="px-3 sm:px-6 py-3 text-left text-xs font-bold text-[#394867] uppercase tracking-wider">
                   Cost (LKR)
                 </th>
-                <th className="px-6 py-3 text-left text-xs font-bold text-[#394867] uppercase tracking-wider">
+                <th className="px-3 sm:px-6 py-3 text-left text-xs font-bold text-[#394867] uppercase tracking-wider">
                   Duration (Mins)
                 </th>
-                <th className="px-6 py-3 text-right text-xs font-bold text-[#394867] uppercase tracking-wider">
+                <th className="px-3 sm:px-6 py-3 text-right text-xs font-bold text-[#394867] uppercase tracking-wider">
                   Actions
                 </th>
               </tr>
@@ -154,7 +158,7 @@ const AdminManageServices = () => {
                 <tr>
                   <td
                     colSpan="5"
-                    className="px-6 py-8 text-center text-gray-500"
+                    className="px-3 sm:px-6 py-8 text-center text-gray-500 text-sm"
                   >
                     No services found. Click "Add Services" to create one.
                   </td>
@@ -162,19 +166,19 @@ const AdminManageServices = () => {
               ) : (
                 services.map((service, idx) => (
                   <tr key={service?.serviceItemId ?? idx}>
-                    <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-[#14274E]">
+                    <td className="px-3 sm:px-6 py-4 whitespace-nowrap text-xs sm:text-sm font-medium text-[#14274E]">
                       {service?.serviceItemName ?? "-"}
                     </td>
-                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                    <td className="px-3 sm:px-6 py-4 whitespace-nowrap text-xs sm:text-sm text-gray-500">
                       {service?.serviceItemType ?? "-"}
                     </td>
-                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                    <td className="px-3 sm:px-6 py-4 whitespace-nowrap text-xs sm:text-sm text-gray-500">
                       {formatCost(service?.serviceItemCost)}
                     </td>
-                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                    <td className="px-3 sm:px-6 py-4 whitespace-nowrap text-xs sm:text-sm text-gray-500">
                       {formatDuration(service?.estimatedDuration)}
                     </td>
-                    <td className="px-6 py-4 whitespace-nowrap text-right text-sm font-medium space-x-4">
+                    <td className="px-3 sm:px-6 py-4 whitespace-nowrap text-right text-xs sm:text-sm font-medium space-x-2 sm:space-x-4">
                       <Link
                         to={`/admin/service/edit/${service.serviceItemId}`}
                         className="text-[#394867] hover:text-[#14274E]"

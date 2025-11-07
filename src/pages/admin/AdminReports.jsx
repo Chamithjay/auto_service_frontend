@@ -261,20 +261,22 @@ const AdminReports = () => {
   };
 
   return (
-    <div ref={dashboardRef} className="p-4 print-container">
+    <div ref={dashboardRef} className="p-4 sm:p-6 print-container">
       {/* Print styles are injected via react-to-print pageStyle */}
 
-      <h1 className="text-3xl font-bold text-gray-900 mb-6">Analytics</h1>
+      <h1 className="text-2xl sm:text-3xl font-bold text-gray-900 mb-4 sm:mb-6">
+        Analytics
+      </h1>
 
-      <div className="flex items-center justify-between mb-6 no-print">
-        <div className="flex items-center space-x-3">
-          <label className="text-sm font-semibold text-gray-700">
+      <div className="flex flex-col lg:flex-row items-start lg:items-center justify-between gap-4 mb-4 sm:mb-6 no-print">
+        <div className="flex flex-col sm:flex-row items-start sm:items-center space-y-2 sm:space-y-0 sm:space-x-3 w-full lg:w-auto">
+          <label className="text-sm font-semibold text-gray-700 whitespace-nowrap">
             Date Range
           </label>
           <select
             value={range}
             onChange={(e) => setRange(e.target.value)}
-            className="rounded-lg border border-gray-300 bg-white px-3 py-2 text-sm text-gray-900 shadow-sm"
+            className="w-full sm:w-auto rounded-lg border border-gray-300 bg-white px-3 py-2 text-sm text-gray-900 shadow-sm"
           >
             <option value="7">Last 7 days</option>
             <option value="30">Last 30 days</option>
@@ -285,14 +287,14 @@ const AdminReports = () => {
           <button
             type="button"
             onClick={() => handlePrint()}
-            className="rounded-lg bg-[#14274E] px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-[#394867]"
+            className="w-full sm:w-auto rounded-lg bg-[#14274E] px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-[#394867]"
           >
             Print Report (PDF)
           </button>
         </div>
 
         {/* --- KPI CARDS --- */}
-        <div className="flex items-center space-x-4">
+        <div className="flex flex-col sm:flex-row items-start sm:items-center space-y-2 sm:space-y-0 sm:space-x-4 w-full lg:w-auto">
           <KpiCard title="Total Revenue" value={formatCurrency(totalRevenue)} />
           <KpiCard
             title="Total Services"
@@ -311,12 +313,12 @@ const AdminReports = () => {
           <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-[#14274E]"></div>
         </div>
       ) : error ? (
-        <div className="rounded-lg bg-red-50 p-4 border border-red-200 text-red-700">
+        <div className="rounded-lg bg-red-50 p-3 sm:p-4 border border-red-200 text-red-700 text-sm sm:text-base">
           <p className="font-bold">Error</p>
           <p>{error}</p>
         </div>
       ) : (
-        <div className="grid grid-cols-1 gap-6 lg:grid-cols-2">
+        <div className="grid grid-cols-1 gap-4 sm:gap-6 lg:grid-cols-2">
           <ReportChartCard
             title="Revenue Over Time"
             csvData={revenueData}

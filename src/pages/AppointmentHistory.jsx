@@ -13,13 +13,10 @@ const AppointmentHistory = () => {
   const [endDate, setEndDate] = useState("");
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
 
-  // Get user info from localStorage
   const user = JSON.parse(localStorage.getItem("user") || "{}");
 
   useEffect(() => {
-    // initial load: no dates -> backend returns last 15
     fetchAppointments();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   const fetchAppointments = async (opts = {}) => {
@@ -27,7 +24,6 @@ const AppointmentHistory = () => {
       setLoading(true);
       setError("");
 
-      // Backend uses Authorization JWT to identify user. Build optional date params.
       const s = opts.startDate ?? startDate;
       const e = opts.endDate ?? endDate;
       const params = new URLSearchParams();
@@ -47,8 +43,6 @@ const AppointmentHistory = () => {
   const formatDate = (d, withTime = false) => {
     if (!d) return "-";
     try {
-      // backend may return LocalDate (yyyy-MM-dd) or LocalDateTime (yyyy-MM-dd HH:mm)
-      // new Date() expects a 'T' between date and time, so replace space with 'T' when present
       let ds = String(d);
       if (ds.includes(" ")) ds = ds.replace(" ", "T");
       const date = new Date(ds);
@@ -68,8 +62,6 @@ const AppointmentHistory = () => {
       return d;
     }
   };
-
-  // (No client-side filtering/sorting — simple listing)
 
   return (
     <div className="min-h-screen bg-[#F1F6F9]">
@@ -127,7 +119,6 @@ const AppointmentHistory = () => {
           <div className="flex items-center space-x-2 w-full md:w-1/3 md:justify-end">
             <button
               onClick={() => {
-                // validate date range
                 if (startDate && endDate && startDate > endDate) {
                   setError("Start date cannot be later than end date");
                   return;

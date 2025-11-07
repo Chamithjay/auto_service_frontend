@@ -68,17 +68,19 @@ const AdminManageUsers = () => {
   });
 
   return (
-    <div>
-      <h1 className="text-3xl font-bold text-[#14274E] mb-8">
+    <div className="p-4 sm:p-6">
+      <h1 className="text-2xl sm:text-3xl font-bold text-[#14274E] mb-6 sm:mb-8">
         Employee Management
       </h1>
 
-      <div className="bg-white rounded-2xl shadow-lg p-6">
-        <div className="flex justify-between items-center mb-6">
-          <h2 className="text-xl font-bold text-[#14274E]">All Employees</h2>
+      <div className="bg-white rounded-2xl shadow-lg p-4 sm:p-6">
+        <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 mb-6">
+          <h2 className="text-lg sm:text-xl font-bold text-[#14274E]">
+            All Employees
+          </h2>
           <Link
             to="/admin/add-employee"
-            className="px-6 py-2.5 bg-[#394867] hover:bg-[#14274E] text-white rounded-lg font-semibold transition-all duration-200 shadow-lg flex items-center space-x-2"
+            className="w-full sm:w-auto px-4 sm:px-6 py-2.5 bg-[#394867] hover:bg-[#14274E] text-white rounded-lg font-semibold transition-all duration-200 shadow-lg flex items-center justify-center space-x-2 text-sm sm:text-base"
           >
             <svg
               className="w-5 h-5"
@@ -97,21 +99,23 @@ const AdminManageUsers = () => {
           </Link>
         </div>
 
-        {error && <p className="text-red-500 mb-4">{error}</p>}
+        {error && (
+          <p className="text-red-500 mb-4 text-sm sm:text-base">{error}</p>
+        )}
         <div className="overflow-x-auto">
           <table className="min-w-full divide-y divide-gray-200">
             <thead className="bg-[#F1F6F9]">
               <tr>
-                <th className="px-6 py-3 text-left text-xs font-bold text-[#394867] uppercase tracking-wider">
+                <th className="px-3 sm:px-6 py-3 text-left text-xs font-bold text-[#394867] uppercase tracking-wider">
                   Username
                 </th>
-                <th className="px-6 py-3 text-left text-xs font-bold text-[#394867] uppercase tracking-wider">
+                <th className="px-3 sm:px-6 py-3 text-left text-xs font-bold text-[#394867] uppercase tracking-wider">
                   Email
                 </th>
-                <th className="px-6 py-3 text-left text-xs font-bold text-[#394867] uppercase tracking-wider">
+                <th className="px-3 sm:px-6 py-3 text-left text-xs font-bold text-[#394867] uppercase tracking-wider">
                   Role
                 </th>
-                <th className="px-6 py-3 text-right text-xs font-bold text-[#394867] uppercase tracking-wider">
+                <th className="px-3 sm:px-6 py-3 text-right text-xs font-bold text-[#394867] uppercase tracking-wider">
                   Actions
                 </th>
               </tr>
@@ -119,13 +123,13 @@ const AdminManageUsers = () => {
             <tbody className="bg-white divide-y divide-gray-200">
               {users.map((user, idx) => (
                 <tr key={user?.id ?? idx}>
-                  <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-[#14274E]">
+                  <td className="px-3 sm:px-6 py-4 whitespace-nowrap text-xs sm:text-sm font-medium text-[#14274E]">
                     {safeString(user?.username)}
                   </td>
-                  <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                  <td className="px-3 sm:px-6 py-4 whitespace-nowrap text-xs sm:text-sm text-gray-500">
                     {safeString(user?.email)}
                   </td>
-                  <td className="px-6 py-4 whitespace-nowrap text-sm">
+                  <td className="px-3 sm:px-6 py-4 whitespace-nowrap text-xs sm:text-sm">
                     <span
                       className={`px-3 py-1 rounded-full text-xs font-semibold
                     ${user?.role === "ADMIN" ? "bg-red-100 text-red-800" : ""}
@@ -144,7 +148,7 @@ const AdminManageUsers = () => {
                       {safeString(user?.role)}
                     </span>
                   </td>
-                  <td className="px-6 py-4 whitespace-nowrap text-right text-sm font-medium space-x-4">
+                  <td className="px-3 sm:px-6 py-4 whitespace-nowrap text-right text-xs sm:text-sm font-medium space-x-2 sm:space-x-4">
                     <Link
                       to={`/admin/employee/edit/${user?.id ?? ""}`}
                       className="text-[#394867] hover:text-[#14274E]"

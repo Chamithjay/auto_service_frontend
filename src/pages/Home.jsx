@@ -5,10 +5,8 @@ import Navbar from "../components/Navbar";
 const Home = () => {
   return (
     <div className="min-h-screen bg-[#F1F6F9]">
-      {/* Top Navigation Bar */}
       <Navbar />
 
-      {/* Hero Section */}
       <section
         className="pt-32 pb-20 px-4 sm:px-6 lg:px-8 relative bg-cover bg-center bg-no-repeat"
         style={{

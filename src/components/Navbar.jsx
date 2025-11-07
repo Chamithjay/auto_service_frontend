@@ -7,48 +7,43 @@ const Navbar = () => {
   const isLoginPage = location.pathname === "/login";
   const isRegisterPage = location.pathname === "/register";
 
-  // Get current user from localStorage or your auth context
   const currentUser = JSON.parse(localStorage.getItem("user")) || null;
   const isAuthenticated = !!currentUser;
 
   return (
     <nav className="bg-[#14274E]/95 backdrop-blur-md shadow-lg fixed w-full top-0 z-50 border-b border-[#394867]/20">
-      <div className="w-full px-6 lg:px-12">
+      <div className="w-full px-4 sm:px-6 lg:px-12">
         <div className="flex justify-between items-center h-16">
-          {/* Logo */}
           <Link to="/home" className="flex items-center">
             <div className="flex items-center cursor-pointer">
               <img
                 src={companyLogo}
                 alt="AutoService Logo"
-                className="h-23 w-auto object-contain"
+                className="h-20 sm:h-23 w-auto object-contain"
               />
             </div>
           </Link>
 
-          {/* Navigation Links & Buttons */}
-          <div className="flex items-center space-x-4">
-            {/* Notification Bell - Only show when authenticated */}
+          <div className="flex items-center space-x-2 sm:space-x-4">
             {isAuthenticated && (
               <div className="notification-bell-wrapper">
                 <NotificationBell userRole={currentUser.role} />
               </div>
             )}
 
-            {/* Auth Buttons */}
             {!isAuthenticated && (
               <>
                 {isLoginPage ? (
                   <button
                     disabled
-                    className="w-28 px-6 py-2.5 text-white/50 border-2 border-[#394867]/50 rounded-lg font-semibold cursor-not-allowed"
+                    className="w-20 sm:w-28 px-3 sm:px-6 py-2 sm:py-2.5 text-white/50 border-2 border-[#394867]/50 rounded-lg font-semibold cursor-not-allowed text-xs sm:text-base"
                   >
                     Login
                   </button>
                 ) : (
                   <Link
                     to="/login"
-                    className="w-28 px-6 py-2.5 text-white hover:text-[#394867] border-2 border-[#394867] hover:bg-white rounded-lg font-semibold transition-all duration-200 text-center"
+                    className="w-20 sm:w-28 px-3 sm:px-6 py-2 sm:py-2.5 text-white hover:text-[#394867] border-2 border-[#394867] hover:bg-white rounded-lg font-semibold transition-all duration-200 text-center text-xs sm:text-base"
                   >
                     Login
                   </Link>
@@ -56,14 +51,14 @@ const Navbar = () => {
                 {isRegisterPage ? (
                   <button
                     disabled
-                    className="w-28 px-6 py-2.5 text-white/50 bg-[#394867]/50 rounded-lg font-semibold cursor-not-allowed shadow-lg"
+                    className="w-20 sm:w-28 px-3 sm:px-6 py-2 sm:py-2.5 text-white/50 bg-[#394867]/50 rounded-lg font-semibold cursor-not-allowed shadow-lg text-xs sm:text-base"
                   >
                     Sign Up
                   </button>
                 ) : (
                   <Link
                     to="/register"
-                    className="w-28 px-6 py-2.5 bg-[#394867] hover:bg-[#9BA4B4] text-white rounded-lg font-semibold transition-all duration-200 shadow-lg text-center"
+                    className="w-20 sm:w-28 px-3 sm:px-6 py-2 sm:py-2.5 bg-[#394867] hover:bg-[#9BA4B4] text-white rounded-lg font-semibold transition-all duration-200 shadow-lg text-center text-xs sm:text-base"
                   >
                     Sign Up
                   </Link>
@@ -71,7 +66,6 @@ const Navbar = () => {
               </>
             )}
 
-            {/* Logout Button - Show when authenticated */}
             {isAuthenticated && (
               <button
                 onClick={() => {
@@ -79,7 +73,7 @@ const Navbar = () => {
                   localStorage.removeItem("token");
                   window.location.href = "/login";
                 }}
-                className="px-6 py-2.5 bg-red-600 hover:bg-red-700 text-white rounded-lg font-semibold transition-all duration-200 shadow-lg"
+                className="px-3 sm:px-6 py-2 sm:py-2.5 bg-red-600 hover:bg-red-700 text-white rounded-lg font-semibold transition-all duration-200 shadow-lg text-xs sm:text-base"
               >
                 Logout
               </button>

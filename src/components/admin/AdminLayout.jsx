@@ -10,7 +10,6 @@ const AdminLayout = ({ children }) => {
   const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
-    // Check if user is logged in and has admin role
     const token = localStorage.getItem("token");
     const userData = localStorage.getItem("user");
 
@@ -22,7 +21,6 @@ const AdminLayout = ({ children }) => {
     try {
       const parsedUser = JSON.parse(userData);
       if (parsedUser.role !== "ADMIN") {
-        // Redirect to appropriate dashboard based on role
         if (parsedUser.role === "EMPLOYEE") {
           navigate("/employee/dashboard");
         } else {
@@ -35,7 +33,6 @@ const AdminLayout = ({ children }) => {
       setIsLoading(false);
     } catch (error) {
       console.error("Error parsing user data:", error);
-      // Clear invalid data and redirect to login
       localStorage.removeItem("token");
       localStorage.removeItem("user");
       navigate("/login");
@@ -45,7 +42,7 @@ const AdminLayout = ({ children }) => {
   if (isLoading) {
     return (
       <div className="min-h-screen bg-[#F1F6F9] flex items-center justify-center">
-        <div className="animate-spin rounded-full h-16 w-16 border-t-2 border-b-2 border-[#14274E]"></div>
+        <div className="animate-spin rounded-full h-12 w-12 sm:h-16 sm:w-16 border-t-2 border-b-2 border-[#14274E]"></div>
       </div>
     );
   }
@@ -54,7 +51,7 @@ const AdminLayout = ({ children }) => {
     <div className="min-h-screen bg-[#F1F6F9]">
       <AdminNavbar user={user} />
       <AdminSidebar />
-      <main className="ml-64 mt-16 p-8">{children ?? <Outlet />}</main>
+      <main className="ml-64 mt-16 p-6 sm:p-8">{children ?? <Outlet />}</main>
       <ChatBot />
     </div>
   );

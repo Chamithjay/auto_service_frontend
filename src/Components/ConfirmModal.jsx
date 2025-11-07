@@ -6,6 +6,7 @@ const ConfirmModal = ({
   message,
   onConfirm,
   onCancel,
+  confirmText = "Delete",
 }) => {
   if (!isOpen) return null;
 
@@ -26,7 +27,7 @@ const ConfirmModal = ({
             onClick={onConfirm}
             className="px-4 py-2 bg-red-600 text-white rounded-md hover:bg-red-700"
           >
-            Delete
+            {confirmText}
           </button>
         </div>
       </div>

@@ -3,9 +3,6 @@ import { Link } from "react-router-dom";
 import API from "../../api/Api";
 import ConfirmModal from "../../components/ConfirmModal";
 import Toast from "../../components/Toast";
-import ListFilter from "../../components/ListFilter";
-import PaginationControls from "../../components/PaginationControls";
-import { TableSkeleton } from "../../components/LoadingStates";
 
 const AdminManageServices = () => {
   const [services, setServices] = useState([]);
@@ -300,15 +297,49 @@ const AdminManageServices = () => {
           </table>
         </div>
 
-        {/* Pagination Controls (hidden when grouped or loading) */}
         {!loading && !groupByType && paginatedServices.length > 0 && (
-          <PaginationControls
-            currentPage={currentPage}
-            totalPages={totalPages}
-            onPageChange={setCurrentPage}
-            totalItems={filteredServices.length}
-            itemsPerPage={itemsPerPage}
-          />
+          <div className="flex flex-col sm:flex-row items-center justify-between mt-6 gap-4">
+            <div className="text-sm text-[#9BA4B4]">
+              Showing {(currentPage - 1) * itemsPerPage + 1} to{" "}
+              {Math.min(currentPage * itemsPerPage, filteredServices.length)} of{" "}
+              {filteredServices.length} services
+            </div>
+            <div className="flex items-center gap-2">
+              <button
+                onClick={() => setCurrentPage((p) => Math.max(1, p - 1))}
+                disabled={currentPage === 1}
+                className="px-3 py-2 rounded-lg border border-[#9BA4B4] text-[#14274E] hover:bg-[#F1F6F9] disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+              >
+                Previous
+              </button>
+              <div className="flex items-center gap-1">
+                {Array.from({ length: totalPages }, (_, i) => i + 1).map(
+                  (page) => (
+                    <button
+                      key={page}
+                      onClick={() => setCurrentPage(page)}
+                      className={`px-3 py-2 rounded-lg transition-colors ${
+                        currentPage === page
+                          ? "bg-[#14274E] text-white"
+                          : "border border-[#9BA4B4] text-[#14274E] hover:bg-[#F1F6F9]"
+                      }`}
+                    >
+                      {page}
+                    </button>
+                  )
+                )}
+              </div>
+              <button
+                onClick={() =>
+                  setCurrentPage((p) => Math.min(totalPages, p + 1))
+                }
+                disabled={currentPage === totalPages}
+                className="px-3 py-2 rounded-lg border border-[#9BA4B4] text-[#14274E] hover:bg-[#F1F6F9] disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+              >
+                Next
+              </button>
+            </div>
+          </div>
         )}
       </div>
       <ConfirmModal

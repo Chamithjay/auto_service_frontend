@@ -8,12 +8,34 @@ const AdminManageServices = () => {
   const [services, setServices] = useState([]);
   const [error, setError] = useState("");
 
+  // Safe formatters to avoid runtime crashes when backend returns null/undefined
+  const formatCost = (value) => {
+    const num = Number(value);
+    return Number.isFinite(num) ? num.toFixed(2) : "-";
+  };
+
+  const formatDuration = (value) =>
+    value === null || value === undefined ? "-" : String(value);
+
   useEffect(() => {
     fetchServices();
   }, []);
 
   const fetchServices = async () => {
     try {
+      const response = await API.get("admin/services");
+      // Normalize common response shapes: array, { data: [] }, { items: [] }, pageable content
+      const payload = response.data;
+      let list = [];
+      if (Array.isArray(payload)) list = payload;
+      else if (Array.isArray(payload?.data)) list = payload.data;
+      else if (Array.isArray(payload?.items)) list = payload.items;
+      else if (Array.isArray(payload?.content))
+        list = payload.content; // Spring pageable
+      else list = [];
+      setServices(list);
+    } catch (err) {
+      console.error("GET /admin/services failed:", err?.response || err);
       const response = await API.get("/admin/services");
 
       // Handle case where backend returns JSON as string
@@ -64,7 +86,7 @@ const AdminManageServices = () => {
   const confirmDelete = async () => {
     const id = confirmState.id;
     try {
-      await API.delete(`/admin/services/${id}`);
+      await API.delete(`admin/services/${id}`);
       setConfirmState({ isOpen: false, id: null });
       fetchServices(); // Refresh the list
       setToast({
@@ -137,13 +159,33 @@ const AdminManageServices = () => {
               </tr>
             </thead>
             <tbody className="bg-white divide-y divide-gray-200">
-              {services.length === 0 ? (
-                <tr>
-                  <td
-                    colSpan="5"
-                    className="px-6 py-8 text-center text-gray-500"
-                  >
-                    No services found. Click "Add Services" to create one.
+              {services.map((service, idx) => (
+                <tr key={service?.serviceItemId ?? idx}>
+                  <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-[#14274E]">
+                    {service?.serviceItemName ?? "-"}
+                  </td>
+                  <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                    {service?.serviceItemType ?? "-"}
+                  </td>
+                  <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                    {formatCost(service?.serviceItemCost)}
+                  </td>
+                  <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                    {formatDuration(service?.estimatedDuration)}
+                  </td>
+                  <td className="px-6 py-4 whitespace-nowrap text-right text-sm font-medium space-x-4">
+                    <Link
+                      to={`/admin/service/edit/${service.serviceItemId}`}
+                      className="text-[#394867] hover:text-[#14274E]"
+                    >
+                      Edit
+                    </Link>
+                    <button
+                      onClick={() => handleDelete(service.serviceItemId)}
+                      className="text-red-600 hover:text-red-900"
+                    >
+                      Delete
+                    </button>
                   </td>
                 </tr>
               ) : (

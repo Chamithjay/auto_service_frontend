@@ -59,7 +59,7 @@ const AdminAddUser = () => {
     }
 
     try {
-      const response = await API.post("/admin/employees", formData);
+      const response = await API.post("admin/employees", formData);
       setMessage(`Success! User "${response.data.username}" created.`);
       setToast({
         isOpen: true,

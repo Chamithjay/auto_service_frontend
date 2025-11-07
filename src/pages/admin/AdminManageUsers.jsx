@@ -3,20 +3,10 @@ import { Link } from "react-router-dom";
 import API from "../../api/Api";
 import ConfirmModal from "../../components/ConfirmModal";
 import Toast from "../../components/Toast";
-import ListFilter from "../../components/ListFilter";
-import PaginationControls from "../../components/PaginationControls";
-import { TableSkeleton, LoadingSpinner } from "../../components/LoadingStates";
 
 const AdminManageUsers = () => {
   const [users, setUsers] = useState([]);
   const [error, setError] = useState("");
-  const [loading, setLoading] = useState(true);
-  const [searchTerm, setSearchTerm] = useState("");
-  const [roleFilter, setRoleFilter] = useState("ALL");
-  const [sortBy, setSortBy] = useState("username"); // 'username', 'email', 'role'
-  const [sortOrder, setSortOrder] = useState("asc"); // 'asc' or 'desc'
-  const [currentPage, setCurrentPage] = useState(1);
-  const itemsPerPage = 10;
 
   // Safe formatters to avoid runtime crashes when backend returns null/undefined
   const safeString = (v) => (v === null || v === undefined ? "-" : String(v));
@@ -25,26 +15,8 @@ const AdminManageUsers = () => {
     fetchUsers();
   }, []);
 
-  // Handle sorting by clicking headers
-  const handleSort = (column) => {
-    if (sortBy === column) {
-      setSortOrder(sortOrder === "asc" ? "desc" : "asc");
-    } else {
-      setSortBy(column);
-      setSortOrder("asc");
-    }
-    setCurrentPage(1);
-  };
-
-  // Get sort icon for headers
-  const getSortIcon = (column) => {
-    if (sortBy !== column) return "↕️";
-    return sortOrder === "asc" ? "↑" : "↓";
-  };
-
   const fetchUsers = async () => {
     try {
-      setLoading(true);
       const response = await API.get("admin/employees");
       const payload = response.data;
       let list = [];
@@ -54,52 +26,11 @@ const AdminManageUsers = () => {
       else if (Array.isArray(payload?.content)) list = payload.content;
       else list = [];
       setUsers(list);
-      setLoading(false);
     } catch (err) {
       console.error("GET /admin/employees failed:", err?.response || err);
       setError("Failed to fetch users. Please try again.");
-      setUsers([]);
-      setLoading(false);
     }
   };
-
-  // Filter and sort users
-  const filteredUsers = users
-    .filter((user) => {
-      const matchesSearch =
-        !searchTerm ||
-        user?.username?.toLowerCase().includes(searchTerm.toLowerCase()) ||
-        user?.email?.toLowerCase().includes(searchTerm.toLowerCase());
-      const matchesRole = roleFilter === "ALL" || user?.role === roleFilter;
-      // Exclude CUSTOMER role
-      const isNotCustomer = user?.role !== "CUSTOMER";
-      return matchesSearch && matchesRole && isNotCustomer;
-    })
-    .sort((a, b) => {
-      let aVal = a?.[sortBy] || "";
-      let bVal = b?.[sortBy] || "";
-      if (typeof aVal === "string") {
-        aVal = aVal.toLowerCase();
-        bVal = bVal.toLowerCase();
-      }
-      if (aVal < bVal) return sortOrder === "asc" ? -1 : 1;
-      if (aVal > bVal) return sortOrder === "asc" ? 1 : -1;
-      return 0;
-    });
-
-  // Count users by role
-  const roleCounts = {
-    ALL: users.filter((u) => u?.role !== "CUSTOMER").length,
-    ADMIN: users.filter((u) => u?.role === "ADMIN").length,
-    EMPLOYEE: users.filter((u) => u?.role === "EMPLOYEE").length,
-  };
-
-  // Pagination
-  const totalPages = Math.ceil(filteredUsers.length / itemsPerPage);
-  const paginatedUsers = filteredUsers.slice(
-    (currentPage - 1) * itemsPerPage,
-    currentPage * itemsPerPage
-  );
 
   const handleDelete = async (id) => {
     // show confirm modal instead
@@ -136,28 +67,6 @@ const AdminManageUsers = () => {
     type: "success",
   });
 
-  // Role filter options
-  const roleFilters = [
-    {
-      id: "ALL",
-      label: "All Roles",
-      active: roleFilter === "ALL",
-      count: roleCounts.ALL,
-    },
-    {
-      id: "ADMIN",
-      label: "Admin",
-      active: roleFilter === "ADMIN",
-      count: roleCounts.ADMIN,
-    },
-    {
-      id: "EMPLOYEE",
-      label: "Employee",
-      active: roleFilter === "EMPLOYEE",
-      count: roleCounts.EMPLOYEE,
-    },
-  ];
-
   return (
     <div className="p-4 sm:p-6">
       <h1 className="text-2xl sm:text-3xl font-bold text-[#14274E] mb-6 sm:mb-8">
@@ -190,20 +99,18 @@ const AdminManageUsers = () => {
           </Link>
         </div>
 
-        {error && (
-          <p className="text-red-500 mb-4 text-sm sm:text-base">{error}</p>
-        )}
+        {error && <p className="text-red-500 mb-4">{error}</p>}
         <div className="overflow-x-auto">
           <table className="min-w-full divide-y divide-gray-200">
             <thead className="bg-[#F1F6F9]">
               <tr>
-                <th className="px-3 sm:px-6 py-3 text-left text-xs font-bold text-[#394867] uppercase tracking-wider">
+                <th className="px-6 py-3 text-left text-xs font-bold text-[#394867] uppercase tracking-wider">
                   Username
                 </th>
-                <th className="px-3 sm:px-6 py-3 text-left text-xs font-bold text-[#394867] uppercase tracking-wider">
+                <th className="px-6 py-3 text-left text-xs font-bold text-[#394867] uppercase tracking-wider">
                   Email
                 </th>
-                <th className="px-3 sm:px-6 py-3 text-left text-xs font-bold text-[#394867] uppercase tracking-wider">
+                <th className="px-6 py-3 text-left text-xs font-bold text-[#394867] uppercase tracking-wider">
                   Role
                 </th>
                 <th className="px-3 sm:px-6 py-3 text-right text-xs font-bold text-[#394867] uppercase tracking-wider">
@@ -214,13 +121,13 @@ const AdminManageUsers = () => {
             <tbody className="bg-white divide-y divide-gray-200">
               {users.map((user, idx) => (
                 <tr key={user?.id ?? idx}>
-                  <td className="px-3 sm:px-6 py-4 whitespace-nowrap text-xs sm:text-sm font-medium text-[#14274E]">
+                  <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-[#14274E]">
                     {safeString(user?.username)}
                   </td>
-                  <td className="px-3 sm:px-6 py-4 whitespace-nowrap text-xs sm:text-sm text-gray-500">
+                  <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
                     {safeString(user?.email)}
                   </td>
-                  <td className="px-3 sm:px-6 py-4 whitespace-nowrap text-xs sm:text-sm">
+                  <td className="px-6 py-4 whitespace-nowrap text-sm">
                     <span
                       className={`px-3 py-1 rounded-full text-xs font-semibold
                     ${user?.role === "ADMIN" ? "bg-red-100 text-red-800" : ""}
@@ -239,7 +146,7 @@ const AdminManageUsers = () => {
                       {safeString(user?.role)}
                     </span>
                   </td>
-                  <td className="px-3 sm:px-6 py-4 whitespace-nowrap text-right text-xs sm:text-sm font-medium space-x-2 sm:space-x-4">
+                  <td className="px-6 py-4 whitespace-nowrap text-right text-sm font-medium space-x-4">
                     <Link
                       to={`/admin/employee/edit/${user?.id ?? ""}`}
                       className="text-[#394867] hover:text-[#14274E]"
@@ -259,18 +166,6 @@ const AdminManageUsers = () => {
           </table>
         </div>
       </div>
-
-      {/* Pagination Controls */}
-      {!loading && paginatedUsers.length > 0 && (
-        <PaginationControls
-          currentPage={currentPage}
-          totalPages={totalPages}
-          onPageChange={setCurrentPage}
-          totalItems={filteredUsers.length}
-          itemsPerPage={itemsPerPage}
-        />
-      )}
-
       <ConfirmModal
         isOpen={confirmState.isOpen}
         title="Delete user"

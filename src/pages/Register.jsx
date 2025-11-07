@@ -9,6 +9,7 @@ const Register = () => {
   const [formData, setFormData] = useState({
     username: "",
     email: "",
+    phoneNumber: "",
     password: "",
   });
 
@@ -48,6 +49,18 @@ const Register = () => {
       newErrors.email = "Email address is invalid";
     }
 
+    if (!formData.phoneNumber.trim()) {
+      newErrors.phoneNumber = "Phone number is required";
+    } else if (
+      formData.phoneNumber.length < 9 ||
+      formData.phoneNumber.length > 20
+    ) {
+      newErrors.phoneNumber =
+        "Phone number must be between 9 and 20 characters";
+    } else if (!/^[0-9+\-\s()]+$/.test(formData.phoneNumber)) {
+      newErrors.phoneNumber = "Please enter a valid phone number";
+    }
+
     if (!formData.password.trim()) {
       newErrors.password = "Password is required";
     } else if (formData.password.length < 6) {
@@ -71,7 +84,7 @@ const Register = () => {
     try {
       const response = await API.post("/auth/register", formData);
       setSuccessMessage("Registration successful! Redirecting to login...");
-      setFormData({ username: "", email: "", password: "" });
+      setFormData({ username: "", email: "", phoneNumber: "", password: "" });
 
       // Redirect to login page after successful registration
       setTimeout(() => {
@@ -154,57 +167,114 @@ const Register = () => {
           </div>
         </div>
 
-        {/* Email Field */}
-        <div>
-          <label
-            htmlFor="email"
-            className="block text-sm font-semibold text-[#14274E] mb-2"
-          >
-            Email address
-          </label>
-          <div className="relative">
-            <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
-              <svg
-                className="h-5 w-5 text-[#9BA4B4]"
-                fill="none"
-                stroke="currentColor"
-                viewBox="0 0 24 24"
-              >
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  strokeWidth="2"
-                  d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"
-                />
-              </svg>
-            </div>
-            <input
-              id="email"
-              name="email"
-              type="email"
-              value={formData.email}
-              onChange={handleChange}
-              className={`appearance-none block w-full pl-12 pr-4 py-3 border ${
-                errors.email ? "border-red-400" : "border-[#9BA4B4]/30"
-              } rounded-xl bg-[#F1F6F9] text-[#14274E] placeholder-[#9BA4B4] focus:outline-none focus:ring-2 focus:ring-[#394867] focus:border-transparent transition-all duration-300`}
-              placeholder="Enter your email"
-            />
-            {errors.email && (
-              <p className="mt-2 text-sm text-red-600 flex items-center">
+        {/* Email and Phone Number Row */}
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+          {/* Email Field */}
+          <div>
+            <label
+              htmlFor="email"
+              className="block text-sm font-semibold text-[#14274E] mb-2"
+            >
+              Email address
+            </label>
+            <div className="relative">
+              <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
                 <svg
-                  className="w-4 h-4 mr-1"
-                  fill="currentColor"
-                  viewBox="0 0 20 20"
+                  className="h-5 w-5 text-[#9BA4B4]"
+                  fill="none"
+                  stroke="currentColor"
+                  viewBox="0 0 24 24"
                 >
                   <path
-                    fillRule="evenodd"
-                    d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7 4a1 1 0 11-2 0 1 1 0 012 0zm-1-9a1 1 0 00-1 1v4a1 1 0 102 0V6a1 1 0 00-1-1z"
-                    clipRule="evenodd"
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth="2"
+                    d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"
                   />
                 </svg>
-                {errors.email}
-              </p>
-            )}
+              </div>
+              <input
+                id="email"
+                name="email"
+                type="email"
+                value={formData.email}
+                onChange={handleChange}
+                className={`appearance-none block w-full pl-12 pr-4 py-3 border ${
+                  errors.email ? "border-red-400" : "border-[#9BA4B4]/30"
+                } rounded-xl bg-[#F1F6F9] text-[#14274E] placeholder-[#9BA4B4] focus:outline-none focus:ring-2 focus:ring-[#394867] focus:border-transparent transition-all duration-300`}
+                placeholder="Enter your email"
+              />
+              {errors.email && (
+                <p className="mt-2 text-sm text-red-600 flex items-center">
+                  <svg
+                    className="w-4 h-4 mr-1"
+                    fill="currentColor"
+                    viewBox="0 0 20 20"
+                  >
+                    <path
+                      fillRule="evenodd"
+                      d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7 4a1 1 0 11-2 0 1 1 0 012 0zm-1-9a1 1 0 00-1 1v4a1 1 0 102 0V6a1 1 0 00-1-1z"
+                      clipRule="evenodd"
+                    />
+                  </svg>
+                  {errors.email}
+                </p>
+              )}
+            </div>
+          </div>
+
+          {/* Phone Number Field */}
+          <div>
+            <label
+              htmlFor="phoneNumber"
+              className="block text-sm font-semibold text-[#14274E] mb-2"
+            >
+              Phone Number
+            </label>
+            <div className="relative">
+              <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
+                <svg
+                  className="h-5 w-5 text-[#9BA4B4]"
+                  fill="none"
+                  stroke="currentColor"
+                  viewBox="0 0 24 24"
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth="2"
+                    d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z"
+                  />
+                </svg>
+              </div>
+              <input
+                id="phoneNumber"
+                name="phoneNumber"
+                type="tel"
+                value={formData.phoneNumber}
+                onChange={handleChange}
+                className={`appearance-none block w-full pl-12 pr-4 py-3 border ${
+                  errors.phoneNumber ? "border-red-400" : "border-[#9BA4B4]/30"
+                } rounded-xl bg-[#F1F6F9] text-[#14274E] placeholder-[#9BA4B4] focus:outline-none focus:ring-2 focus:ring-[#394867] focus:border-transparent transition-all duration-300`}
+                placeholder="Enter your phone number"
+              />
+              {errors.phoneNumber && (
+                <p className="mt-2 text-sm text-red-600 flex items-center">
+                  <svg
+                    className="w-4 h-4 mr-1"
+                    fill="currentColor"
+                    viewBox="0 0 20 20"
+                  >
+                    <path
+                      fillRule="evenodd"
+                      d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7 4a1 1 0 11-2 0 1 1 0 012 0zm-1-9a1 1 0 00-1 1v4a1 1 0 102 0V6a1 1 0 00-1-1z"
+                      clipRule="evenodd"
+                    />
+                  </svg>
+                  {errors.phoneNumber}
+                </p>
+              )}
+            </div>
           </div>
         </div>
 

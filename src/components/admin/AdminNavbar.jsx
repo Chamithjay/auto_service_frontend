@@ -1,5 +1,6 @@
 import { useNavigate } from "react-router-dom";
 import companyLogo from "../../assets/company_logo.png";
+import NotificationBell from "../Notification/NotificationBell.jsx";
 
 const AdminNavbar = ({ user }) => {
     const navigate = useNavigate();
@@ -22,16 +23,24 @@ const AdminNavbar = ({ user }) => {
                             className="h-20 w-auto object-contain"
                         />
                         <span className="ml-4 text-white text-xl font-bold">
-              Admin Panel
-            </span>
+                            Admin Panel
+                        </span>
                     </div>
 
-                    {/* User Info & Logout */}
-                    <div className="flex items-center space-x-4">
+                    {/* Right Side: Notifications, User Info & Logout */}
+                    <div className="flex items-center space-x-6">
+                        {/* Notification Bell */}
+                        <div className="notification-bell-wrapper">
+                            <NotificationBell userRole={user?.role} />
+                        </div>
+
+                        {/* User Info */}
                         <div className="text-right">
                             <p className="text-white font-semibold">{user?.username}</p>
                             <p className="text-[#9BA4B4] text-sm">{user?.role}</p>
                         </div>
+
+                        {/* Logout Button */}
                         <button
                             onClick={handleLogout}
                             className="px-6 py-2.5 bg-[#394867] hover:bg-[#9BA4B4] text-white rounded-lg font-semibold transition-all duration-200 shadow-lg flex items-center space-x-2"

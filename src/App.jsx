@@ -10,12 +10,17 @@ import Register from "./pages/Register";
 import Login from "./pages/Login";
 import Home from "./pages/Home";
 import ForgotPassword from "./pages/ForgotPassword";
+import ProtectedRoute from "./components/ProtectedRoute";
 import ResetInitialPassword from "./pages/ResetInitialPassword";
 import PasswordChanged from "./pages/PasswordChanged";
+import EmployeeDashboard from './components/EmployeeDashboard';
+import EmployeeProfile from './components/EmployeeProfile';
 
 // --- Employee Pages (From File 1) ---
 // Note: I'm assuming the paths based on File 1's structure
 import EmployeeDashboard from "./pages/EmployeeDashboard";
+import AppointmentBooking from "./pages/AppointmentBooking";
+import AppointmentHistory from "./pages/AppointmentHistory";
 import AppointmentJobDetailsPage from "./pages/Employee/AppointmentJobDetails";
 import RequestLeave from "./pages/Employee/RequestLeave";
 
@@ -40,11 +45,27 @@ import AdminEditService from "./pages/admin/AdminEditService";
 import AdminManageUsers from "./pages/admin/AdminManageUsers";
 import AdminEditUser from "./pages/admin/AdminEditUser";
 
+// Customer Pages
+import CustomerDashboard from "./pages/Customer/CustomerDashboard";
+import CustomerProfile from "./pages/Customer/CustomerProfile";
+import Vehicles from "./pages/Customer/Vehicles";
+import VehicleForm from "./pages/Customer/VehicleForm";
+import AppointmentProgress from "./pages/Customer/AppointmentProgress";
+
 function App() {
   return (
     <Router>
       <div className="App">
         <Routes>
+          {/* Direct routes to employee pages - no login */}
+          <Route path="/employee/dashboard" element={<EmployeeDashboard />} />
+          <Route path="/employee/profile" element={<EmployeeProfile />} />
+          
+          {/* Default route goes straight to dashboard */}
+          <Route path="/" element={<Navigate to="/employee/dashboard" replace />} />
+          
+          {/* Catch all other routes and redirect to dashboard */}
+          <Route path="*" element={<Navigate to="/employee/dashboard" replace />} />
           {/* === Public Routes === */}
           <Route path="/" element={<Navigate to="/home" replace />} />
           <Route path="/home" element={<Home />} />
@@ -60,6 +81,8 @@ function App() {
           {/* === Employee Routes === */}
           {/* These are from File 1. They remain separate for now. */}
           <Route path="/employee/dashboard" element={<EmployeeDashboard />} />
+          <Route path="/appointment/book" element={<AppointmentBooking />} />
+          <Route path="/appointments/history" element={<AppointmentHistory />} />
           <Route
             path="/appointment-jobs/:id"
             element={<AppointmentJobDetailsPage />}
@@ -76,7 +99,6 @@ function App() {
             <Route path="employees" element={<AdminManageUsers />} />
             <Route path="add-employee" element={<AdminAddUser />} />
             <Route path="employee/edit/:id" element={<AdminEditUser />} />
-
             {/* Routes from File 1 (now nested) */}
             <Route path="customers-vehicles" element={<CustomersVehicles />} />
             <Route path="leave-requests" element={<LeaveRequests />} />
@@ -84,6 +106,13 @@ function App() {
 
             <Route path="reports" element={<AdminReports />} />
           </Route>
+          <Route path="/customer/dashboard" element={<ProtectedRoute allowedRoles={["CUSTOMER"]}><CustomerDashboard /></ProtectedRoute>} />
+          <Route path="/customer/profile" element={<ProtectedRoute allowedRoles={["CUSTOMER"]}><CustomerProfile /></ProtectedRoute>} />
+          <Route path="/customer/vehicles" element={<ProtectedRoute allowedRoles={["CUSTOMER"]}><Vehicles /></ProtectedRoute>} />
+          <Route path="/customer/vehicles/add" element={<ProtectedRoute allowedRoles={["CUSTOMER"]}><VehicleForm /></ProtectedRoute>} />
+          <Route path="/customer/vehicles/edit/:id" element={<ProtectedRoute allowedRoles={["CUSTOMER"]}><VehicleForm /></ProtectedRoute>} />
+          <Route path="/customer/appointments/:id" element={<ProtectedRoute allowedRoles={["CUSTOMER"]}><AppointmentProgress /></ProtectedRoute>} />
+
         </Routes>
       </div>
     </Router>

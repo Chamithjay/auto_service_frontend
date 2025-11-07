@@ -18,10 +18,10 @@ const AdminDashboard = () => {
       setLoading(true);
       const [statsRes, activitiesRes, revenueRes, vehiclesRes] =
         await Promise.all([
-          API.get("/admin/dashboard/stats"),
-          API.get("/admin/dashboard/recent-activities"),
-          API.get("/admin/dashboard/monthly-revenue"),
-          API.get("/admin/dashboard/vehicle-distribution"),
+          API.get("admin/dashboard/stats"),
+          API.get("admin/dashboard/recent-activities"),
+          API.get("admin/dashboard/monthly-revenue"),
+          API.get("admin/dashboard/vehicle-distribution"),
         ]);
 
       setStats(statsRes.data);

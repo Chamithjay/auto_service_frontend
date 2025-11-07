@@ -8,15 +8,26 @@ const AdminManageUsers = () => {
   const [users, setUsers] = useState([]);
   const [error, setError] = useState("");
 
+  // Safe formatters to avoid runtime crashes when backend returns null/undefined
+  const safeString = (v) => (v === null || v === undefined ? "-" : String(v));
+
   useEffect(() => {
     fetchUsers();
   }, []);
 
   const fetchUsers = async () => {
     try {
-      const response = await API.get("/admin/employees");
-      setUsers(response.data);
+      const response = await API.get("admin/employees");
+      const payload = response.data;
+      let list = [];
+      if (Array.isArray(payload)) list = payload;
+      else if (Array.isArray(payload?.data)) list = payload.data;
+      else if (Array.isArray(payload?.items)) list = payload.items;
+      else if (Array.isArray(payload?.content)) list = payload.content;
+      else list = [];
+      setUsers(list);
     } catch (err) {
+      console.error("GET /admin/employees failed:", err?.response || err);
       setError("Failed to fetch users. Please try again.");
     }
   };
@@ -31,7 +42,7 @@ const AdminManageUsers = () => {
   const confirmDelete = async () => {
     const id = confirmState.id;
     try {
-      await API.delete(`/admin/employees/${id}`);
+      await API.delete(`admin/employees/${id}`);
       setConfirmState({ isOpen: false, id: null });
       fetchUsers(); // Refresh the list
       // show success toast
@@ -41,7 +52,11 @@ const AdminManageUsers = () => {
         type: "success",
       });
     } catch (err) {
-      setError("Failed to delete user.");
+      console.error(
+        "DELETE /admin/employees/{id} failed:",
+        err?.response || err
+      );
+      setError("Failed to delete user. Please try again.");
       setConfirmState({ isOpen: false, id: null });
     }
   };
@@ -102,42 +117,42 @@ const AdminManageUsers = () => {
               </tr>
             </thead>
             <tbody className="bg-white divide-y divide-gray-200">
-              {users.map((user) => (
-                <tr key={user.id}>
+              {users.map((user, idx) => (
+                <tr key={user?.id ?? idx}>
                   <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-[#14274E]">
-                    {user.username}
+                    {safeString(user?.username)}
                   </td>
                   <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                    {user.email}
+                    {safeString(user?.email)}
                   </td>
                   <td className="px-6 py-4 whitespace-nowrap text-sm">
                     <span
                       className={`px-3 py-1 rounded-full text-xs font-semibold
-                    ${user.role === "ADMIN" ? "bg-red-100 text-red-800" : ""}
+                    ${user?.role === "ADMIN" ? "bg-red-100 text-red-800" : ""}
                     ${
-                      user.role === "EMPLOYEE"
+                      user?.role === "EMPLOYEE"
                         ? "bg-blue-100 text-blue-800"
                         : ""
                     }
                     ${
-                      user.role === "CUSTOMER"
+                      user?.role === "CUSTOMER"
                         ? "bg-green-100 text-green-800"
                         : ""
                     }
                   `}
                     >
-                      {user.role}
+                      {safeString(user?.role)}
                     </span>
                   </td>
                   <td className="px-6 py-4 whitespace-nowrap text-right text-sm font-medium space-x-4">
                     <Link
-                      to={`/admin/employee/edit/${user.id}`}
+                      to={`/admin/employee/edit/${user?.id ?? ""}`}
                       className="text-[#394867] hover:text-[#14274E]"
                     >
                       Edit
                     </Link>
                     <button
-                      onClick={() => handleDelete(user.id)}
+                      onClick={() => handleDelete(user?.id)}
                       className="text-red-600 hover:text-red-900"
                     >
                       Delete

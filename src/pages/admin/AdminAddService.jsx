@@ -70,7 +70,7 @@ const AdminAddService = () => {
     }
 
     try {
-      const response = await API.post("/admin/services", formData);
+      const response = await API.post("admin/services", formData);
       setMessage(
         `Success! Service "${response.data.serviceItemName}" created.`
       );

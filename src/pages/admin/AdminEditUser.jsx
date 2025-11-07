@@ -1,6 +1,7 @@
 import { useState, useEffect } from "react";
 import { useParams, useNavigate, Link } from "react-router-dom";
 import API from "../../api/Api";
+import ConfirmModal from "../../components/ConfirmModal";
 import FormInput from "../../components/FormInput";
 import FormButton from "../../components/FormButton";
 import FormSelect from "../../components/FormSelect";
@@ -14,14 +15,20 @@ const AdminEditUser = () => {
     email: "",
     role: "EMPLOYEE",
   });
+  const [originalRole, setOriginalRole] = useState(null);
+  const [confirmRoleState, setConfirmRoleState] = useState({
+    isOpen: false,
+    newRole: null,
+  });
   const [message, setMessage] = useState("");
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     const fetchUser = async () => {
       try {
-        const response = await API.get(`/admin/employees/${id}`);
+        const response = await API.get(`admin/employees/${id}`);
         setFormData(response.data);
+        setOriginalRole(response.data?.role ?? null);
         setLoading(false);
       } catch (error) {
         setMessage(`Error: Failed to fetch user data.`);
@@ -39,12 +46,34 @@ const AdminEditUser = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     setMessage("");
+    // If role changed, ask for confirmation before submitting
+    if (formData.role !== originalRole) {
+      setConfirmRoleState({ isOpen: true, newRole: formData.role });
+      return;
+    }
+
     try {
       // Note: This API call should *not* send a password
-      await API.put(`/admin/employees/${id}`, formData);
+      await API.put(`admin/employees/${id}`, formData);
       setMessage("Success! User updated.");
       setToast({ isOpen: true, message: "User updated", type: "success" });
       // give a brief moment for the toast to be noticed before navigating
+      setTimeout(() => navigate("/admin/employees"), 700);
+    } catch (error) {
+      const errMsg =
+        error?.response?.data?.message || error.message || "Failed to update";
+      setMessage(`Error: ${errMsg}`);
+      setToast({ isOpen: true, message: `Error: ${errMsg}`, type: "error" });
+    }
+  };
+
+  const confirmRoleChange = async () => {
+    setConfirmRoleState({ isOpen: false, newRole: null });
+    setMessage("");
+    try {
+      await API.put(`admin/employees/${id}`, formData);
+      setMessage("Success! User updated.");
+      setToast({ isOpen: true, message: "User updated", type: "success" });
       setTimeout(() => navigate("/admin/employees"), 700);
     } catch (error) {
       const errMsg =
@@ -146,6 +175,16 @@ const AdminEditUser = () => {
           onClose={() =>
             setToast({ isOpen: false, message: "", type: "success" })
           }
+        />
+        <ConfirmModal
+          isOpen={confirmRoleState.isOpen}
+          title="Confirm role change"
+          message={`Change role from ${originalRole ?? "(unknown)"} to ${
+            confirmRoleState.newRole
+          }?`}
+          onConfirm={confirmRoleChange}
+          onCancel={() => setConfirmRoleState({ isOpen: false, newRole: null })}
+          confirmText="Confirm"
         />
       </div>
     </>

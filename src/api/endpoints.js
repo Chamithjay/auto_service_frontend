@@ -7,7 +7,7 @@ export const getAllAppointments = () =>
 export const getActiveAppointments = () =>
   API.get("/customer/dashboard/appointments/active");
 export const getAppointmentProgress = (appointmentId) =>
-  API.get(`/v1/customer/dashboard/appointments/${appointmentId}/progress`);
+  API.get(`/customer/dashboard/appointments/${appointmentId}/progress`);
 
 // Customer Profile APIs
 export const getCustomerProfile = () => API.get("/customer/profile");

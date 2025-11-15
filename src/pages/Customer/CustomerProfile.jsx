@@ -1,8 +1,12 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
+import { useNavigate } from "react-router-dom";
 import CustomerDashboardLayout from "../../components/Customer/CustomerDashboardLayout";
 import { getCustomerProfile, updateCustomerProfile } from "../../api/endpoints";
 
 const CustomerProfile = () => {
+  const navigate = useNavigate();
+  const fileInputRef = useRef(null);
+
   const [profile, setProfile] = useState(null);
   const [isEditing, setIsEditing] = useState(false);
   const [formData, setFormData] = useState({
@@ -14,6 +18,18 @@ const CustomerProfile = () => {
   const [isLoading, setIsLoading] = useState(true);
   const [isSaving, setIsSaving] = useState(false);
   const [successMessage, setSuccessMessage] = useState("");
+  const [activeTab, setActiveTab] = useState("personal");
+  const [profileImage, setProfileImage] = useState(
+    "https://img.icons8.com/?size=100&id=20749&format=png&color=000000"
+  );
+
+  // Customer statistics
+  const customerStats = {
+    totalAppointments: 12,
+    completedServices: 8,
+    activeVehicles: 2,
+    pendingAppointments: 1,
+  };
 
   useEffect(() => {
     fetchProfile();
@@ -144,11 +160,27 @@ const CustomerProfile = () => {
     setSuccessMessage("");
   };
 
+  const handleImageUpload = (event) => {
+    const file = event.target.files[0];
+    if (file) {
+      const reader = new FileReader();
+      reader.onloadend = () => {
+        setProfileImage(reader.result);
+      };
+      reader.readAsDataURL(file);
+    }
+  };
+
+  const triggerFileInput = () => {
+    fileInputRef.current?.click();
+  };
+
   if (isLoading) {
     return (
       <CustomerDashboardLayout>
-        <div className="flex items-center justify-center h-64">
-          <div className="animate-spin rounded-full h-16 w-16 border-t-2 border-b-2 border-[#14274E]"></div>
+        <div className="flex flex-col items-center justify-center p-16 text-gray-600">
+          <div className="w-16 h-16 border-6 border-gray-200 border-t-indigo-500 rounded-full animate-spin mb-4"></div>
+          <p className="text-gray-800 text-lg">Loading your profile...</p>
         </div>
       </CustomerDashboardLayout>
     );
@@ -156,332 +188,331 @@ const CustomerProfile = () => {
 
   return (
     <CustomerDashboardLayout>
-      <div className="max-w-3xl mx-auto space-y-6">
-        {/* Page Header */}
-        <div>
+      <div className="h-full flex flex-col overflow-hidden">
+        {/* Header */}
+        <div className="flex-shrink-0 mb-4">
           <h1 className="text-2xl sm:text-3xl font-bold text-[#14274E]">
             My Profile
           </h1>
-          <p className="text-[#9BA4B4] mt-1">Manage your account information</p>
+          <p className="text-gray-600 text-sm sm:text-base mt-1">
+            Manage your personal information and account settings
+          </p>
         </div>
-
-        {/* Success Message */}
-        {successMessage && (
-          <div className="bg-green-50 border border-green-200 rounded-xl p-4">
-            <div className="flex items-center">
-              <svg
-                className="w-5 h-5 text-green-500 mr-3"
-                fill="currentColor"
-                viewBox="0 0 20 20"
-              >
-                <path
-                  fillRule="evenodd"
-                  d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z"
-                  clipRule="evenodd"
-                />
-              </svg>
-              <p className="text-green-800 font-semibold">{successMessage}</p>
-            </div>
-          </div>
-        )}
 
         {/* Error Message */}
         {errors.general && (
-          <div className="bg-red-50 border border-red-200 rounded-xl p-4">
-            <div className="flex items-center">
-              <svg
-                className="w-5 h-5 text-red-500 mr-3"
-                fill="currentColor"
-                viewBox="0 0 20 20"
-              >
-                <path
-                  fillRule="evenodd"
-                  d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z"
-                  clipRule="evenodd"
-                />
-              </svg>
-              <p className="text-red-800 font-semibold">{errors.general}</p>
-            </div>
+          <div className="flex-shrink-0 flex items-center gap-3 px-4 py-3 rounded-lg font-semibold bg-red-100 text-red-800 border border-red-200 mb-4">
+            <span className="text-lg">⚠️</span>
+            <span className="text-sm">{errors.general}</span>
+            <button
+              onClick={() => setErrors({})}
+              className="ml-auto text-xl cursor-pointer"
+            >
+              ×
+            </button>
           </div>
         )}
 
-        {/* Profile Card */}
-        <div className="bg-white rounded-2xl shadow-lg overflow-hidden">
-          {/* Header Section */}
-          <div className="bg-gradient-to-br from-[#14274E] to-[#394867] p-6 sm:p-8 text-white">
-            <div className="flex items-center space-x-4">
-              <div className="bg-white/20 p-4 rounded-full">
-                <svg
-                  className="w-12 h-12"
-                  fill="none"
-                  stroke="currentColor"
-                  viewBox="0 0 24 24"
-                >
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    strokeWidth="2"
-                    d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"
+        {/* Success Message */}
+        {successMessage && (
+          <div className="flex-shrink-0 flex items-center gap-3 px-4 py-3 rounded-lg font-semibold bg-green-100 text-green-800 border border-green-200 mb-4">
+            <span className="text-lg">✅</span>
+            <span className="text-sm">{successMessage}</span>
+          </div>
+        )}
+
+        <div className="flex-1 grid grid-cols-1 lg:grid-cols-[280px_1fr] gap-4 min-h-0">
+          {/* Sidebar */}
+          <aside className="flex flex-col gap-4 overflow-y-auto">
+            <div className="bg-white rounded-2xl p-6 shadow-lg">
+              <div className="text-center mb-4">
+                <div className="relative inline-block mb-3">
+                  <img
+                    src={profileImage}
+                    alt={profile?.username}
+                    className="w-24 h-24 rounded-full object-cover border-4 border-gray-200 shadow-lg"
                   />
-                </svg>
+                  <button
+                    onClick={triggerFileInput}
+                    className="absolute bottom-0 right-0 bg-gradient-to-r from-indigo-500 to-purple-600 border-none rounded-full w-8 h-8 cursor-pointer text-sm hover:scale-110 transition-all disabled:opacity-50 disabled:cursor-not-allowed"
+                    disabled={!isEditing}
+                  >
+                    📷
+                  </button>
+                  <input
+                    type="file"
+                    ref={fileInputRef}
+                    onChange={handleImageUpload}
+                    accept="image/*"
+                    style={{ display: "none" }}
+                  />
+                </div>
+                <div>
+                  <h2 className="text-xl font-bold text-gray-800 mb-1">
+                    {profile?.username}
+                  </h2>
+                  <p className="text-sm font-semibold text-indigo-500 mb-1">
+                    Customer
+                  </p>
+                  <p className="text-xs text-gray-600 truncate">
+                    {profile?.email}
+                  </p>
+                </div>
               </div>
-              <div>
-                <h2 className="text-2xl font-bold">{profile?.username}</h2>
-                <p className="text-[#9BA4B4]">Customer Account</p>
+
+              <div className="grid grid-cols-2 gap-2 mb-4">
+                <div className="text-center p-3 bg-gray-50 rounded-lg border border-gray-200">
+                  <div className="text-xl font-bold text-gray-800">
+                    {customerStats.totalAppointments}
+                  </div>
+                  <div className="text-xs text-gray-600 font-medium">
+                    Bookings
+                  </div>
+                </div>
+                <div className="text-center p-3 bg-gray-50 rounded-lg border border-gray-200">
+                  <div className="text-xl font-bold text-gray-800">
+                    {customerStats.completedServices}
+                  </div>
+                  <div className="text-xs text-gray-600 font-medium">
+                    Completed
+                  </div>
+                </div>
+                <div className="text-center p-3 bg-gray-50 rounded-lg border border-gray-200">
+                  <div className="text-xl font-bold text-gray-800">
+                    {customerStats.activeVehicles}
+                  </div>
+                  <div className="text-xs text-gray-600 font-medium">
+                    Vehicles
+                  </div>
+                </div>
+                <div className="text-center p-3 bg-gray-50 rounded-lg border border-gray-200">
+                  <div className="text-xl font-bold text-gray-800">
+                    {customerStats.pendingAppointments}
+                  </div>
+                  <div className="text-xs text-gray-600 font-medium">
+                    Pending
+                  </div>
+                </div>
+              </div>
+
+              <div className="flex flex-col gap-2">
+                <button
+                  className="px-4 py-2 bg-[#14274E] text-white rounded-lg text-sm font-semibold hover:bg-[#394867] transition-all shadow-md"
+                  onClick={() => setIsEditing(!isEditing)}
+                >
+                  {isEditing ? "Cancel Editing" : "Edit Profile"}
+                </button>
+                {isEditing && (
+                  <button
+                    className="px-4 py-2 bg-green-500 text-white rounded-lg text-sm font-semibold hover:bg-green-600 transition-all disabled:opacity-60 disabled:cursor-not-allowed"
+                    onClick={handleSubmit}
+                    disabled={isSaving}
+                  >
+                    {isSaving ? "Saving..." : "Save Changes"}
+                  </button>
+                )}
               </div>
             </div>
-          </div>
+          </aside>
 
-          {/* Form Section */}
-          <div className="p-6 sm:p-8">
-            {!isEditing ? (
-              // View Mode
-              <div className="space-y-6">
-                <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
-                  <div>
-                    <p className="text-sm text-[#9BA4B4] mb-1">Username</p>
-                    <p className="font-semibold text-[#14274E] text-lg">
-                      {profile?.username}
-                    </p>
-                  </div>
-                  <div>
-                    <p className="text-sm text-[#9BA4B4] mb-1">Email</p>
-                    <p className="font-semibold text-[#14274E] text-lg">
-                      {profile?.email}
-                    </p>
-                  </div>
-                  <div>
-                    <p className="text-sm text-[#9BA4B4] mb-1">Phone Number</p>
-                    <p className="font-semibold text-[#14274E] text-lg">
-                      {profile?.phoneNumber || "Not provided"}
-                    </p>
-                  </div>
-                  <div>
-                    <p className="text-sm text-[#9BA4B4] mb-1">Role</p>
-                    <p className="font-semibold text-[#14274E] text-lg">
-                      Customer
-                    </p>
-                  </div>
-                </div>
+          {/* Main Content */}
+          <main className="bg-white rounded-2xl shadow-lg overflow-hidden flex flex-col min-h-0">
+            <div className="flex-shrink-0 flex bg-gray-50 border-b border-gray-200">
+              <button
+                className={`flex-1 px-4 sm:px-6 py-3 border-none text-sm font-semibold transition-all border-b-4 ${
+                  activeTab === "personal"
+                    ? "text-[#14274E] border-b-[#14274E] bg-white"
+                    : "text-gray-600 border-b-transparent hover:text-gray-800 hover:bg-gray-100"
+                }`}
+                onClick={() => setActiveTab("personal")}
+              >
+                Personal Info
+              </button>
+              <button
+                className={`flex-1 px-4 sm:px-6 py-3 border-none text-sm font-semibold transition-all border-b-4 ${
+                  activeTab === "settings"
+                    ? "text-[#14274E] border-b-[#14274E] bg-white"
+                    : "text-gray-600 border-b-transparent hover:text-gray-800 hover:bg-gray-100"
+                }`}
+                onClick={() => setActiveTab("settings")}
+              >
+                Settings
+              </button>
+            </div>
 
-                <div className="pt-4 border-t border-[#9BA4B4]/20">
-                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 text-sm">
-                    <div>
-                      <p className="text-[#9BA4B4]">Account Created</p>
-                      <p className="font-semibold text-[#14274E]">
-                        {profile?.createdAt}
-                      </p>
+            <div className="flex-1 p-4 sm:p-6 overflow-y-auto">
+              {/* Personal Information Tab */}
+              {activeTab === "personal" && (
+                <div>
+                  <h3 className="text-xl font-semibold text-gray-800 mb-4">
+                    Personal Information
+                  </h3>
+                  <div className="grid grid-cols-1 gap-4">
+                    <div className="flex flex-col">
+                      <label className="mb-1 font-semibold text-gray-700 text-sm">
+                        Username
+                      </label>
+                      <input
+                        type="text"
+                        name="username"
+                        value={formData.username}
+                        onChange={handleChange}
+                        disabled={!isEditing}
+                        className="px-3 py-2 border-2 border-gray-200 rounded-lg text-sm transition-all bg-white focus:outline-none focus:border-[#14274E] focus:shadow-[0_0_0_3px_rgba(20,39,78,0.1)] disabled:bg-gray-50 disabled:text-gray-400 disabled:cursor-not-allowed"
+                      />
+                      {errors.username && (
+                        <p className="mt-1 text-xs text-red-600">
+                          {errors.username}
+                        </p>
+                      )}
                     </div>
-                    <div>
-                      <p className="text-[#9BA4B4]">Last Updated</p>
-                      <p className="font-semibold text-[#14274E]">
-                        {profile?.updatedAt}
-                      </p>
+
+                    <div className="flex flex-col">
+                      <label className="mb-1 font-semibold text-gray-700 text-sm">
+                        Email Address
+                      </label>
+                      <input
+                        type="email"
+                        name="email"
+                        value={formData.email}
+                        onChange={handleChange}
+                        disabled={!isEditing}
+                        className="px-3 py-2 border-2 border-gray-200 rounded-lg text-sm transition-all bg-white focus:outline-none focus:border-[#14274E] focus:shadow-[0_0_0_3px_rgba(20,39,78,0.1)] disabled:bg-gray-50 disabled:text-gray-400 disabled:cursor-not-allowed"
+                      />
+                      {errors.email && (
+                        <p className="mt-1 text-xs text-red-600">
+                          {errors.email}
+                        </p>
+                      )}
+                    </div>
+
+                    <div className="flex flex-col">
+                      <label className="mb-1 font-semibold text-gray-700 text-sm">
+                        Phone Number
+                      </label>
+                      <input
+                        type="tel"
+                        name="phoneNumber"
+                        value={formData.phoneNumber}
+                        onChange={handleChange}
+                        disabled={!isEditing}
+                        className="px-3 py-2 border-2 border-gray-200 rounded-lg text-sm transition-all bg-white focus:outline-none focus:border-[#14274E] focus:shadow-[0_0_0_3px_rgba(20,39,78,0.1)] disabled:bg-gray-50 disabled:text-gray-400 disabled:cursor-not-allowed"
+                        placeholder="(555) 123-4567"
+                      />
+                      {errors.phoneNumber && (
+                        <p className="mt-1 text-xs text-red-600">
+                          {errors.phoneNumber}
+                        </p>
+                      )}
+                    </div>
+
+                    <div className="grid grid-cols-2 gap-4">
+                      <div className="flex flex-col">
+                        <label className="mb-1 font-semibold text-gray-700 text-sm">
+                          Account Created
+                        </label>
+                        <input
+                          type="text"
+                          value={profile?.createdAt || "N/A"}
+                          disabled
+                          className="px-3 py-2 border-2 border-gray-200 rounded-lg text-sm transition-all bg-white disabled:bg-gray-50 disabled:text-gray-400 disabled:cursor-not-allowed"
+                        />
+                      </div>
+
+                      <div className="flex flex-col">
+                        <label className="mb-1 font-semibold text-gray-700 text-sm">
+                          Last Updated
+                        </label>
+                        <input
+                          type="text"
+                          value={profile?.updatedAt || "N/A"}
+                          disabled
+                          className="px-3 py-2 border-2 border-gray-200 rounded-lg text-sm transition-all bg-white disabled:bg-gray-50 disabled:text-gray-400 disabled:cursor-not-allowed"
+                        />
+                      </div>
                     </div>
                   </div>
                 </div>
+              )}
 
-                <button
-                  onClick={() => setIsEditing(true)}
-                  className="w-full sm:w-auto px-6 py-3 bg-[#14274E] hover:bg-[#394867] text-white rounded-lg font-semibold transition-all duration-200 shadow-lg flex items-center justify-center"
-                >
-                  <svg
-                    className="w-5 h-5 mr-2"
-                    fill="none"
-                    stroke="currentColor"
-                    viewBox="0 0 24 24"
-                  >
-                    <path
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                      strokeWidth="2"
-                      d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"
-                    />
-                  </svg>
-                  Edit Profile
-                </button>
-              </div>
-            ) : (
-              // Edit Mode
-              <form onSubmit={handleSubmit} className="space-y-5">
-                {/* Username */}
+              {/* Settings Tab */}
+              {activeTab === "settings" && (
                 <div>
-                  <label
-                    htmlFor="username"
-                    className="block text-sm font-semibold text-[#14274E] mb-2"
-                  >
-                    Username <span className="text-red-500">*</span>
-                  </label>
-                  <input
-                    id="username"
-                    name="username"
-                    type="text"
-                    value={formData.username}
-                    onChange={handleChange}
-                    className={`appearance-none block w-full px-4 py-3 border ${
-                      errors.username ? "border-red-400" : "border-[#9BA4B4]/30"
-                    } rounded-xl bg-[#F1F6F9] text-[#14274E] placeholder-[#9BA4B4] focus:outline-none focus:ring-2 focus:ring-[#394867] focus:border-transparent transition-all duration-300`}
-                    placeholder="Enter your username"
-                  />
-                  {errors.username && (
-                    <p className="mt-2 text-sm text-red-600 flex items-center">
-                      <svg
-                        className="w-4 h-4 mr-1"
-                        fill="currentColor"
-                        viewBox="0 0 20 20"
-                      >
-                        <path
-                          fillRule="evenodd"
-                          d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7 4a1 1 0 11-2 0 1 1 0 012 0zm-1-9a1 1 0 00-1 1v4a1 1 0 102 0V6a1 1 0 00-1-1z"
-                          clipRule="evenodd"
-                        />
-                      </svg>
-                      {errors.username}
-                    </p>
-                  )}
-                </div>
-
-                {/* Email */}
-                <div>
-                  <label
-                    htmlFor="email"
-                    className="block text-sm font-semibold text-[#14274E] mb-2"
-                  >
-                    Email <span className="text-red-500">*</span>
-                  </label>
-                  <input
-                    id="email"
-                    name="email"
-                    type="email"
-                    value={formData.email}
-                    onChange={handleChange}
-                    className={`appearance-none block w-full px-4 py-3 border ${
-                      errors.email ? "border-red-400" : "border-[#9BA4B4]/30"
-                    } rounded-xl bg-[#F1F6F9] text-[#14274E] placeholder-[#9BA4B4] focus:outline-none focus:ring-2 focus:ring-[#394867] focus:border-transparent transition-all duration-300`}
-                    placeholder="Enter your email"
-                  />
-                  {errors.email && (
-                    <p className="mt-2 text-sm text-red-600 flex items-center">
-                      <svg
-                        className="w-4 h-4 mr-1"
-                        fill="currentColor"
-                        viewBox="0 0 20 20"
-                      >
-                        <path
-                          fillRule="evenodd"
-                          d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7 4a1 1 0 11-2 0 1 1 0 012 0zm-1-9a1 1 0 00-1 1v4a1 1 0 102 0V6a1 1 0 00-1-1z"
-                          clipRule="evenodd"
-                        />
-                      </svg>
-                      {errors.email}
-                    </p>
-                  )}
-                </div>
-
-                {/* Phone Number */}
-                <div>
-                  <label
-                    htmlFor="phoneNumber"
-                    className="block text-sm font-semibold text-[#14274E] mb-2"
-                  >
-                    Phone Number
-                  </label>
-                  <input
-                    id="phoneNumber"
-                    name="phoneNumber"
-                    type="text"
-                    value={formData.phoneNumber}
-                    onChange={handleChange}
-                    className={`appearance-none block w-full px-4 py-3 border ${
-                      errors.phoneNumber
-                        ? "border-red-400"
-                        : "border-[#9BA4B4]/30"
-                    } rounded-xl bg-[#F1F6F9] text-[#14274E] placeholder-[#9BA4B4] focus:outline-none focus:ring-2 focus:ring-[#394867] focus:border-transparent transition-all duration-300`}
-                    placeholder="Enter your phone number"
-                  />
-                  {errors.phoneNumber && (
-                    <p className="mt-2 text-sm text-red-600 flex items-center">
-                      <svg
-                        className="w-4 h-4 mr-1"
-                        fill="currentColor"
-                        viewBox="0 0 20 20"
-                      >
-                        <path
-                          fillRule="evenodd"
-                          d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7 4a1 1 0 11-2 0 1 1 0 012 0zm-1-9a1 1 0 00-1 1v4a1 1 0 102 0V6a1 1 0 00-1-1z"
-                          clipRule="evenodd"
-                        />
-                      </svg>
-                      {errors.phoneNumber}
-                    </p>
-                  )}
-                </div>
-
-                {/* Action Buttons */}
-                <div className="flex flex-col sm:flex-row space-y-3 sm:space-y-0 sm:space-x-4 pt-4">
-                  <button
-                    type="button"
-                    onClick={handleCancelEdit}
-                    className="flex-1 px-6 py-3 border-2 border-[#9BA4B4] text-[#394867] rounded-lg font-semibold hover:bg-[#F1F6F9] transition-all duration-200"
-                  >
-                    Cancel
-                  </button>
-                  <button
-                    type="submit"
-                    disabled={isSaving}
-                    className={`flex-1 px-6 py-3 rounded-lg font-semibold transition-all duration-200 shadow-lg flex items-center justify-center ${
-                      isSaving
-                        ? "bg-[#9BA4B4] cursor-not-allowed"
-                        : "bg-gradient-to-r from-[#14274E] to-[#394867] hover:from-[#394867] hover:to-[#14274E] text-white"
-                    }`}
-                  >
-                    {isSaving ? (
-                      <>
-                        <svg
-                          className="animate-spin -ml-1 mr-3 h-5 w-5 text-white"
-                          xmlns="http://www.w3.org/2000/svg"
-                          fill="none"
-                          viewBox="0 0 24 24"
-                        >
-                          <circle
-                            className="opacity-25"
-                            cx="12"
-                            cy="12"
-                            r="10"
-                            stroke="currentColor"
-                            strokeWidth="4"
-                          ></circle>
-                          <path
-                            className="opacity-75"
-                            fill="currentColor"
-                            d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
-                          ></path>
-                        </svg>
-                        Saving...
-                      </>
-                    ) : (
-                      <>
-                        <svg
-                          className="w-5 h-5 mr-2"
-                          fill="none"
-                          stroke="currentColor"
-                          viewBox="0 0 24 24"
-                        >
-                          <path
-                            strokeLinecap="round"
-                            strokeLinejoin="round"
-                            strokeWidth="2"
-                            d="M5 13l4 4L19 7"
+                  <h3 className="text-xl font-semibold text-gray-800 mb-4">
+                    Account Settings
+                  </h3>
+                  <div className="flex flex-col gap-6">
+                    <div>
+                      <h4 className="text-base font-semibold text-gray-800 mb-3">
+                        Notification Preferences
+                      </h4>
+                      <div className="space-y-2">
+                        <label className="flex items-center gap-3 cursor-pointer text-sm text-gray-700">
+                          <input
+                            type="checkbox"
+                            defaultChecked
+                            className="hidden peer"
                           />
-                        </svg>
-                        Save Changes
-                      </>
-                    )}
-                  </button>
+                          <span className="w-4 h-4 border-2 border-gray-300 rounded relative transition-all peer-checked:bg-[#14274E] peer-checked:border-[#14274E] after:content-['✓'] after:absolute after:text-white after:text-xs after:top-1/2 after:left-1/2 after:-translate-x-1/2 after:-translate-y-1/2 after:hidden peer-checked:after:block"></span>
+                          Email notifications
+                        </label>
+                        <label className="flex items-center gap-3 cursor-pointer text-sm text-gray-700">
+                          <input
+                            type="checkbox"
+                            defaultChecked
+                            className="hidden peer"
+                          />
+                          <span className="w-4 h-4 border-2 border-gray-300 rounded relative transition-all peer-checked:bg-[#14274E] peer-checked:border-[#14274E] after:content-['✓'] after:absolute after:text-white after:text-xs after:top-1/2 after:left-1/2 after:-translate-x-1/2 after:-translate-y-1/2 after:hidden peer-checked:after:block"></span>
+                          SMS alerts for appointments
+                        </label>
+                        <label className="flex items-center gap-3 cursor-pointer text-sm text-gray-700">
+                          <input type="checkbox" className="hidden peer" />
+                          <span className="w-4 h-4 border-2 border-gray-300 rounded relative transition-all peer-checked:bg-[#14274E] peer-checked:border-[#14274E] after:content-['✓'] after:absolute after:text-white after:text-xs after:top-1/2 after:left-1/2 after:-translate-x-1/2 after:-translate-y-1/2 after:hidden peer-checked:after:block"></span>
+                          Push notifications
+                        </label>
+                      </div>
+                    </div>
+
+                    <div>
+                      <h4 className="text-base font-semibold text-gray-800 mb-3">
+                        Privacy Settings
+                      </h4>
+                      <div className="space-y-2">
+                        <label className="flex items-center gap-3 cursor-pointer text-sm text-gray-700">
+                          <input
+                            type="checkbox"
+                            defaultChecked
+                            className="hidden peer"
+                          />
+                          <span className="w-4 h-4 border-2 border-gray-300 rounded relative transition-all peer-checked:bg-[#14274E] peer-checked:border-[#14274E] after:content-['✓'] after:absolute after:text-white after:text-xs after:top-1/2 after:left-1/2 after:-translate-x-1/2 after:-translate-y-1/2 after:hidden peer-checked:after:block"></span>
+                          Share vehicle details with service team
+                        </label>
+                        <label className="flex items-center gap-3 cursor-pointer text-sm text-gray-700">
+                          <input type="checkbox" className="hidden peer" />
+                          <span className="w-4 h-4 border-2 border-gray-300 rounded relative transition-all peer-checked:bg-[#14274E] peer-checked:border-[#14274E] after:content-['✓'] after:absolute after:text-white after:text-xs after:top-1/2 after:left-1/2 after:-translate-x-1/2 after:-translate-y-1/2 after:hidden peer-checked:after:block"></span>
+                          Allow contact via phone
+                        </label>
+                      </div>
+                    </div>
+
+                    <div className="pt-6 border-t-2 border-red-100">
+                      <h4 className="text-base font-semibold text-red-600 mb-3">
+                        Danger Zone
+                      </h4>
+                      <div className="flex flex-col sm:flex-row gap-3">
+                        <button className="px-4 py-2 bg-red-600 text-white rounded-lg text-sm font-semibold hover:bg-red-700 transition-all">
+                          Reset Password
+                        </button>
+                        <button className="px-4 py-2 bg-transparent border-2 border-red-600 text-red-600 rounded-lg text-sm font-semibold hover:bg-red-600 hover:text-white transition-all">
+                          Deactivate Account
+                        </button>
+                      </div>
+                    </div>
+                  </div>
                 </div>
-              </form>
-            )}
-          </div>
+              )}
+            </div>
+          </main>
         </div>
       </div>
     </CustomerDashboardLayout>

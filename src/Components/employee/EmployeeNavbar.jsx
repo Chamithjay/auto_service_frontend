@@ -13,17 +13,14 @@ const EmployeeNavbar = ({ user }) => {
 
   return (
     <nav className="bg-[#14274E] shadow-lg fixed w-full top-0 z-50 border-b border-[#394867]/20">
-      <div className="w-full px-4 sm:px-6">
+      <div className="w-full px-4 sm:px-6 lg:px-12">
         <div className="flex justify-between items-center h-16">
           <div className="flex items-center">
             <img
               src={companyLogo}
               alt="AutoService Logo"
-              className="h-16 sm:h-20 w-auto object-contain"
+              className="h-20 sm:h-23 w-auto object-contain"
             />
-            <span className="ml-3 sm:ml-4 text-white text-base sm:text-xl font-bold">
-              Employee Portal
-            </span>
           </div>
 
           <div className="flex items-center space-x-3 sm:space-x-6">
@@ -40,7 +37,7 @@ const EmployeeNavbar = ({ user }) => {
 
             <button
               onClick={handleLogout}
-              className="px-3 sm:px-6 py-2 sm:py-2.5 bg-[#394867] hover:bg-[#9BA4B4] text-white rounded-lg font-semibold transition-all duration-200 shadow-lg flex items-center space-x-1 sm:space-x-2 text-xs sm:text-base"
+              className="px-3 sm:px-6 py-2 sm:py-2.5 bg-[#E63946] hover:bg-[#F59A9F] text-white rounded-lg font-semibold transition-all duration-200 shadow-lg flex items-center space-x-1 sm:space-x-2 text-xs sm:text-base"
             >
               <svg
                 className="w-4 h-4 sm:w-5 sm:h-5"

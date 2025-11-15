@@ -1,17 +1,13 @@
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import API from "../api/Api";
-import CustomerNavbar from "../components/Customer/CustomerNavbar";
-import CustomerSidebar from "../components/Customer/CustomerSidebar";
+import CustomerDashboardLayout from "../components/Customer/CustomerDashboardLayout";
 
 const AppointmentBooking = () => {
   const navigate = useNavigate();
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
   const [success, setSuccess] = useState("");
-  const [isSidebarOpen, setIsSidebarOpen] = useState(false);
-
-  const user = JSON.parse(localStorage.getItem("user") || "{}");
 
   const [currentStep, setCurrentStep] = useState(1);
 
@@ -212,286 +208,294 @@ const AppointmentBooking = () => {
   })();
 
   return (
-    <div className="min-h-screen bg-[#F1F6F9]">
-      <CustomerNavbar
-        user={user}
-        onMenuToggle={() => setIsSidebarOpen(!isSidebarOpen)}
-        isSidebarOpen={isSidebarOpen}
-      />
-      <CustomerSidebar
-        isOpen={isSidebarOpen}
-        onClose={() => setIsSidebarOpen(false)}
-      />
+    <CustomerDashboardLayout>
+      <div className="space-y-6">
+        <div>
+          <h1 className="text-2xl sm:text-3xl font-bold text-[#14274E]">
+            Book an Appointment
+          </h1>
+          <p className="text-[#9BA4B4] mt-1">
+            Schedule your vehicle service or modifications
+          </p>
+        </div>
 
-      <div className="container mx-auto px-4 py-6 sm:py-8 lg:ml-64 pt-20">
-        <div className="max-w-4xl mx-auto">
-          <div className="bg-white rounded-lg shadow-md p-4 sm:p-6 mb-4 sm:mb-6">
-            <h1 className="text-2xl sm:text-3xl font-bold text-[#14274E] mb-2">
-              Book an Appointment
-            </h1>
-            <p className="text-[#394867] text-sm sm:text-base">
-              Schedule your vehicle service or modifications
-            </p>
+        {error && (
+          <div className="bg-red-50 border border-red-200 rounded-xl p-4">
+            <div className="flex items-center">
+              <svg
+                className="w-5 h-5 text-red-500 mr-3"
+                fill="currentColor"
+                viewBox="0 0 20 20"
+              >
+                <path
+                  fillRule="evenodd"
+                  d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z"
+                  clipRule="evenodd"
+                />
+              </svg>
+              <p className="text-sm text-red-800">{error}</p>
+            </div>
           </div>
+        )}
 
-          {error && (
-            <div className="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded-lg mb-4 sm:mb-6 text-sm sm:text-base">
-              {error}
+        {success && (
+          <div className="bg-green-50 border border-green-200 rounded-xl p-4">
+            <div className="flex items-center">
+              <svg
+                className="w-5 h-5 text-green-500 mr-3"
+                fill="currentColor"
+                viewBox="0 0 20 20"
+              >
+                <path
+                  fillRule="evenodd"
+                  d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z"
+                  clipRule="evenodd"
+                />
+              </svg>
+              <p className="text-sm text-green-800">{success}</p>
+            </div>
+          </div>
+        )}
+
+        <div className="bg-white rounded-xl shadow-sm border border-gray-100 p-4 sm:p-6">
+          <h2 className="text-lg sm:text-xl font-semibold text-[#14274E] mb-4">
+            Select Vehicle
+          </h2>
+
+          {loading ? (
+            <div className="flex justify-center items-center py-6">
+              <div className="animate-spin rounded-full h-10 w-10 border-t-2 border-b-2 border-[#14274E]"></div>
+            </div>
+          ) : (
+            <div className="flex items-center gap-3 overflow-x-auto py-2">
+              {vehicles.length > 0 ? (
+                vehicles.map((vehicle) => (
+                  <button
+                    key={vehicle.vehicleId}
+                    onClick={() => handleVehicleSelect(vehicle)}
+                    className={`flex-shrink-0 p-4 w-48 text-left border-2 rounded-xl transition-all ${
+                      selectedVehicle?.vehicleId === vehicle.vehicleId
+                        ? "border-[#14274E] bg-[#F1F6F9] shadow-sm"
+                        : "border-gray-200 hover:border-[#14274E] hover:bg-[#F8FAFC]"
+                    }`}
+                  >
+                    <div className="text-sm font-semibold text-[#14274E] truncate">
+                      {vehicle.vehicleName}
+                    </div>
+                    <div className="text-xs text-[#9BA4B4] mt-1 capitalize truncate">
+                      {vehicle.vehicleType?.toLowerCase().replace("_", " ")}
+                    </div>
+                  </button>
+                ))
+              ) : (
+                <div className="text-sm text-[#9BA4B4]">No vehicles found.</div>
+              )}
+
+              <button
+                onClick={() => navigate("/vehicles")}
+                title="Add vehicle"
+                className="flex-shrink-0 w-12 h-12 flex items-center justify-center text-2xl rounded-xl border-2 border-dashed border-gray-300 text-[#14274E] hover:bg-[#F1F6F9] hover:border-[#14274E] transition-all"
+              >
+                +
+              </button>
             </div>
           )}
 
-          {success && (
-            <div className="bg-green-100 border border-green-400 text-green-700 px-4 py-3 rounded-lg mb-4 sm:mb-6 text-sm sm:text-base">
-              {success}
-            </div>
+          {!selectedVehicle && (
+            <p className="text-[#9BA4B4] mt-3 text-sm">
+              Select a vehicle to continue with booking.
+            </p>
           )}
+        </div>
 
-          <div className="bg-white rounded-lg shadow-md p-4 mb-4 sm:mb-6">
-            <h2 className="text-base sm:text-lg font-semibold text-[#14274E] mb-3">
-              Select Vehicle
-            </h2>
-
-            {loading ? (
-              <div className="flex justify-center items-center py-6">
-                <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-[#14274E]"></div>
-              </div>
-            ) : (
-              <div className="flex items-center gap-3 overflow-x-auto py-2">
-                {vehicles.length > 0 ? (
-                  vehicles.map((vehicle) => (
-                    <button
-                      key={vehicle.vehicleId}
-                      onClick={() => handleVehicleSelect(vehicle)}
-                      className={`flex-shrink-0 p-3 w-44 text-left border-2 rounded-lg transition-colors ${
-                        selectedVehicle?.vehicleId === vehicle.vehicleId
-                          ? "border-[#14274E] bg-[#F1F6F9]"
-                          : "border-[#9BA4B4] hover:border-[#14274E] hover:bg-[#F8FAFC]"
-                      }`}
-                    >
-                      <div className="text-sm font-semibold text-[#14274E] truncate">
-                        {vehicle.vehicleName}
-                      </div>
-                      <div className="text-xs text-[#9BA4B4] mt-1 capitalize truncate">
-                        {vehicle.vehicleType?.toLowerCase().replace("_", " ")}
-                      </div>
-                    </button>
-                  ))
-                ) : (
-                  <div className="text-sm text-[#9BA4B4]">
-                    No vehicles found.
-                  </div>
-                )}
-
+        {currentStep === 2 && selectedVehicle && (
+          <div className="space-y-6">
+            <div className="bg-white rounded-xl shadow-sm border border-gray-100 p-4 sm:p-6">
+              <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+                <div className="flex-1">
+                  <label className="block text-sm font-semibold text-[#394867] mb-2">
+                    Selected Vehicle
+                  </label>
+                  <input
+                    type="text"
+                    value={selectedVehicle.vehicleName}
+                    disabled
+                    className="w-full px-4 py-3 bg-[#F1F6F9] text-[#14274E] rounded-lg font-semibold cursor-not-allowed"
+                  />
+                </div>
                 <button
-                  onClick={() => navigate("/vehicles")}
-                  title="Add vehicle"
-                  className="flex-shrink-0 w-12 h-12 flex items-center justify-center text-2xl rounded-lg border-2 border-dashed border-[#9BA4B4] text-[#14274E] hover:bg-[#F1F6F9]"
+                  onClick={handleBack}
+                  className="px-4 py-2 text-[#394867] hover:text-[#14274E] hover:bg-[#F1F6F9] rounded-lg transition-colors border border-gray-200"
                 >
-                  +
+                  Change Vehicle
                 </button>
               </div>
-            )}
+            </div>
 
-            {!selectedVehicle && (
-              <p className="text-[#9BA4B4] mt-3">
-                Select a vehicle to continue with booking.
-              </p>
-            )}
-          </div>
-
-          {currentStep === 2 && selectedVehicle && (
-            <div className="space-y-6">
-              <div className="bg-white rounded-lg shadow-md p-6">
-                <div className="flex items-center justify-between">
-                  <div>
-                    <label className="block text-sm font-semibold text-[#394867] mb-1">
-                      Selected Vehicle
+            {servicesAndModifications.services.length > 0 && (
+              <div className="bg-white rounded-xl shadow-sm border border-gray-100 p-4 sm:p-6">
+                <h2 className="text-lg sm:text-xl font-semibold text-[#14274E] mb-4">
+                  Select Services
+                </h2>
+                <div className="space-y-3">
+                  {servicesAndModifications.services.map((service) => (
+                    <label
+                      key={service.id}
+                      className="flex items-center p-4 border-2 border-gray-200 rounded-xl hover:bg-[#F1F6F9] hover:border-[#14274E] cursor-pointer transition-all"
+                    >
+                      <input
+                        type="checkbox"
+                        checked={selectedServiceIds.includes(service.id)}
+                        onChange={() => handleServiceToggle(service.id)}
+                        className="w-5 h-5 text-[#14274E] border-gray-300 rounded focus:ring-[#14274E] focus:ring-2"
+                      />
+                      <span className="ml-3 text-[#14274E] font-medium">
+                        {service.name}
+                      </span>
                     </label>
-                    <input
-                      type="text"
-                      value={selectedVehicle.vehicleName}
-                      disabled
-                      className="w-full px-4 py-2 bg-[#F1F6F9] text-[#14274E] rounded-lg font-semibold cursor-not-allowed"
-                    />
-                  </div>
-                  <button
-                    onClick={handleBack}
-                    className="px-4 py-2 text-[#394867] hover:text-[#14274E] hover:bg-[#F1F6F9] rounded-lg transition-colors"
-                  >
-                    Change Vehicle
-                  </button>
+                  ))}
                 </div>
               </div>
+            )}
 
-              {servicesAndModifications.services.length > 0 && (
-                <div className="bg-white rounded-lg shadow-md p-6">
-                  <h2 className="text-2xl font-bold text-[#14274E] mb-4">
-                    Select Services
-                  </h2>
-                  <div className="space-y-3">
-                    {servicesAndModifications.services.map((service) => (
+            {servicesAndModifications.modifications.length > 0 && (
+              <div className="bg-white rounded-xl shadow-sm border border-gray-100 p-4 sm:p-6">
+                <h2 className="text-lg sm:text-xl font-semibold text-[#14274E] mb-4">
+                  Select Modifications
+                </h2>
+                <div className="space-y-3">
+                  {servicesAndModifications.modifications.map(
+                    (modification) => (
                       <label
-                        key={service.id}
-                        className="flex items-center p-4 border-2 border-[#9BA4B4] rounded-lg hover:bg-[#F1F6F9] cursor-pointer transition-colors"
+                        key={modification.id}
+                        className="flex items-center p-4 border-2 border-gray-200 rounded-xl hover:bg-[#F1F6F9] hover:border-[#14274E] cursor-pointer transition-all"
                       >
                         <input
                           type="checkbox"
-                          checked={selectedServiceIds.includes(service.id)}
-                          onChange={() => handleServiceToggle(service.id)}
-                          className="w-5 h-5 text-[#14274E] border-[#9BA4B4] rounded focus:ring-[#14274E] focus:ring-2"
+                          checked={selectedServiceIds.includes(modification.id)}
+                          onChange={() => handleServiceToggle(modification.id)}
+                          className="w-5 h-5 text-[#14274E] border-gray-300 rounded focus:ring-[#14274E] focus:ring-2"
                         />
-                        <span className="ml-3 text-[#14274E] font-semibold">
-                          {service.name}
+                        <span className="ml-3 text-[#14274E] font-medium">
+                          {modification.name}
                         </span>
                       </label>
-                    ))}
-                  </div>
+                    )
+                  )}
                 </div>
-              )}
+              </div>
+            )}
 
-              {servicesAndModifications.modifications.length > 0 && (
-                <div className="bg-white rounded-lg shadow-md p-6">
-                  <h2 className="text-2xl font-bold text-[#14274E] mb-4">
-                    Select Modifications
-                  </h2>
-                  <div className="space-y-3">
-                    {servicesAndModifications.modifications.map(
-                      (modification) => (
-                        <label
-                          key={modification.id}
-                          className="flex items-center p-4 border-2 border-[#9BA4B4] rounded-lg hover:bg-[#F1F6F9] cursor-pointer transition-colors"
-                        >
-                          <input
-                            type="checkbox"
-                            checked={selectedServiceIds.includes(
-                              modification.id
-                            )}
-                            onChange={() =>
-                              handleServiceToggle(modification.id)
-                            }
-                            className="w-5 h-5 text-[#14274E] border-[#9BA4B4] rounded focus:ring-[#14274E] focus:ring-2"
-                          />
-                          <span className="ml-3 text-[#14274E] font-semibold">
-                            {modification.name}
-                          </span>
-                        </label>
-                      )
-                    )}
-                  </div>
+            <div className="bg-white rounded-xl shadow-sm border border-gray-100 p-4 sm:p-6">
+              <h2 className="text-lg sm:text-xl font-semibold text-[#14274E] mb-4">
+                Select Date & Session
+              </h2>
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div>
+                  <label className="block text-sm font-medium text-[#394867] mb-2">
+                    Appointment Date
+                  </label>
+                  <input
+                    type="date"
+                    value={appointmentDate}
+                    onChange={(e) => {
+                      setAppointmentDate(e.target.value);
+                      setCalculationResult(null);
+                    }}
+                    min={getTodayDate()}
+                    className="w-full px-4 py-3 border-2 border-gray-200 rounded-lg focus:border-[#14274E] focus:outline-none text-[#14274E]"
+                  />
                 </div>
-              )}
+                <div>
+                  <label className="block text-sm font-medium text-[#394867] mb-2">
+                    Session
+                  </label>
+                  <select
+                    value={sessionType}
+                    onChange={(e) => {
+                      setSessionType(e.target.value);
+                      setCalculationResult(null);
+                    }}
+                    className="w-full px-4 py-3 border-2 border-gray-200 rounded-lg focus:border-[#14274E] focus:outline-none text-[#14274E] bg-white"
+                  >
+                    <option value="">Select Session</option>
+                    <option value="MORNING">Morning</option>
+                    <option value="EVENING">Evening</option>
+                  </select>
+                </div>
+              </div>
 
-              <div className="bg-white rounded-lg shadow-md p-6">
-                <h2 className="text-2xl font-bold text-[#14274E] mb-4">
-                  Select Date & Session
+              <button
+                onClick={handleCalculate}
+                disabled={
+                  isCalculating ||
+                  selectedServiceIds.length === 0 ||
+                  !appointmentDate ||
+                  !sessionType
+                }
+                className="mt-6 w-full bg-[#14274E] text-white py-3 rounded-lg font-semibold hover:bg-[#394867] transition-colors disabled:bg-[#9BA4B4] disabled:cursor-not-allowed"
+              >
+                {isCalculating ? "Calculating..." : "Calculate Cost"}
+              </button>
+            </div>
+
+            {calculationResult && (
+              <div className="bg-white rounded-xl shadow-sm border border-gray-100 p-4 sm:p-6">
+                <h2 className="text-lg sm:text-xl font-semibold text-[#14274E] mb-4">
+                  Appointment Summary
                 </h2>
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                  <div>
-                    <label className="block text-sm font-semibold text-[#394867] mb-2">
-                      Appointment Date
-                    </label>
-                    <input
-                      type="date"
-                      value={appointmentDate}
-                      onChange={(e) => {
-                        setAppointmentDate(e.target.value);
-                        setCalculationResult(null);
-                      }}
-                      min={getTodayDate()}
-                      className="w-full px-4 py-3 border-2 border-[#9BA4B4] rounded-lg focus:border-[#14274E] focus:outline-none text-[#14274E]"
-                    />
+                <div className="space-y-4">
+                  <div className="flex justify-between items-center p-4 bg-[#F1F6F9] rounded-xl">
+                    <span className="text-[#394867] font-medium">
+                      Total Cost
+                    </span>
+                    <span className="text-2xl font-bold text-[#14274E]">
+                      ${calculationResult.totalCost?.toFixed(2) || "0.00"}
+                    </span>
                   </div>
-                  <div>
-                    <label className="block text-sm font-semibold text-[#394867] mb-2">
-                      Session
-                    </label>
-                    <select
-                      value={sessionType}
-                      onChange={(e) => {
-                        setSessionType(e.target.value);
-                        setCalculationResult(null);
-                      }}
-                      className="w-full px-4 py-3 border-2 border-[#9BA4B4] rounded-lg focus:border-[#14274E] focus:outline-none text-[#14274E] bg-white"
+                  {calcMessage && (
+                    <div
+                      className={`p-4 border-2 rounded-xl ${
+                        calcIsPositive
+                          ? "bg-green-50 border-green-200"
+                          : "bg-red-50 border-red-200"
+                      }`}
                     >
-                      <option value="">Select Session</option>
-                      <option value="MORNING">Morning</option>
-                      <option value="EVENING">Evening</option>
-                    </select>
+                      <p
+                        className={`font-medium text-sm ${
+                          calcIsPositive ? "text-green-700" : "text-red-700"
+                        }`}
+                      >
+                        {calcIsPositive ? "✓ " : "⚠️ "}
+                        {calcMessage}
+                      </p>
+                    </div>
+                  )}
+                  <div className="flex justify-between items-center p-4 bg-[#F1F6F9] rounded-xl">
+                    <span className="text-[#394867] font-medium">
+                      Selected Items
+                    </span>
+                    <span className="text-lg font-semibold text-[#14274E]">
+                      {selectedServiceIds.length} item(s)
+                    </span>
                   </div>
                 </div>
 
                 <button
-                  onClick={handleCalculate}
-                  disabled={
-                    isCalculating ||
-                    selectedServiceIds.length === 0 ||
-                    !appointmentDate ||
-                    !sessionType
-                  }
-                  className="mt-4 w-full bg-[#394867] text-white py-3 rounded-lg font-semibold hover:bg-[#14274E] transition-colors disabled:bg-[#9BA4B4] disabled:cursor-not-allowed"
+                  onClick={handleCreateAppointment}
+                  disabled={loading}
+                  className="mt-6 w-full bg-[#14274E] text-white py-4 rounded-xl font-semibold text-base hover:bg-[#394867] transition-colors disabled:bg-[#9BA4B4] disabled:cursor-not-allowed shadow-sm"
                 >
-                  {isCalculating ? "Calculating..." : "Calculate Cost"}
+                  {loading
+                    ? "Creating Appointment..."
+                    : "Confirm & Book Appointment"}
                 </button>
               </div>
-
-              {calculationResult && (
-                <div className="bg-white rounded-lg shadow-md p-6">
-                  <h2 className="text-2xl font-bold text-[#14274E] mb-4">
-                    Appointment Summary
-                  </h2>
-                  <div className="space-y-4">
-                    <div className="flex justify-between items-center p-4 bg-[#F1F6F9] rounded-lg">
-                      <span className="text-[#394867] font-semibold">
-                        Total Cost
-                      </span>
-                      <span className="text-2xl font-bold text-[#14274E]">
-                        ${calculationResult.totalCost?.toFixed(2) || "0.00"}
-                      </span>
-                    </div>
-                    {calcMessage && (
-                      <div
-                        className={`p-4 border-2 rounded-lg ${
-                          calcIsPositive
-                            ? "bg-green-50 border-green-400"
-                            : "bg-red-50 border-red-400"
-                        }`}
-                      >
-                        <p
-                          className={`font-semibold ${
-                            calcIsPositive ? "text-green-700" : "text-red-700"
-                          }`}
-                        >
-                          {calcIsPositive ? "✓ " : "⚠️ "}
-                          {calcMessage}
-                        </p>
-                      </div>
-                    )}
-                    <div className="flex justify-between items-center p-4 bg-[#F1F6F9] rounded-lg">
-                      <span className="text-[#394867] font-semibold">
-                        Selected Items
-                      </span>
-                      <span className="text-lg font-bold text-[#14274E]">
-                        {selectedServiceIds.length} item(s)
-                      </span>
-                    </div>
-                  </div>
-
-                  <button
-                    onClick={handleCreateAppointment}
-                    disabled={loading}
-                    className="mt-6 w-full bg-[#14274E] text-white py-4 rounded-lg font-bold text-lg hover:bg-[#394867] transition-colors disabled:bg-[#9BA4B4] disabled:cursor-not-allowed"
-                  >
-                    {loading
-                      ? "Creating Appointment..."
-                      : "Confirm & Book Appointment"}
-                  </button>
-                </div>
-              )}
-            </div>
-          )}
-        </div>
+            )}
+          </div>
+        )}
       </div>
-    </div>
+    </CustomerDashboardLayout>
   );
 };
 

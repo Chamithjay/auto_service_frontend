@@ -193,13 +193,13 @@ const AdminManageServices = () => {
   }));
 
   return (
-    <div className="p-4 sm:p-6">
-      <h1 className="text-2xl sm:text-3xl font-bold text-[#14274E] mb-6 sm:mb-8">
+    <div className="h-full flex flex-col">
+      <h1 className="text-2xl sm:text-3xl font-bold text-[#14274E] mb-6 sm:mb-8 flex-shrink-0">
         Service Management
       </h1>
 
-      <div className="bg-white rounded-2xl shadow-lg p-4 sm:p-6">
-        <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 mb-6">
+      <div className="bg-white rounded-2xl shadow-lg p-4 sm:p-6 flex-1 flex flex-col min-h-0">
+        <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 mb-6 flex-shrink-0">
           <h2 className="text-lg sm:text-xl font-bold text-[#14274E]">
             All Services
           </h2>
@@ -225,11 +225,13 @@ const AdminManageServices = () => {
         </div>
 
         {error && (
-          <p className="text-red-500 mb-4 text-sm sm:text-base">{error}</p>
+          <p className="text-red-500 mb-4 text-sm sm:text-base flex-shrink-0">
+            {error}
+          </p>
         )}
-        <div className="overflow-x-auto">
+        <div className="overflow-x-auto overflow-y-auto flex-1 min-h-0">
           <table className="min-w-full divide-y divide-gray-200">
-            <thead className="bg-[#F1F6F9]">
+            <thead className="bg-[#F1F6F9] sticky top-0 z-10">
               <tr>
                 <th className="px-3 sm:px-6 py-3 text-left text-xs font-bold text-[#394867] uppercase tracking-wider">
                   Name
@@ -298,7 +300,7 @@ const AdminManageServices = () => {
         </div>
 
         {!loading && !groupByType && paginatedServices.length > 0 && (
-          <div className="flex flex-col sm:flex-row items-center justify-between mt-6 gap-4">
+          <div className="flex flex-col sm:flex-row items-center justify-between mt-6 gap-4 flex-shrink-0">
             <div className="text-sm text-[#9BA4B4]">
               Showing {(currentPage - 1) * itemsPerPage + 1} to{" "}
               {Math.min(currentPage * itemsPerPage, filteredServices.length)} of{" "}

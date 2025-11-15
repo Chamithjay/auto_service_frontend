@@ -48,10 +48,12 @@ const AdminLayout = ({ children }) => {
   }
 
   return (
-    <div className="min-h-screen bg-[#F1F6F9]">
+    <div className="h-screen bg-[#F1F6F9] overflow-hidden">
       <AdminNavbar user={user} />
       <AdminSidebar />
-      <main className="ml-64 mt-16 p-6 sm:p-8">{children ?? <Outlet />}</main>
+      <main className="ml-64 mt-16 h-[calc(100vh-4rem)] overflow-y-auto p-6 sm:p-8">
+        {children ?? <Outlet />}
+      </main>
       <ChatBot />
     </div>
   );

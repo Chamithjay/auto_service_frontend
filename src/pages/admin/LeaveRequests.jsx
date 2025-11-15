@@ -120,67 +120,71 @@ const LeaveRequests = () => {
   if (loading) {
     return (
       <div className="flex justify-center items-center h-screen">
-        <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-blue-500"></div>
+        <div className="animate-spin rounded-full h-12 w-12 sm:h-16 sm:w-16 border-t-2 border-b-2 border-[#14274E]"></div>
       </div>
     );
   }
 
   return (
-    <div className="container mx-auto px-4 sm:px-6 py-6 sm:py-8">
-      <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 mb-6">
-        <h1 className="text-2xl sm:text-3xl font-bold text-[#14274E]">
-          Leave Requests
-        </h1>
-        <div className="flex flex-col sm:flex-row items-start sm:items-center space-y-2 sm:space-y-0 sm:space-x-4 w-full sm:w-auto">
-          <label className="text-gray-600 text-sm sm:text-base whitespace-nowrap">
-            Filter by status:
-          </label>
-          <select
-            value={statusFilter}
-            onChange={(e) => setStatusFilter(e.target.value)}
-            className="w-full sm:w-auto border rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500 text-sm sm:text-base"
-          >
-            <option value="ALL">All Requests</option>
-            <option value="NEW">Pending</option>
-            <option value="APPROVED">Approved</option>
-            <option value="REJECTED">Rejected</option>
-          </select>
-        </div>
-      </div>
+    <div className="h-full flex flex-col">
+      <h1 className="text-2xl sm:text-3xl font-bold text-[#14274E] mb-6 sm:mb-8 flex-shrink-0">
+        Leave Requests
+      </h1>
 
-      <div className="bg-white rounded-2xl shadow-lg overflow-hidden">
-        <div className="overflow-x-auto">
+      <div className="bg-white rounded-2xl shadow-lg p-4 sm:p-6 flex-1 flex flex-col min-h-0">
+        <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 mb-6 flex-shrink-0">
+          <h2 className="text-lg sm:text-xl font-bold text-[#14274E]">
+            All Leave Requests
+          </h2>
+          <div className="flex flex-col sm:flex-row items-start sm:items-center space-y-2 sm:space-y-0 sm:space-x-4 w-full sm:w-auto">
+            <label className="text-gray-600 text-sm sm:text-base whitespace-nowrap">
+              Filter by status:
+            </label>
+            <select
+              value={statusFilter}
+              onChange={(e) => setStatusFilter(e.target.value)}
+              className="w-full sm:w-auto border rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-[#14274E] text-sm sm:text-base"
+            >
+              <option value="ALL">All Requests</option>
+              <option value="NEW">Pending</option>
+              <option value="APPROVED">Approved</option>
+              <option value="REJECTED">Rejected</option>
+            </select>
+          </div>
+        </div>
+
+        <div className="overflow-x-auto overflow-y-auto flex-1 min-h-0">
           <table className="min-w-full divide-y divide-gray-200">
-            <thead className="bg-gray-50">
+            <thead className="bg-[#F1F6F9] sticky top-0 z-10">
               <tr>
                 <th
-                  className="px-3 sm:px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider cursor-pointer hover:bg-gray-100"
+                  className="px-3 sm:px-6 py-3 text-left text-xs font-bold text-[#394867] uppercase tracking-wider cursor-pointer hover:bg-gray-100"
                   onClick={() => handleSort("employee")}
                 >
                   Employee
                 </th>
                 <th
-                  className="px-3 sm:px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider cursor-pointer hover:bg-gray-100"
+                  className="px-3 sm:px-6 py-3 text-left text-xs font-bold text-[#394867] uppercase tracking-wider cursor-pointer hover:bg-gray-100"
                   onClick={() => handleSort("leaveType")}
                 >
                   Leave Type
                 </th>
                 <th
-                  className="px-3 sm:px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider cursor-pointer hover:bg-gray-100"
+                  className="px-3 sm:px-6 py-3 text-left text-xs font-bold text-[#394867] uppercase tracking-wider cursor-pointer hover:bg-gray-100"
                   onClick={() => handleSort("leaveDate")}
                 >
                   Date
                 </th>
-                <th className="px-3 sm:px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                <th className="px-3 sm:px-6 py-3 text-left text-xs font-bold text-[#394867] uppercase tracking-wider">
                   Reason
                 </th>
                 <th
-                  className="px-3 sm:px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider cursor-pointer hover:bg-gray-100"
+                  className="px-3 sm:px-6 py-3 text-left text-xs font-bold text-[#394867] uppercase tracking-wider cursor-pointer hover:bg-gray-100"
                   onClick={() => handleSort("leaveStatus")}
                 >
                   Status
                 </th>
-                <th className="px-3 sm:px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                <th className="px-3 sm:px-6 py-3 text-right text-xs font-bold text-[#394867] uppercase tracking-wider">
                   Actions
                 </th>
               </tr>
@@ -244,13 +248,13 @@ const LeaveRequests = () => {
             </tbody>
           </table>
         </div>
-      </div>
 
-      {filteredLeaves.length === 0 && (
-        <div className="text-center py-8">
-          <p className="text-gray-500 text-lg">No leave requests found</p>
-        </div>
-      )}
+        {filteredLeaves.length === 0 && (
+          <div className="text-center py-8 flex-shrink-0">
+            <p className="text-[#9BA4B4] text-lg">No leave requests found</p>
+          </div>
+        )}
+      </div>
 
       <Toast
         isOpen={toast.show}

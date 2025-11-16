@@ -1,6 +1,5 @@
 import { useState, useEffect } from "react";
 import { useNavigate, useParams } from "react-router-dom";
-import CustomerDashboardLayout from "../../components/Customer/CustomerDashboardLayout";
 import { addVehicle, updateVehicle, getVehicleById } from "../../api/endpoints";
 
 const VehicleForm = () => {
@@ -125,16 +124,16 @@ const VehicleForm = () => {
 
   if (isFetching) {
     return (
-      <CustomerDashboardLayout>
+
         <div className="flex items-center justify-center h-64">
           <div className="animate-spin rounded-full h-16 w-16 border-t-2 border-b-2 border-[#14274E]"></div>
         </div>
-      </CustomerDashboardLayout>
+
     );
   }
 
   return (
-    <CustomerDashboardLayout>
+
       <div className="max-w-2xl mx-auto space-y-6">
         {/* Back Button */}
         <button
@@ -386,7 +385,6 @@ const VehicleForm = () => {
           </form>
         </div>
       </div>
-    </CustomerDashboardLayout>
   );
 };
 

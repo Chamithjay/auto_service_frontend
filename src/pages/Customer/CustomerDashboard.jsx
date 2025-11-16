@@ -1,6 +1,5 @@
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import CustomerDashboardLayout from "../../components/Customer/CustomerDashboardLayout";
 import { getDashboardStats, getActiveAppointments } from "../../api/endpoints";
 
 const CustomerDashboard = () => {
@@ -53,16 +52,13 @@ const CustomerDashboard = () => {
 
   if (isLoading) {
     return (
-      <CustomerDashboardLayout>
         <div className="flex items-center justify-center h-64">
           <div className="animate-spin rounded-full h-16 w-16 border-t-2 border-b-2 border-[#14274E]"></div>
         </div>
-      </CustomerDashboardLayout>
     );
   }
 
   return (
-    <CustomerDashboardLayout>
       <div className="space-y-6">
         <div>
           <h1 className="text-2xl sm:text-3xl font-bold text-[#14274E]">
@@ -393,7 +389,6 @@ const CustomerDashboard = () => {
           </div>
         </div>
       </div>
-    </CustomerDashboardLayout>
   );
 };
 

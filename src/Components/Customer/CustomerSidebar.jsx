@@ -48,7 +48,7 @@ const CustomerSidebar = ({ isOpen, onClose }) => {
     },
     {
       name: "Book Appointment",
-      path: "/appointment/book",
+      path: "/customer/appointments/book",
       icon: (
         <svg
           className="w-6 h-6"
@@ -67,7 +67,7 @@ const CustomerSidebar = ({ isOpen, onClose }) => {
     },
     {
       name: "My Appointments",
-      path: "/appointments/history",
+      path: "/customer/appointments/history",
       icon: (
         <svg
           className="w-6 h-6"

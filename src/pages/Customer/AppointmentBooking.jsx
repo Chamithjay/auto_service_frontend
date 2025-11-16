@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import API from "../api/Api";
-import CustomerDashboardLayout from "../components/Customer/CustomerDashboardLayout";
+import API from "../../api/Api";
+
 
 const AppointmentBooking = () => {
   const navigate = useNavigate();
@@ -146,7 +146,7 @@ const AppointmentBooking = () => {
       setSuccess(response.data.message || "Appointment created successfully!");
 
       setTimeout(() => {
-        navigate("/appointments/history");
+        navigate("/customer/appointments/history");
       }, 2000);
     } catch (err) {
       const serverMsg = err.response?.data?.message;
@@ -208,7 +208,6 @@ const AppointmentBooking = () => {
   })();
 
   return (
-    <CustomerDashboardLayout>
       <div className="space-y-6">
         <div>
           <h1 className="text-2xl sm:text-3xl font-bold text-[#14274E]">
@@ -495,7 +494,7 @@ const AppointmentBooking = () => {
           </div>
         )}
       </div>
-    </CustomerDashboardLayout>
+
   );
 };
 

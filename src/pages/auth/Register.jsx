@@ -1,8 +1,8 @@
 import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
-import API from "../api/Api";
-import registerSideImage from "../assets/register_side.png";
-import AuthLayout from "../components/AuthLayout";
+import API from "../../api/Api";
+import registerSideImage from "../../assets/register_side.png";
+import AuthLayout from "../../components/AuthLayout";
 
 const Register = () => {
   const navigate = useNavigate();

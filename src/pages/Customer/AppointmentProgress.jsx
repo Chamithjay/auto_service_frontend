@@ -1,6 +1,5 @@
 import { useState, useEffect } from "react";
 import { useParams, useNavigate } from "react-router-dom";
-import CustomerDashboardLayout from "../../components/Customer/CustomerDashboardLayout";
 import { getAppointmentProgress } from "../../api/endpoints";
 
 const AppointmentProgress = () => {
@@ -43,17 +42,14 @@ const AppointmentProgress = () => {
 
   if (isLoading) {
     return (
-      <CustomerDashboardLayout>
         <div className="flex items-center justify-center h-64">
           <div className="animate-spin rounded-full h-16 w-16 border-t-2 border-b-2 border-[#14274E]"></div>
         </div>
-      </CustomerDashboardLayout>
     );
   }
 
   if (error || !appointment) {
     return (
-      <CustomerDashboardLayout>
         <div className="bg-red-50 border border-red-200 rounded-xl p-6">
           <p className="text-red-800 font-semibold">
             {error || "Appointment not found"}
@@ -65,12 +61,10 @@ const AppointmentProgress = () => {
             ← Back to Dashboard
           </button>
         </div>
-      </CustomerDashboardLayout>
     );
   }
 
   return (
-    <CustomerDashboardLayout>
       <div className="space-y-6">
         <button
           onClick={() => navigate("/customer/dashboard")}
@@ -247,7 +241,6 @@ const AppointmentProgress = () => {
           )}
         </div>
       </div>
-    </CustomerDashboardLayout>
   );
 };
 

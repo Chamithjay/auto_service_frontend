@@ -1,6 +1,5 @@
 import { useState, useEffect, useRef } from "react";
 import { useNavigate } from "react-router-dom";
-import CustomerDashboardLayout from "../../components/Customer/CustomerDashboardLayout";
 import { getCustomerProfile, updateCustomerProfile } from "../../api/endpoints";
 
 const CustomerProfile = () => {
@@ -177,17 +176,17 @@ const CustomerProfile = () => {
 
   if (isLoading) {
     return (
-      <CustomerDashboardLayout>
+
         <div className="flex flex-col items-center justify-center p-16 text-gray-600">
           <div className="w-16 h-16 border-6 border-gray-200 border-t-indigo-500 rounded-full animate-spin mb-4"></div>
           <p className="text-gray-800 text-lg">Loading your profile...</p>
         </div>
-      </CustomerDashboardLayout>
+
     );
   }
 
   return (
-    <CustomerDashboardLayout>
+
       <div className="h-full flex flex-col overflow-hidden">
         {/* Header */}
         <div className="flex-shrink-0 mb-4">
@@ -515,7 +514,6 @@ const CustomerProfile = () => {
           </main>
         </div>
       </div>
-    </CustomerDashboardLayout>
   );
 };
 

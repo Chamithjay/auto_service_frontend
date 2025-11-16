@@ -1,26 +1,23 @@
 import { Navigate } from "react-router-dom";
+import { jwtDecode } from "jwt-decode";
 
 const ProtectedRoute = ({ children, allowedRoles }) => {
   const token = localStorage.getItem("token");
-  const user = JSON.parse(localStorage.getItem("user") || "{}");
-  const userRole = user.role;
 
-  // Check if user is authenticated
   if (!token) {
     return <Navigate to="/login" replace />;
   }
+  const payload = jwtDecode(token);
+  const userRole = payload.role;
 
-  // Check if user has required role
   if (allowedRoles && !allowedRoles.includes(userRole)) {
-    // Redirect to appropriate dashboard based on role
-    if (userRole === "ADMIN") {
-      return <Navigate to="/admin/dashboard" replace />;
-    } else if (userRole === "EMPLOYEE") {
-      return <Navigate to="/employee/dashboard" replace />;
-    } else if (userRole === "CUSTOMER") {
-      return <Navigate to="/customer/dashboard" replace />;
-    }
-    return <Navigate to="/home" replace />;
+    const redirectMap = {
+      ADMIN: "/admin/dashboard",
+      EMPLOYEE: "/employee/dashboard",
+      CUSTOMER: "/customer/dashboard",
+    };
+
+    return <Navigate to={redirectMap[userRole] || "/home"} replace />;
   }
 
   return children;

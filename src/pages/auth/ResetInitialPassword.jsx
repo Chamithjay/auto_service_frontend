@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import API from "../api/Api";
-import Toast from "../components/Toast";
+import API from "../../api/Api";
+import Toast from "../../components/Toast";
 
 const ResetInitialPassword = () => {
   const navigate = useNavigate();

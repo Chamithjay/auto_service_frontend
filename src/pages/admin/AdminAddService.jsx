@@ -9,10 +9,12 @@ import Toast from "../../components/Toast";
 
 const AdminAddUser = () => {
   const [formData, setFormData] = useState({
-    username: "",
-    email: "",
-    password: "",
-    role: "EMPLOYEE",
+    serviceItemName: "",
+    vehicleType: "CAR",
+    serviceItemType: "SERVICE",
+    serviceItemCost: "",
+    estimatedDuration: "",
+    requiredEmployeeCount: "",
   });
   const [message, setMessage] = useState("");
 
@@ -25,12 +27,12 @@ const AdminAddUser = () => {
     e.preventDefault();
     setMessage("");
 
-    // This will now use the token from localStorage automatically
-    // client-side validation
+    // Validation
     if (
-      !formData.username.trim() ||
-      !formData.email.trim() ||
-      !formData.password
+      !formData.serviceItemName.trim() ||
+      !formData.serviceItemCost ||
+      !formData.estimatedDuration ||
+      !formData.requiredEmployeeCount
     ) {
       setToast({
         isOpen: true,
@@ -39,39 +41,57 @@ const AdminAddUser = () => {
       });
       return;
     }
-    // basic email check
-    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-    if (!emailRegex.test(formData.email)) {
+
+    if (parseFloat(formData.serviceItemCost) <= 0) {
       setToast({
         isOpen: true,
-        message: "Please enter a valid email address.",
+        message: "Cost must be greater than 0.",
         type: "error",
       });
       return;
     }
-    if (formData.password.length < 6) {
+
+    if (parseInt(formData.estimatedDuration) <= 0) {
       setToast({
         isOpen: true,
-        message: "Password must be at least 6 characters.",
+        message: "Duration must be greater than 0.",
+        type: "error",
+      });
+      return;
+    }
+
+    if (parseInt(formData.requiredEmployeeCount) <= 0) {
+      setToast({
+        isOpen: true,
+        message: "Required employees must be at least 1.",
         type: "error",
       });
       return;
     }
 
     try {
-      const response = await API.post("admin/employees", formData);
-      setMessage(`Success! User "${response.data.username}" created.`);
+      const response = await API.post("admin/services", formData);
+      setMessage(
+        `Success! Service "${response.data.serviceItemName}" created.`
+      );
       setToast({
         isOpen: true,
-        message: `User "${response.data.username}" created`,
+        message: `Service "${response.data.serviceItemName}" created successfully!`,
         type: "success",
       });
-      setFormData({ username: "", email: "", password: "", role: "EMPLOYEE" }); // Clear form
+      setFormData({
+        serviceItemName: "",
+        vehicleType: "CAR",
+        serviceItemType: "SERVICE",
+        serviceItemCost: "",
+        estimatedDuration: "",
+        requiredEmployeeCount: "",
+      });
     } catch (error) {
       const errMsg =
         error?.response?.data?.message ||
         error.message ||
-        "Failed to create user";
+        "Failed to create service";
       setMessage(`Error: ${errMsg}`);
       setToast({ isOpen: true, message: `Error: ${errMsg}`, type: "error" });
     }
@@ -87,8 +107,8 @@ const AdminAddUser = () => {
     <>
       {/* fixed back icon near navbar/sidebar corner */}
       <Link
-        to="/admin/employees"
-        aria-label="Back to Employees"
+        to="/admin/services"
+        aria-label="Back to Services"
         style={{ position: "fixed", top: "4.5rem", left: "17rem", zIndex: 40 }}
         className="p-2 rounded-full bg-[#F1F6F9] hover:bg-[#E8EDF1] text-[#394867] shadow-md"
       >
@@ -118,12 +138,12 @@ const AdminAddUser = () => {
 
         <form onSubmit={handleSubmit} className="space-y-4 sm:space-y-6">
           <FormInput
-            label="Username"
-            id="username"
-            name="username"
-            value={formData.username}
+            label="Service Name"
+            id="serviceItemName"
+            name="serviceItemName"
+            value={formData.serviceItemName}
             onChange={handleChange}
-            placeholder="e.g., jsmith"
+            placeholder="e.g., Oil Change, Engine Tune-up"
             required
           />
 
@@ -181,13 +201,13 @@ const AdminAddUser = () => {
               type="number"
               value={formData.requiredEmployeeCount}
               onChange={handleChange}
-              placeholder="e.g., 1"
+              placeholder="e.g., 2"
               required
             />
           </div>
 
           <div className="pt-4">
-            <FormButton type="submit">Create User Account</FormButton>
+            <FormButton type="submit">Create Service</FormButton>
           </div>
         </form>
 

@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import { useNavigate, Outlet } from "react-router-dom";
 import AdminNavbar from "./AdminNavbar";
 import AdminSidebar from "./AdminSidebar";
-import ChatBot from "../ChatBot/ChatBot";
+
 
 const AdminLayout = ({ children }) => {
   const navigate = useNavigate();
@@ -54,7 +54,6 @@ const AdminLayout = ({ children }) => {
       <main className="ml-64 mt-16 h-[calc(100vh-4rem)] overflow-y-auto p-6 sm:p-8">
         {children ?? <Outlet />}
       </main>
-      <ChatBot />
     </div>
   );
 };

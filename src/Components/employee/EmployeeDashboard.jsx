@@ -9,7 +9,7 @@ const EmployeeDashboard = () => {
   const user = JSON.parse(localStorage.getItem("user") || "{}");
 
   // Decode JWT token to get uid (employee ID)
-  let employeeId = user.id || user.employeeId || user.userId;
+  let employeeId = user.id;
 
   if (!employeeId && user.token) {
     try {
@@ -187,11 +187,17 @@ const EmployeeDashboard = () => {
 
   const handleStatusUpdate = async (assignmentId, newStatus) => {
     try {
-      // Here you would call your API to update the status
       console.log(`Updating assignment ${assignmentId} to ${newStatus}`);
-      // await employeeAPI.updateAssignmentStatus(assignmentId, newStatus);
 
-      // Optimistic update
+      // Call the API to update the status
+      const response = await employeeAPI.updateAssignmentStatus(
+        assignmentId,
+        newStatus
+      );
+
+      console.log("Status update response:", response.data);
+
+      // Update local state after successful API call
       setDashboardData((prev) => ({
         ...prev,
         todayAssignments: prev.todayAssignments.map((assignment) =>
@@ -205,8 +211,18 @@ const EmployeeDashboard = () => {
             : assignment
         ),
       }));
+
+      // Optional: Show success message
+      alert(`Status updated to ${newStatus} successfully!`);
     } catch (err) {
       console.error("Error updating status:", err);
+      console.error("Error response:", err.response?.data);
+      console.error("Error status:", err.response?.status);
+      alert(
+        `Failed to update status: ${
+          JSON.stringify(err.response?.data) || err.message
+        }`
+      );
     }
   };
 
@@ -483,10 +499,11 @@ const EmployeeDashboard = () => {
                     >
                       Mark Complete
                     </button>
-                    <button className="flex-1 min-w-[100px] px-4 py-2 bg-gray-200 text-gray-700 rounded-lg text-sm font-semibold hover:bg-gray-300 transition-all"
-                    onClick={ () => navigate(`/appointment-jobs/${assignment.assignmentId}`)
-                      
-                    }
+                    <button
+                      className="flex-1 min-w-[100px] px-4 py-2 bg-gray-200 text-gray-700 rounded-lg text-sm font-semibold hover:bg-gray-300 transition-all"
+                      onClick={() =>
+                        navigate(`/employee/appointment-jobs/${assignment.assignmentId}`)
+                      }
                     >
                       View Details
                     </button>

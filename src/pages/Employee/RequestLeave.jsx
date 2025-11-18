@@ -10,6 +10,23 @@ import {
 import API from "../../api/Api";
 
 const RequestLeave = () => {
+  // Get employee ID from JWT token
+  const getEmployeeIdFromToken = () => {
+    const token = localStorage.getItem("token");
+    if (!token) return null;
+
+    try {
+      const payload = JSON.parse(atob(token.split(".")[1]));
+      console.log("Decoded JWT payload:", payload);
+      return payload.uid;
+    } catch (error) {
+      console.error("Error decoding token:", error);
+      return null;
+    }
+  };
+
+  const employeeId = getEmployeeIdFromToken();
+
   const [formData, setFormData] = useState({
     leaveDate: "",
     leaveType: "",
@@ -69,13 +86,14 @@ const RequestLeave = () => {
 
     try {
       const payload = {
-        employeeId: 3,
+        employeeId: parseInt(employeeId),
         leaveDate: formData.leaveDate,
         leaveType: formData.leaveType,
         leaveReason: formData.reason,
       };
       console.log("submitting", payload);
-      const response = await API.post("/leaves/request", payload);
+      console.log("Employee ID from token:", employeeId);
+      const response = await API.post("leaves/request", payload);
 
       if (response.status === 201) {
         setShowSuccess(true);

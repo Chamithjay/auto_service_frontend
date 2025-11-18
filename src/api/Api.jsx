@@ -27,6 +27,9 @@ export const employeeAPI = {
 
   updateProfile: (employeeId, profileData) =>
     API.put(`/employee/${employeeId}/profile`, profileData),
+
+  updateAssignmentStatus: (assignmentId, status) =>
+    API.put(`/assignments/${assignmentId}/status`, { status }),
 };
 
 export const appointmentAPI = {
@@ -50,6 +53,18 @@ export const appointmentAPI = {
   },
 
   getUserAppointments: (userId) => API.get(`/appointments/user/${userId}`),
+};
+
+export const serviceAPI = {
+  // Public endpoint for fetching all services (no authentication required)
+  getAllServices: () => API.get("/services"),
+
+  getServiceById: (id) => API.get(`/services/${id}`),
+
+  // Admin endpoints (require authentication)
+  getAllServicesAdmin: () => API.get("/admin/services"),
+
+  getServiceByIdAdmin: (id) => API.get(`/admin/services/${id}`),
 };
 
 export default API;

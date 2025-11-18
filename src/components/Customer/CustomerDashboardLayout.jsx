@@ -2,6 +2,7 @@ import { useState, useEffect } from "react";
 import { useNavigate, Outlet } from "react-router-dom";
 import CustomerNavbar from "./CustomerNavbar";
 import CustomerSidebar from "./CustomerSidebar";
+import ChatBot from "../ChatBot/ChatBot";
 
 const CustomerDashboardLayout = () => {
   const navigate = useNavigate();
@@ -58,6 +59,7 @@ const CustomerDashboardLayout = () => {
       <main className="lg:ml-64 pt-16 min-h-screen">
         <div className="p-4 sm:p-6 lg:p-8">
           <Outlet />
+          <ChatBot />
         </div>
       </main>
     </div>

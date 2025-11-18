@@ -125,25 +125,30 @@ const CustomersVehicles = () => {
   }
 
   return (
-    <AdminLayout>
-      <div className="w-max -mx-50 p-4 sm:p-6">
-        {/* Header */}
-        <div className="flex flex-col lg:flex-row justify-between items-start lg:items-center mb-4 sm:mb-6 gap-4">
-          <h1 className="text-2xl sm:text-3xl font-bold text-[#14274E]">
-            Vehicles
-          </h1>
-          <div className="flex flex-col sm:flex-row gap-3 sm:gap-4 w-full lg:w-2/3">
+    <div className="h-full flex flex-col">
+      {/* Header */}
+      <h1 className="text-2xl sm:text-3xl font-bold text-[#14274E] mb-6 sm:mb-8 flex-shrink-0">
+        Vehicles & Customers
+      </h1>
+
+      {/* Vehicles Section */}
+      <div className="bg-white rounded-2xl shadow-lg p-4 sm:p-6 mb-6 flex-1 flex flex-col min-h-0">
+        <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 mb-6 flex-shrink-0">
+          <h2 className="text-lg sm:text-xl font-bold text-[#14274E]">
+            All Vehicles
+          </h2>
+          <div className="flex flex-col sm:flex-row gap-3 w-full sm:w-auto">
             <input
               type="text"
               placeholder="Search by name, registration, or model..."
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
-              className="flex-1 border border-gray-300 rounded-lg px-3 sm:px-4 py-2 shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-400 transition duration-200 text-sm sm:text-base"
+              className="flex-1 sm:min-w-[300px] border border-gray-300 rounded-lg px-3 sm:px-4 py-2 shadow-sm focus:outline-none focus:ring-2 focus:ring-[#394867] transition duration-200 text-sm"
             />
             <select
               value={typeFilter}
               onChange={(e) => setTypeFilter(e.target.value)}
-              className="border border-gray-300 rounded-lg px-3 sm:px-4 py-2 shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-400 transition duration-200 text-sm sm:text-base"
+              className="border border-gray-300 rounded-lg px-3 sm:px-4 py-2 shadow-sm focus:outline-none focus:ring-2 focus:ring-[#394867] transition duration-200 text-sm"
             >
               <option value="ALL">All Types</option>
               <option value="CAR">Car</option>
@@ -153,15 +158,15 @@ const CustomersVehicles = () => {
           </div>
         </div>
 
-        {/* Vehicles Table */}
         {errorVehicles && (
-          <div className="mb-4 border-l-4 border-red-500 bg-red-50 text-red-700 px-4 sm:px-6 py-3 sm:py-4 rounded-md font-medium shadow text-sm sm:text-base">
+          <p className="text-red-500 mb-4 text-sm flex-shrink-0">
             {errorVehicles}
-          </div>
+          </p>
         )}
-        <div className="overflow-x-auto bg-white rounded-lg shadow-lg w-full border border-gray-200 mb-6 sm:mb-10">
-          <table className="w-full divide-y divide-gray-200">
-            <thead className="bg-gray-100">
+
+        <div className="overflow-x-auto overflow-y-auto flex-1 min-h-0">
+          <table className="min-w-full divide-y divide-gray-200">
+            <thead className="bg-[#F1F6F9] sticky top-0 z-10">
               <tr>
                 {[
                   { key: "vehicleName", label: "Vehicle Name" },
@@ -174,10 +179,10 @@ const CustomersVehicles = () => {
                   <th
                     key={key}
                     onClick={() => handleSort(key)}
-                    className={`px-3 sm:px-6 py-3 sm:py-4 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider cursor-pointer hover:bg-gray-200 ${
+                    className={`px-3 sm:px-6 py-3 text-left text-xs font-bold text-[#394867] uppercase tracking-wider ${
                       key === "customerId"
-                        ? "cursor-default hover:bg-transparent"
-                        : ""
+                        ? "cursor-default"
+                        : "cursor-pointer hover:bg-gray-200"
                     }`}
                   >
                     <div className="flex items-center gap-2 select-none">
@@ -190,12 +195,12 @@ const CustomersVehicles = () => {
                 ))}
               </tr>
             </thead>
-            <tbody className="bg-white divide-y divide-gray-100">
+            <tbody className="bg-white divide-y divide-gray-200">
               {filteredVehicles.length === 0 ? (
                 <tr>
                   <td
                     colSpan="6"
-                    className="text-center py-8 sm:py-12 text-gray-400 text-base sm:text-lg font-medium"
+                    className="px-3 sm:px-6 py-8 text-center text-gray-500 text-sm"
                   >
                     No vehicles found
                   </td>
@@ -206,13 +211,13 @@ const CustomersVehicles = () => {
                     key={vehicle.vehicleId}
                     className="hover:bg-gray-50 transition duration-150"
                   >
-                    <td className="px-3 sm:px-6 py-3 sm:py-4 text-gray-900 font-medium text-xs sm:text-sm">
+                    <td className="px-3 sm:px-6 py-4 whitespace-nowrap text-xs sm:text-sm font-medium text-[#14274E]">
                       {vehicle.vehicleName}
                     </td>
-                    <td className="px-3 sm:px-6 py-3 sm:py-4 text-gray-700 text-xs sm:text-sm">
+                    <td className="px-3 sm:px-6 py-4 whitespace-nowrap text-xs sm:text-sm text-gray-500">
                       {vehicle.registrationNo}
                     </td>
-                    <td className="px-3 sm:px-6 py-3 sm:py-4">
+                    <td className="px-3 sm:px-6 py-4 whitespace-nowrap">
                       <span
                         className={`px-2 py-1 rounded-full text-xs font-semibold ${
                           vehicle.vehicleType === "CAR"
@@ -225,13 +230,13 @@ const CustomersVehicles = () => {
                         {vehicle.vehicleType}
                       </span>
                     </td>
-                    <td className="px-3 sm:px-6 py-3 sm:py-4 text-gray-700 text-xs sm:text-sm">
+                    <td className="px-3 sm:px-6 py-4 whitespace-nowrap text-xs sm:text-sm text-gray-500">
                       {vehicle.model}
                     </td>
-                    <td className="px-3 sm:px-6 py-3 sm:py-4 text-gray-500 text-xs sm:text-sm">
+                    <td className="px-3 sm:px-6 py-4 whitespace-nowrap text-xs sm:text-sm text-gray-500">
                       {formatDate(vehicle.createdAt)}
                     </td>
-                    <td className="px-3 sm:px-6 py-3 sm:py-4 text-indigo-700 font-semibold text-xs sm:text-sm">
+                    <td className="px-3 sm:px-6 py-4 whitespace-nowrap text-xs sm:text-sm text-indigo-700 font-semibold">
                       #{vehicle.customerId}
                     </td>
                   </tr>
@@ -240,37 +245,41 @@ const CustomersVehicles = () => {
             </tbody>
           </table>
         </div>
+      </div>
 
-        {/* Customers Table */}
-        <h1 className="text-2xl sm:text-3xl font-bold text-[#14274E] mb-4 sm:mb-6">
-          Customers
-        </h1>
+      {/* Customers Section */}
+      <div className="bg-white rounded-2xl shadow-lg p-4 sm:p-6 flex-1 flex flex-col min-h-0">
+        <h2 className="text-lg sm:text-xl font-bold text-[#14274E] mb-6 flex-shrink-0">
+          All Customers
+        </h2>
+
         {errorCustomers && (
-          <div className="mb-4 border-l-4 border-red-500 bg-red-50 text-red-700 px-4 sm:px-6 py-3 sm:py-4 rounded-md font-medium shadow text-sm sm:text-base">
+          <p className="text-red-500 mb-4 text-sm flex-shrink-0">
             {errorCustomers}
-          </div>
+          </p>
         )}
-        <div className="overflow-x-auto bg-white rounded-lg shadow-lg w-full border border-gray-200">
-          <table className="w-full divide-y divide-gray-200">
-            <thead className="bg-gray-100">
+
+        <div className="overflow-x-auto overflow-y-auto flex-1 min-h-0">
+          <table className="min-w-full divide-y divide-gray-200">
+            <thead className="bg-[#F1F6F9] sticky top-0 z-10">
               <tr>
-                <th className="px-3 sm:px-6 py-3 sm:py-4 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">
+                <th className="px-3 sm:px-6 py-3 text-left text-xs font-bold text-[#394867] uppercase tracking-wider">
                   Customer ID
                 </th>
-                <th className="px-3 sm:px-6 py-3 sm:py-4 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">
+                <th className="px-3 sm:px-6 py-3 text-left text-xs font-bold text-[#394867] uppercase tracking-wider">
                   Email
                 </th>
-                <th className="px-3 sm:px-6 py-3 sm:py-4 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">
+                <th className="px-3 sm:px-6 py-3 text-left text-xs font-bold text-[#394867] uppercase tracking-wider">
                   Mobile
                 </th>
               </tr>
             </thead>
-            <tbody className="bg-white divide-y divide-gray-100">
+            <tbody className="bg-white divide-y divide-gray-200">
               {customers.length === 0 ? (
                 <tr>
                   <td
                     colSpan="3"
-                    className="text-center py-8 sm:py-12 text-gray-400 text-base sm:text-lg font-medium"
+                    className="px-3 sm:px-6 py-8 text-center text-gray-500 text-sm"
                   >
                     No customers found
                   </td>
@@ -281,13 +290,13 @@ const CustomersVehicles = () => {
                     key={customer.customerId}
                     className="hover:bg-gray-50 transition duration-150"
                   >
-                    <td className="px-3 sm:px-6 py-3 sm:py-4 text-indigo-700 font-semibold text-xs sm:text-sm">
+                    <td className="px-3 sm:px-6 py-4 whitespace-nowrap text-xs sm:text-sm text-indigo-700 font-semibold">
                       #{customer.customerId}
                     </td>
-                    <td className="px-3 sm:px-6 py-3 sm:py-4 text-gray-700 text-xs sm:text-sm">
+                    <td className="px-3 sm:px-6 py-4 whitespace-nowrap text-xs sm:text-sm text-gray-500">
                       {customer.email}
                     </td>
-                    <td className="px-3 sm:px-6 py-3 sm:py-4 text-gray-700 text-xs sm:text-sm">
+                    <td className="px-3 sm:px-6 py-4 whitespace-nowrap text-xs sm:text-sm text-gray-500">
                       {customer.mobile}
                     </td>
                   </tr>
@@ -296,15 +305,15 @@ const CustomersVehicles = () => {
             </tbody>
           </table>
         </div>
-
-        <Toast
-          isOpen={toast.show}
-          message={toast.message}
-          type={toast.type}
-          onClose={() => setToast({ show: false, message: "", type: "" })}
-        />
       </div>
-    </AdminLayout>
+
+      <Toast
+        isOpen={toast.show}
+        message={toast.message}
+        type={toast.type}
+        onClose={() => setToast({ show: false, message: "", type: "" })}
+      />
+    </div>
   );
 };
 

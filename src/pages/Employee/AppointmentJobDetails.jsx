@@ -12,7 +12,7 @@ import {
 } from "lucide-react";
 
 import API from "../../api/Api";
-import InfoCard from "../../Components/InfoCard";
+import InfoCard from "../../components/InfoCard";
 
 const AppointmentJobDetailsPage = () => {
   const { jobId } = useParams();

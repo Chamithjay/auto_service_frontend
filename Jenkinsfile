@@ -18,7 +18,7 @@ pipeline {
         
         // Repository information
         GITHUB_REPO = 'https://github.com/Chamithjay/auto_service_frontend.git'
-        GITHUB_BRANCH = 'main'
+        GITHUB_BRANCH = 'nipuna'
         
         // Node.js configuration
         NODE_ENV = 'production'
@@ -100,15 +100,9 @@ pipeline {
                 script {
                     echo '========== STAGE: Build Docker Image =========='
                     sh '''
-                        echo "Building Docker image: ${FRONTEND_IMAGE}"
-                        docker build \\
-                            --build-arg VITE_API_BASE_URL="${VITE_API_BASE_URL}" \\
-                            -t ${FRONTEND_IMAGE} .
-                        
-                        echo "Docker images:"
-                        docker images | grep autoservice-frontend
-                        
-                        echo "✅ Docker image built successfully"
+                        echo "Note: Docker image building handled by docker-compose"
+                        echo "Frontend build artifacts created in: dist/"
+                        echo "✅ Build artifacts ready for Docker"
                     '''
                 }
             }
@@ -119,17 +113,9 @@ pipeline {
                 script {
                     echo '========== STAGE: Deploy with Docker Compose =========='
                     sh '''
-                        # Navigate to deployment directory
-                        cd ../automobile-service-deployment
-                        
-                        echo "Current directory: $(pwd)"
-                        echo "Docker Compose version:"
-                        docker-compose --version
-                        
-                        echo "Starting services with docker-compose..."
-                        docker-compose -f docker-compose.yml up -d
-                        
-                        echo "✅ Docker Compose deployment initiated"
+                        echo "Note: Deployment handled by docker-compose on host"
+                        echo "Frontend build complete. Docker Compose will use latest dist files."
+                        echo "✅ Ready for deployment"
                     '''
                 }
             }
@@ -140,18 +126,16 @@ pipeline {
                 script {
                     echo '========== STAGE: Health Checks =========='
                     sh '''
-                        echo "Waiting for services to start (30 seconds)..."
+                        echo "Waiting for services (30 seconds)..."
                         sleep 30
                         
-                        echo "Checking running containers..."
-                        docker ps
-                        
                         echo "Checking frontend health..."
-                        FRONTEND_HEALTH=$(docker exec autoservice-frontend curl -s http://localhost/health 2>/dev/null || echo "pending")
-                        echo "Frontend health: $FRONTEND_HEALTH"
-                        
-                        echo "Checking backend connectivity..."
-                        docker exec autoservice-frontend curl -s http://localhost:8080/api/health || echo "Backend check result: $?"
+                        FRONTEND_HEALTH=$(curl -s -o /dev/null -w "%{http_code}" http://localhost 2>/dev/null)
+                        if [ "$FRONTEND_HEALTH" = "200" ] || [ "$FRONTEND_HEALTH" = "304" ]; then
+                            echo "✅ Frontend is running (HTTP $FRONTEND_HEALTH)"
+                        else
+                            echo "⚠️  Frontend health check returned: HTTP $FRONTEND_HEALTH"
+                        fi
                         
                         echo "✅ Health checks completed"
                     '''

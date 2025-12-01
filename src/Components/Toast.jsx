@@ -12,6 +12,8 @@ const Toast = ({ isOpen, message, onClose, type = "success" }) => {
 
   if (!isOpen) return null;
 
+  
+
   const isError = type === "error";
   const bg = isError ? "bg-red-50" : "bg-emerald-50";
   const border = isError ? "border-red-200" : "border-emerald-200";
